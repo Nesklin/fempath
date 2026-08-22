@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>FemPath</title>
+<title>Femi Bloom</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--pink:#ff6b9d;--pink-light:#ffa8c5;--bg:#fff5f7;--bg2:#ffe8f0;--text:#333;--soft:#777;--green:#4caf50;--orange:#ff9800}
+:root{--pink:#ff6b9d;--pink-light:#ffa8c5;--bg:#fff5f7;--bg2:#ffe8f0;--text:#333;--soft:#777;--green:#4caf50;--orange:#ff9800;--blue:#2196f3}
 body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;padding-bottom:90px;font-size:15px}
 
 .header{background:linear-gradient(135deg,var(--pink),var(--pink-light));color:#fff;padding:20px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(255,107,157,.3)}
@@ -35,7 +35,10 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg),
 .card-title{font-size:16px;font-weight:600;margin-bottom:6px}
 .card-text{font-size:14px;color:var(--soft);margin-bottom:10px;line-height:1.4}
 
-/* ТАЙМЛАЙН */
+.mode-badge{display:inline-block;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:15px}
+.mode-work{background:#e3f2fd;color:#1976d2}
+.mode-free{background:#e8f5e9;color:#388e3c}
+
 .timeline-item{display:flex;align-items:flex-start;margin-bottom:16px;position:relative}
 .timeline-item::before{content:'';position:absolute;left:29px;top:35px;bottom:-16px;width:2px;background:var(--pink-light)}
 .timeline-item:last-child::before{display:none}
@@ -52,7 +55,6 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg),
 .task-status{color:var(--green);font-weight:500}
 .now-badge{background:var(--pink);color:#fff;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:600}
 
-/* УПРАЖНЕНИЯ В МОДАЛКЕ */
 .ex-row{background:var(--bg);border-radius:12px;padding:12px;margin-bottom:10px}
 .ex-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .ex-name{font-size:14px;font-weight:600}
@@ -61,7 +63,8 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg),
 .ex-actions{display:flex;gap:8px}
 .ex-actions .btn{flex:1}
 
-/* ТРЕКЕРЫ */
+.timer-display{font-size:52px;font-weight:700;color:var(--pink);text-align:center;margin:15px 0;font-variant-numeric:tabular-nums}
+
 .tracker-card{background:#fff;border-radius:15px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
 .tracker-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .tracker-name{font-size:15px;font-weight:600}
@@ -69,7 +72,6 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg),
 .tracker-desc{font-size:13px;color:var(--soft);margin-bottom:10px;line-height:1.4}
 .tracker-info{font-size:12px;color:var(--soft);margin-bottom:10px}
 
-/* ОПЕРАЦИИ */
 .op-card{background:#fff;border-radius:15px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
 .op-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .op-name{font-size:15px;font-weight:600;flex:1}
@@ -81,30 +83,32 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg),
 .progress-small{width:100%;height:6px;background:#f0f0f0;border-radius:10px;overflow:hidden;margin-bottom:10px}
 .progress-small-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--pink-light));border-radius:10px;transition:width .4s}
 
-/* ПРОФИЛЬ */
-.setting-row{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.setting-row{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06);flex-wrap:wrap;gap:8px}
 .setting-label{font-size:14px;font-weight:500}
 .setting-value{font-size:14px;color:var(--pink);font-weight:600}
-input[type="time"],select{border:1px solid #eee;padding:6px 10px;border-radius:8px;font-family:inherit;font-size:14px;background:var(--bg)}
+input[type="time"],input[type="number"],select{border:1px solid #eee;padding:6px 10px;border-radius:8px;font-family:inherit;font-size:14px;background:var(--bg)}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}
 .stat-card{background:#fff;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
 .stat-value{font-size:22px;font-weight:700;color:var(--pink);margin-bottom:4px}
 .stat-label{font-size:12px;color:var(--soft)}
 
-/* ФОТО */
+.day-btn{padding:8px 10px;border-radius:10px;border:1px solid #eee;background:#fff;font-size:12px;font-family:inherit;cursor:pointer}
+.day-btn.active{background:var(--pink);color:#fff;border-color:var(--pink)}
+
 .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .photo-item{aspect-ratio:3/4;background:var(--bg);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--soft);overflow:hidden;position:relative;border:2px dashed var(--pink-light);cursor:pointer}
 .photo-item img{width:100%;height:100%;object-fit:cover}
 .photo-item .day-label{position:absolute;bottom:6px;left:6px;background:rgba(255,255,255,.92);padding:3px 8px;border-radius:8px;font-size:11px;font-weight:600}
 .photo-warning{background:#fff3e0;border:1px solid var(--orange);color:#e65100;padding:12px;border-radius:12px;margin-top:12px;font-size:13px}
 
-/* НАВИГАЦИЯ */
+.water-row{display:flex;justify-content:space-between;align-items:center}
+.water-drops{font-size:20px;letter-spacing:4px}
+
 .nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0 12px;box-shadow:0 -2px 15px rgba(0,0,0,.05);z-index:100;border-top-left-radius:20px;border-top-right-radius:20px}
 .nav-item{flex:1;text-align:center;padding:8px 4px;cursor:pointer;color:var(--soft);font-size:11px;font-weight:500;border:none;background:none;font-family:inherit}
 .nav-item.active{color:var(--pink)}
 .nav-icon{font-size:22px;display:block;margin-bottom:4px}
 
-/* МОДАЛКА */
 .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
 .modal.active{display:flex}
 .modal-content{background:#fff;border-radius:20px;padding:24px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto}
@@ -115,7 +119,7 @@ input[type="time"],select{border:1px solid #eee;padding:6px 10px;border-radius:8
 .modal-text li{margin-bottom:6px}
 .modal-buttons{display:flex;gap:10px;margin-top:15px}
 .modal-buttons .btn{margin-bottom:0;flex:1}
-textarea{width:100%;min-height:140px;padding:12px;border:1px solid #eee;border-radius:12px;font-family:inherit;font-size:14px;resize:vertical;background:var(--bg)}
+textarea{width:100%;min-height:120px;padding:12px;border:1px solid #eee;border-radius:12px;font-family:inherit;font-size:14px;resize:vertical;background:var(--bg)}
 
 .toast{position:fixed;top:100px;left:50%;transform:translateX(-50%);background:#fff;padding:12px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:2000;opacity:0;transition:opacity .3s;font-size:14px;font-weight:500;border-left:4px solid var(--pink);max-width:90%}
 .toast.show{opacity:1}
@@ -125,13 +129,30 @@ textarea{width:100%;min-height:140px;padding:12px;border:1px solid #eee;border-r
 .policy-text p{margin-bottom:10px}
 .policy-text ul{padding-left:20px;margin-bottom:10px}
 input[type="file"]{display:none}
+
+.achievement{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.achievement.locked{opacity:.5}
+.ach-icon{font-size:32px;flex-shrink:0}
+.ach-info{flex:1}
+.ach-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.ach-desc{font-size:12px;color:var(--soft)}
+.ach-progress{font-size:11px;color:var(--pink);font-weight:600;margin-top:4px}
+
+.mood-btn{background:var(--bg);border:2px solid transparent;padding:12px;border-radius:12px;font-size:24px;cursor:pointer;transition:all .2s}
+.mood-btn.selected{border-color:var(--pink);background:#fff}
+.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.archive-item{background:var(--bg);border-radius:10px;padding:12px;margin-bottom:10px}
+.archive-date{font-size:12px;color:var(--pink);font-weight:600;margin-bottom:6px}
+.archive-text{font-size:13px;color:var(--text);line-height:1.5}
+.calc-result{background:var(--bg);border-radius:12px;padding:14px;margin-top:12px;font-size:14px;line-height:1.7}
+.calc-result strong{color:var(--pink)}
 </style>
 </head>
 <body>
 
 <div class="header">
     <div class="header-top">
-        <div class="logo">✨ FemPath</div>
+        <div class="logo">🌸 Femi Bloom</div>
         <div class="level-badge" id="levelBadge">Новичок</div>
     </div>
     <div class="progress-info"><span>Прогресс феминизации</span><span id="percentText">0.00%</span></div>
@@ -149,28 +170,56 @@ input[type="file"]{display:none}
         <div class="card-title">💡 Совет дня</div>
         <div class="card-text" id="dailyTip"></div>
     </div>
+    <div class="card" id="waterCard"></div>
     <div class="card">
         <div class="card-title">📸 Фото прогресса</div>
-        <div class="card-text">Первое фото — «до», навсегда. Второе обновляется раз в неделю. Без свежего фото разделы блокируются.</div>
+        <div class="card-text">Первое фото — «до», навсегда. Второе обновляется раз в неделю.</div>
         <div class="photo-grid" id="photoGrid"></div>
         <div id="photoStatus"></div>
         <button class="btn btn-sec btn-sm" id="photoBtn" style="width:100%;margin-top:12px" onclick="takePhoto()">📷 Сделать фото</button>
         <input type="file" id="photoInput" accept="image/*" capture="user" onchange="addPhoto(event)">
+    </div>
+    <div class="card" onclick="showAchievements()" style="cursor:pointer">
+        <div class="card-title">🏆 Достижения</div>
+        <div class="card-text">Посмотри свои награды и прогресс к новым</div>
     </div>
 </div>
 
 <!-- ЗАДАНИЯ -->
 <div class="content" id="tasks">
     <div class="section-title">📋 План на сегодня</div>
-    <div class="card-text" style="margin-bottom:15px">Подъём в 06:00 · Отбой в 22:00. Нажми на задание, чтобы провалиться в подробности.</div>
+    <div id="dayModeBadge"></div>
     <div id="tasksTimeline"></div>
 </div>
 
 <!-- ТЕЛО -->
 <div class="content" id="body">
     <div class="section-title">💆 Уход за телом</div>
-    <div class="card-text" style="margin-bottom:15px">Процедуры с рекомендуемой частотой. Нажми «Подробнее» — там описание техники.</div>
+    <div class="card-text" style="margin-bottom:15px">Процедуры с рекомендуемой частотой. «Подробнее» — техника и советы.</div>
     <div id="trackersList"></div>
+
+    <div class="card" style="margin-top:20px">
+        <div class="card-title">🍽️ Калькулятор калорий</div>
+        <div class="card-text">Рассчитай норму для женственной фигуры (формула для женского тела).</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+            <input type="number" id="calcAge" placeholder="Возраст">
+            <input type="number" id="calcHeight" placeholder="Рост, см">
+            <input type="number" id="calcWeight" placeholder="Вес, кг">
+        </div>
+        <select id="calcActivity" style="width:100%;margin-bottom:8px">
+            <option value="1.2">Минимальная активность</option>
+            <option value="1.375" selected>Лёгкая активность (1-3 трен/нед)</option>
+            <option value="1.55">Средняя активность (3-5 трен/нед)</option>
+            <option value="1.725">Высокая активность (6-7 трен/нед)</option>
+        </select>
+        <select id="calcGoal" style="width:100%;margin-bottom:12px">
+            <option value="-0.15">Похудение (−15%)</option>
+            <option value="0" selected>Поддержание</option>
+            <option value="0.1">Лёгкий набор (+10%)</option>
+        </select>
+        <button class="btn btn-pink btn-sm" style="width:100%" onclick="calcCalories()">Рассчитать</button>
+        <div id="calcResult"></div>
+    </div>
 </div>
 
 <!-- ОПЕРАЦИИ -->
@@ -188,11 +237,28 @@ input[type="file"]{display:none}
         <div class="stat-card"><div class="stat-value" id="profileStreak">0</div><div class="stat-label">дней подряд</div></div>
     </div>
 
-    <div class="section-title" style="font-size:16px;margin-top:20px">⏰ Режим дня</div>
+    <div class="card" onclick="showArchive()" style="cursor:pointer">
+        <div class="card-title">📖 Архив блокнота</div>
+        <div class="card-text">Все твои вечерние записи</div>
+    </div>
+
+    <div class="section-title" style="font-size:16px;margin-top:20px">⏰ Режим дня и работа</div>
     <div class="setting-row"><span class="setting-label">Подъём</span><span class="setting-value">06:00</span></div>
     <div class="setting-row"><span class="setting-label">Отбой</span><span class="setting-value">22:00</span></div>
-    <div class="setting-row"><span class="setting-label">Работа с</span><input type="time" id="workStart" value="09:00" onchange="saveSettings()"></div>
-    <div class="setting-row"><span class="setting-label">Работа до</span><input type="time" id="workEnd" value="18:00" onchange="saveSettings()"></div>
+    <div class="setting-row"><span class="setting-label">Занятость</span>
+        <select id="working" onchange="saveSettings()">
+            <option value="yes">Работаю</option>
+            <option value="no">Не работаю</option>
+        </select>
+    </div>
+    <div id="workDaysRow" class="setting-row" style="display:flex">
+        <span class="setting-label">Рабочие дни:</span>
+        <div id="workDaysBtns" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div id="workHoursRows">
+        <div class="setting-row"><span class="setting-label">Работа с</span><input type="time" id="workStart" value="09:00" onchange="saveSettings()"></div>
+        <div class="setting-row"><span class="setting-label">Работа до</span><input type="time" id="workEnd" value="18:00" onchange="saveSettings()"></div>
+    </div>
     <div class="setting-row"><span class="setting-label">Строгость</span>
         <select id="strictness" onchange="saveSettings()"><option value="soft">Мягкий</option><option value="normal" selected>Обычный</option><option value="strict">Строгий</option></select>
     </div>
@@ -232,13 +298,12 @@ input[type="file"]{display:none}
 <div class="toast" id="toast"></div>
 
 <script>
-// ============ ДАННЫЕ ============
 const defaultData = {
     percent: 0, streak: 0, lastActiveDate: null, tasksDone: 0,
-    completedToday: [],
-    photoBefore: null, photoWeek: null,
-    journal: {},
-    settings: { workStart: '09:00', workEnd: '18:00', strictness: 'normal', genderAddress: 'female' },
+    completedToday: [], photoBefore: null, photoWeek: null,
+    journal: {}, mood: {}, water: { date: null, count: 0 },
+    calc: { age: '', height: '', weight: '', activity: '1.375', goal: '0' },
+    settings: { working: 'yes', workDays: [1,2,3,4,5], workStart: '09:00', workEnd: '18:00', strictness: 'normal', genderAddress: 'female' },
     operations: [
         { id: 1, name: 'Орхиэктомия', cost: 200000, saved: 0, status: 'not_started' },
         { id: 2, name: 'Трахеальное бритьё', cost: 120000, saved: 0, status: 'not_started' },
@@ -250,130 +315,304 @@ const defaultData = {
     trackers: {
         shave: { name: '🪒 Бритьё', freq: 2, freqText: 'раз в 2 дня', lastDone: null,
             shortDesc: 'Гладкая кожа без раздражения.',
-            how: 'Распарь кожу в душе. Нанеси гель для бритья. Брей острой бритвой ПО направлению роста волос, без сильного нажима. После — увлажняющий лосьон или крем с пантенолом.',
-            tips: 'Не брей сухой кожей. Меняй лезвие каждые 5-7 применений. При раздражении — пантенол и свободная одежда.' },
+            how: '1. Тёплый душ 5-10 минут — кожа распарится. 2. Нанеси гель или пену для бритья (не мыло — сушит). 3. Брей ОСТРОЙ бритвой ПО направлению роста волос, короткими движениями, без нажима. 4. Смой прохладной водой, промокни полотенцем (не три!). 5. Нанеси лосьон с пантенолом или алоэ.',
+            tips: 'Меняй лезвие каждые 5-7 применений. Не брей сухую кожу. При раздражении — пантенол и свободная одежда.' },
         scrub: { name: '🧴 Скраб тела', freq: 3, freqText: 'раз в 3 дня', lastDone: null,
             shortDesc: 'Гладкость и профилактика вросших волос.',
-            how: 'На влажную распаренную кожу нанеси скраб. Массируй круговыми движениями снизу вверх 3-5 минут. Смой тёплой водой. После — увлажняющий крем.',
-            tips: 'Не скрабируй повреждённую кожу. Скраб до бритья, а не после — меньше раздражения.' },
+            how: '1. Распарь кожу в душе 5 минут. 2. Нанеси скраб на влажную кожу. 3. Массируй круговыми движениями СНИЗУ ВВЕРХ 3-5 минут (колени, локти, ягодицы). 4. Смой тёплой водой. 5. Увлажняющий крем на влажную кожу.',
+            tips: 'НЕ скрабируй повреждённую кожу. Делай скраб ДО бритья (за день) — меньше раздражения.' },
         mask: { name: '🎭 Маска для лица', freq: 7, freqText: 'раз в неделю', lastDone: null,
             shortDesc: 'Сияющая ухоженная кожа.',
-            how: 'Очисти кожу. Нанеси маску по типу кожи (увлажняющая — универсально). Держи 10-15 минут. Смой, нанеси крем.',
-            tips: 'Делай вечером, после всех процедур. Не передерживай маску.' },
+            how: '1. Очисти кожу. 2. Нанеси маску по типу кожи (увлажняющая — универсально). 3. Держи 10-15 минут. 4. Смой тёплой водой. 5. Нанеси крем.',
+            tips: 'Делай вечером. Не передерживай маску — будет обратный эффект.' },
         moisturize: { name: '💧 Увлажнение кожи', freq: 1, freqText: 'ежедневно', lastDone: null,
             shortDesc: 'Мягкость и сияние каждый день.',
-            how: 'Утром и вечером после умывания — крем для лица. После душа — лосьон или масло для тела на влажную кожу.',
-            tips: 'Регулярность важнее дороговизны крема.' },
+            how: 'УТРОМ: тоник + крем + SPF. ВЕЧЕРОМ: лосьон или масло для тела НА ВЛАЖНУЮ кожу после душа + ночной крем для лица.',
+            tips: 'Регулярность важнее дороговизны. Пей 1.5-2 л воды в день — кожа увлажняется изнутри.' },
         nails: { name: '💅 Уход за ногтями', freq: 7, freqText: 'раз в неделю', lastDone: null,
             shortDesc: 'Ухоженные руки — деталь женственности.',
-            how: 'Придай форму пилочкой (овал или мягкий квадрат). Отодвинь или удали кутикулу (масло/ремувер). Покрытие — нюд или аккуратный французский.',
-            tips: 'Не режь кутикулу без опыта — используй ремувер.' },
+            how: '1. Распарь руки 5 минут. 2. Форма пилочкой в одну сторону (овал/мягкий квадрат). 3. Отодвинь кутикулу после ремувера. 4. Отполируй бафом. 5. База + нюд/френч + топ.',
+            tips: 'НЕ обрезай кутикулу без опыта. Масло для кутикулы на ночь — ногти крепче.' },
         hair: { name: '💇 Уход за волосами', freq: 3, freqText: 'раз в 3 дня', lastDone: null,
             shortDesc: 'Здоровые блестящие волосы.',
-            how: 'Мой по мере загрязнения. После каждого мытья — кондиционер или маска на 3-5 минут. Расчёсывай аккуратно, начиная с кончиков.',
-            tips: 'Не три волосы полотенцем — промакивай. Термозащита перед укладкой.' }
+            how: '1. Шампунь только на корни, кондиционер — на длину (3-5 мин). 2. Смой прохладной водой. 3. Промокни полотенцем (не три!). 4. Несмываемый уход на кончики. 5. Суши естественно или с термозащитой.',
+            tips: 'Расчёсывай с кончиков вверх. Раз в неделю — питательная маска на 20-30 мин. Массаж головы 5 мин в день — лучше рост.' }
     },
+    achievements: {
+        first_task: { name: 'Первый шаг', desc: 'Выполни первое задание', icon: '🌱', unlocked: false },
+        streak_7: { name: 'Неделя привычек', desc: '7 дней подряд', icon: '🔥', unlocked: false },
+        streak_30: { name: 'Месяц трансформации', desc: '30 дней подряд', icon: '💪', unlocked: false },
+        streak_100: { name: 'Сотня дней', desc: '100 дней подряд', icon: '💯', unlocked: false },
+        percent_25: { name: 'Привыкание', desc: 'Достигни 25%', icon: '🌸', unlocked: false },
+        percent_50: { name: 'Половина пути', desc: 'Достигни 50%', icon: '✨', unlocked: false },
+        percent_75: { name: 'Глубокая феминизация', desc: 'Достигни 75%', icon: '👑', unlocked: false },
+        photo_first: { name: 'Точка отсчёта', desc: 'Сделай фото "до"', icon: '📸', unlocked: false },
+        workout_10: { name: 'Спортсменка', desc: '10 тренировок', icon: '🏋️‍♀️', unlocked: false },
+        savings_first: { name: 'Первый взнос', desc: 'Начни копить на операцию', icon: '💰', unlocked: false }
+    },
+    stats: { workouts: 0 },
     startDate: new Date().toISOString().split('T')[0]
 };
 
 let data = loadData();
 let photoMode = 'before';
 
-// ============ БАЗА УПРАЖНЕНИЙ ============
+// ============ УПРАЖНЕНИЯ ============
 const EX_DB = {
     morning: [
+        { name: 'Лёгкий бег / быстрая ходьба', reps: '10 минут', time: 600,
+          technique: 'Корпус прямой с лёгким наклоном вперёд, взгляд вперёд, плечи расслаблены. Руки согнуты под 90°, работают вдоль тела. Шаг частый и мягкий, приземление на середину стопы. Дыхание ритмично: 2 шага — вдох, 2 шага — выдох. Темп «разговорный» — чтобы можно было говорить без одышки.',
+          mistakes: 'Топание на пятку, зажатые плечи, взгляд в пол, слишком быстрый старт.',
+          gives: 'Стройные ноги, выносливость, лёгкая женственная походка и свежий цвет лица.',
+          tips: 'Если тяжело бежать — иди быстрым шагом. Кроссовки с амортизацией. Улыбайся — лицо расслабляется.' },
         { name: 'Ягодичный мост', reps: '3×15',
-          technique: 'Ляг на спину, ноги согнуты, стопы на ширине плеч. На выдохе подними таз вверх, максимально сжимая ягодицы в верхней точке. Задержись на 1-2 секунды, медленно опустись.',
-          mistakes: 'Прогиб в пояснице, слишком быстрый темп, упор носками вместо пяток.',
+          technique: 'Ляг на спину, ноги согнуты, стопы на ширине плеч. На выдохе подними таз, сжимая ягодицы в верхней точке. Задержись 1-2 секунды, медленно опустись.',
+          mistakes: 'Прогиб в пояснице, быстрый темп, упор носками.',
           gives: 'Округлые подтянутые ягодицы — основа женственного силуэта.',
-          tips: 'Дави пятками в пол. В верхней точке тело — прямая линия от колен до плеч.' },
+          tips: 'Дави пятками. Вверху тело — прямая линия.' },
         { name: 'Сумо-приседания', reps: '3×20',
-          technique: 'Ноги шире плеч, носки развёрнуты наружу. Приседай, отводя таз назад, колени смотрят в сторону носков. Бёдра до параллели с полом, спина прямая.',
-          mistakes: 'Завал коленей внутрь, круглая спина, отрыв пяток.',
-          gives: 'Внутренняя поверхность бёдер в тонусе, форма ягодиц, женственная линия ног.',
-          tips: 'Вес на пятках, грудь раскрыта, взгляд вперёд.' },
+          technique: 'Ноги шире плеч, носки наружу. Приседай, отводя таз назад, колени в сторону носков. Бёдра до параллели, спина прямая.',
+          mistakes: 'Завал коленей внутрь, круглая спина.',
+          gives: 'Тонус внутренней поверхности бёдер, форма ягодиц.',
+          tips: 'Вес на пятках, грудь раскрыта.' },
         { name: 'Выпады', reps: '3×12 на ногу',
-          technique: 'Шагни вперёд, опустись, пока оба колена не согнутся под 90°. Переднее колено над пяткой. Оттолкнись пяткой и вернись.',
-          mistakes: 'Наклон корпуса вперёд, колено выходит за носок, узкая постановка ног.',
-          gives: 'Ягодицы и бёдра, плюс баланс и плавность движений для походки.',
-          tips: 'Корпус держи вертикально, как струна.' },
+          technique: 'Шаг вперёд, опустись до 90° в обоих коленях. Переднее колено над пяткой. Оттолкнись пяткой, вернись.',
+          mistakes: 'Наклон вперёд, колено за носком.',
+          gives: 'Ягодицы, бёдра, баланс и плавность для походки.',
+          tips: 'Корпус вертикально, как струна.' },
         { name: 'Вакуум живота', reps: '10×15 сек',
-          technique: 'Стоя или лёжа. Выдохни ВЕСЬ воздух, втяни живот под рёбра. Задержись на 10-15 секунд, дыши носом спокойно. Делай строго натощак.',
-          mistakes: 'Задержка дыхания, выполнение после еды, нерегулярность.',
-          gives: 'Узкая талия, плоский живот, контроль над мышцами кора.',
-          tips: 'Утром до еды — идеально. Каждый день по 10 повторений.' },
+          technique: 'Выдохни ВЕСЬ воздух, втяни живот под рёбра. Задержись 10-15 сек. Строго натощак.',
+          mistakes: 'Задержка дыхания, после еды.',
+          gives: 'Узкая талия, плоский живот.',
+          tips: 'Утром до еды — идеально.' },
         { name: 'Планка', reps: '3×30 сек',
-          technique: 'Упор на предплечья, локти под плечами. Тело — прямая линия. Напряги пресс, ягодицы и бёдра. Дыши ровно.',
-          mistakes: 'Провисание поясницы, подъём таза, задержка дыхания.',
-          gives: 'Сильный кор, плоский живот, красивая осанка.',
-          tips: 'Лучше 20 секунд идеально, чем минута с провисшей поясницей.' }
+          technique: 'Упор на предплечья, локти под плечами. Тело — прямая линия. Пресс, ягодицы, бёдра напряжены.',
+          mistakes: 'Провисание поясницы, подъём таза.',
+          gives: 'Сильный кор, плоский живот, осанка.',
+          tips: 'Лучше 20 сек идеально, чем минута плохо.' }
+    ],
+    morningWork: [
+        { name: 'Ягодичный мост', reps: '3×15',
+          technique: 'Ляг на спину, ноги согнуты. Подними таз, сжимая ягодицы. Задержись, опусти.',
+          mistakes: 'Прогиб в пояснице.', gives: 'Форма ягодиц.', tips: 'Дави пятками.' },
+        { name: 'Сумо-приседания', reps: '3×15',
+          technique: 'Ноги шире плеч, носки наружу. Приседай с прямой спиной.',
+          mistakes: 'Завал коленей.', gives: 'Тонус бёдер.', tips: 'Вес на пятках.' },
+        { name: 'Вакуум живота', reps: '5×15 сек',
+          technique: 'Выдохни, втяни живот под рёбра, задержись. Натощак.',
+          mistakes: 'После еды.', gives: 'Узкая талия.', tips: 'До завтрака.' },
+        { name: 'Планка', reps: '2×30 сек',
+          technique: 'Упор на предплечья, тело в линию.',
+          mistakes: 'Провисание поясницы.', gives: 'Кор и осанка.', tips: 'Дыши ровно.' }
     ],
     evening: [
         { name: 'Ягодичный мост на одной ноге', reps: '3×12 на ногу',
-          technique: 'Как обычный мост, но одна нога вытянута вверх или вперёд. Поднимай таз силой одной ягодицы. Не заваливай таз в сторону.',
-          mistakes: 'Перекос таза, маленькая амплитуда, рывки.',
-          gives: 'Симметричная проработка ягодиц, форма и упругость.',
-          tips: 'Представь, что между лопатками и тазом натянута струна — не роняй её.' },
+          technique: 'Как мост, но одна нога вытянута. Поднимай таз силой одной ягодицы, не заваливай таз.',
+          mistakes: 'Перекос таза, рывки.', gives: 'Симметричная форма ягодиц.', tips: 'Держи таз ровно.' },
         { name: 'Отведения ноги назад', reps: '3×20 на ногу',
-          technique: 'Стоя на четвереньках, отводи согнутую ногу назад и вверх, сжимая ягодицу в верхней точке. Держи паузу 1 секунду.',
-          mistakes: 'Прогиб в пояснице, рывки, работа спиной вместо ягодицы.',
-          gives: 'Верхняя часть ягодиц — визуальный объём и lifted-эффект.',
-          tips: 'Движение медленное и подконтрольное, как в замедленной съёмке.' },
+          technique: 'На четвереньках отводи согнутую ногу назад-вверх, сжимая ягодицу. Пауза 1 сек.',
+          mistakes: 'Прогиб поясницы, рывки.', gives: 'Верх ягодиц, lifted-эффект.', tips: 'Медленно и подконтрольно.' },
         { name: 'Боковая планка', reps: '3×30 сек на сторону',
-          technique: 'Упор на одно предплечье, тело в одну линию. Вторая рука вверх или на бедре. Не провисай бедром.',
-          mistakes: 'Перекос корпуса, провисание бёдер, задержка дыхания.',
-          gives: 'Подтянутый бок талии, аккуратный силуэт.',
-          tips: 'Тянись макушкой вверх, раскрывай грудную клетку.' },
+          technique: 'Упор на предплечье, тело в линию. Не провисай бедром.',
+          mistakes: 'Перекос корпуса.', gives: 'Подтянутый бок талии.', tips: 'Тянись макушкой вверх.' },
         { name: 'Бабочка (растяжка)', reps: '2 минуты',
-          technique: 'Сидя, стопы вместе, колени в стороны. Мягко опускай колени к полу, спина прямая. Дыши глубоко, на выдохе расслабляйся глубже.',
-          mistakes: 'Круглая спина, давление через боль, рывки.',
-          gives: 'Гибкость бёдер, мягкая плавная походка, женственная пластика.',
-          tips: 'Растяжка — это про дыхание, а не про силу.' }
+          technique: 'Сидя, стопы вместе, колени в стороны. На выдохе расслабляйся глубже.',
+          mistakes: 'Круглая спина, рывки.', gives: 'Гибкость бёдер, мягкая походка.', tips: 'Растяжка — про дыхание.' }
+    ]
+};
+
+// ============ УХОД (с таймерами) ============
+const CARE_DB = {
+    morning: [
+        { name: '🦷 Чистка зубов', time: 120,
+          how: 'Щётка под 45° к дёснам. Выметающие движения: от дёсен к краю зуба. Все поверхности: внешняя, внутренняя, жевательная. В конце — почисти язык.',
+          tips: 'Не дави сильно. Щётка — мягкая или средняя, меняй каждые 3 месяца.',
+          gives: 'Красивая улыбка и свежее дыхание — часть ухоженности.' },
+        { name: '👅 Чистка языка', time: 30,
+          how: 'Скребок или обратная сторона щётки: мягко проведи от корня языка к кончику 3-5 раз.',
+          tips: 'Без сильного давления, не до рвотного рефлекса.',
+          gives: 'Свежее дыхание на весь день.' },
+        { name: '💦 Умывание', time: 60,
+          how: 'Пенка/гель по типу кожи. Тёплая (НЕ горячая) вода. Массируй по линиям: лоб → виски, нос → уши, подбородок → уши. Промокни полотенцем.',
+          tips: 'Горячая вода сушит и провоцирует жирность. Полотенце для лица — отдельное.',
+          gives: 'Чистая сияющая кожа.' },
+        { name: '🌸 Тоник', time: 30,
+          how: 'Нанеси тоник ватным диском или ладонями по массажным линиям, лёгкими движениями.',
+          tips: 'Без спирта в составе.',
+          gives: 'Восстанавливает pH, готовит кожу к крему.' },
+        { name: '🧴 Крем + SPF', time: 60,
+          how: 'Горошина крема: точка на лоб, щёки, нос, подбородок. Распредели лёгкими вбивающими движениями. Если выходишь днём — SPF сверху или в составе.',
+          tips: 'SPF — главная профилактика старения, даже зимой.',
+          gives: 'Увлажнение и молодость кожи.' },
+        { name: '💇 Причёсывание', time: 90,
+          how: 'Расчёсывай с кончиков, поднимаясь вверх. Затем укладка: лёгкая волна, хвост или аккуратные прямые.',
+          tips: 'Не дёргай колтуны — разбери пальцами или гребнем.',
+          gives: 'Ухоженный вид на весь день.' }
+    ],
+    evening: [
+        { name: '🧼 Демакияж и очищение', time: 120,
+          how: 'Если был макияж/SPF: мицеллярная вода или гидрофильное масло, затем пенка. Глаза не три — приложи диск на 10 секунд и мягко сними.',
+          tips: 'Двойное очищение вечером = чистые поры.',
+          gives: 'Кожа дышит и восстанавливается ночью.' },
+        { name: '🦷 Зубы + нить', time: 120,
+          how: 'Чистка как утром + зубная нить между всеми зубами: нить вдоль зуба, движение вверх-вниз.',
+          tips: 'Нить ДО щётки — так фтор из пасты попадёт между зубами.',
+          gives: 'Здоровые зубы и десны.' },
+        { name: '🚿 Контрастный душ', time: 180,
+          how: 'В конце душа: 30 сек тёплая вода, 30 сек прохладная, 3 круга. Направляй снизу вверх (ноги → бёдра → ягодицы). Закончи прохладной.',
+          tips: 'Не ледяная вода сразу — приучай постепенно. Не при проблемах с сердцем.',
+          gives: 'Тонус кожи, упругость, лёгкость в ногах.' },
+        { name: '🧴 Крем для тела', time: 120,
+          how: 'На ВЛАЖНУЮ кожу после душа: массируй снизу вверх. Особое внимание: ноги, ягодицы, живот, декольте, руки.',
+          tips: 'Массажные движения — ещё и профилактика целлюлита.',
+          gives: 'Шелковистая ухоженная кожа.' },
+        { name: '🌙 Вечерний уход за лицом', time: 90,
+          how: 'Тоник + ночной крем (или актив по плану: ретинол/кислоты по схеме). Лёгкие вбивающие движения.',
+          tips: 'Ночной крем за 30-60 минут до сна, не на подушку.',
+          gives: 'Кожа восстанавливается именно ночью.' },
+        { name: '💆 Массаж лица', time: 120,
+          how: 'Подушечками пальцев по линиям: центр лба → виски, крылья носа → уши, подбородок → уши. 10 лёгких движений на зону. Закончи лёгким постукиванием.',
+          tips: 'Только по массажным линиям, без растяжения кожи. Можно с маслом.',
+          gives: 'Чёткий овал, сияние, меньше отёков по утрам.' }
     ]
 };
 
 // ============ ПЛАН ДНЯ ============
+function isWorkToday() {
+    if (data.settings.working !== 'yes') return false;
+    return data.settings.workDays.includes(new Date().getDay());
+}
+
 function getDailyTasks() {
     const p = data.percent;
+    const work = isWorkToday();
+
+    if (work) {
+        return [
+            { id: 't_wake', time: '06:00', icon: '🌅', title: 'Подъём и аффирмации', percent: 0.003,
+              desc: 'Вода, 3 аффирмации вслух, улыбка в зеркало.',
+              details: ['Стакан тёплой воды натощак', '3 аффирмации вслух: «Я красивая», «Я женственная», «Я на правильном пути»', 'Улыбнись себе в зеркало'] },
+            { id: 't_careM', time: '06:15', icon: '🪥', title: 'Утренний уход', percent: 0.005,
+              desc: 'Провались внутрь: зубы, умывание, крем — с таймерами.', care: 'morning' },
+            { id: 't_mwork', time: '06:45', icon: '💪', title: 'Утренняя тренировка (короткая)', percent: 0.007,
+              desc: '4 упражнения перед рабочим днём.', workout: 'morningWork' },
+            { id: 't_ready', time: '07:30', icon: '👗', title: 'Сборы', percent: 0.003,
+              desc: 'Аккуратный женственный образ.',
+              details: p >= 25 ? ['Бритьё по графику', 'Женское бельё', 'Лёгкий макияж', 'Аккуратная причёска'] : ['Женское бельё', 'Аккуратная причёска', 'Чистая выглаженная одежда', 'Проверь осанку в зеркале'] },
+            { id: 't_breakfast', time: '08:00', icon: '🍳', title: 'Завтрак', percent: 0.003,
+              desc: 'Белок + сложные углеводы. Ешь медленно, без телефона.',
+              details: ['Стакан воды за 15 мин до еды', 'Белок + сложные углеводы + жиры (яйца, творог, овсянка с орехами)', 'Ешь медленно, маленькими кусочками', 'Без телефона и экрана'] },
+            { id: 't_day', time: '12:00', icon: '☀️', title: 'Дневной контроль', percent: 0.003,
+              desc: 'Осанка, походка, манеры, мимика.',
+              details: ['Спина прямая, плечи расправлены', 'Мелкие плавные шаги', 'Мягкие жесты', 'Помни про бельё', 'Мягкая улыбка, расслабленная челюсть'] },
+            { id: 't_lunch', time: '13:00', icon: '🥗', title: 'Обед осознанно', percent: 0.003,
+              desc: 'Правило тарелки: ½ овощи, ¼ белок, ¼ гарнир.',
+              details: ['Половина тарелки — овощи', 'Четверть — белок (рыба, курица, тофу)', 'Четверть — сложные углеводы (гречка, рис)', 'Жуй медленно, встань с лёгким чувством голода'] },
+            { id: 't_ework', time: '19:00', icon: '🏋️‍♀️', title: 'Вечерняя тренировка', percent: 0.007,
+              desc: '4 упражнения: ягодицы, талия, гибкость.', workout: 'evening' },
+            { id: 't_wear', time: '20:00', icon: '👙', title: 'Бельё и такинг', percent: 0.004,
+              desc: p >= 50 ? 'Колготки + бельё 1-2 часа, такинг.' : 'Женское бельё 1-2 часа дома.',
+              details: p >= 50 ? ['Колготки и бельё', 'Такинг 1-2 часа', 'Домашние дела в образе'] : ['Надеть женское бельё', 'Носить 1-2 часа', 'Прислушаться к ощущениям'] },
+            { id: 't_careE', time: '20:45', icon: '🌙', title: 'Вечерний уход', percent: 0.005,
+              desc: 'Провались внутрь: очищение, душ, крем, массаж — с таймерами.', care: 'evening' },
+            { id: 't_voice', time: '21:15', icon: '🎙️', title: 'Практика голоса', percent: 0.005,
+              desc: '15-20 минут: расслабление, дыхание, мычание, чтение, запись.', voice: true },
+            { id: 't_mirror', time: '21:40', icon: '🪞', title: 'Зеркальная практика', percent: 0.002,
+              desc: '2 минуты комплиментов себе перед зеркалом.', timed: true, timeSec: 120,
+              how: 'Встань перед зеркалом. Посмотри себе в глаза, улыбнись. Скажи вслух 5 комплиментов себе. Следи за осанкой и мимикой — расслабь лоб и челюсть.',
+              tips: 'Первые разы непривычно — это нормально. Продолжай, эффект накопительный.',
+              gives: 'Принятие себя, сияющий взгляд, расслабленное женственное лицо.' },
+            { id: 't_report', time: '22:00', icon: '📝', title: 'Вечерний отчёт', percent: 0.002,
+              desc: 'Блокнот, настроение, отбой до 22:00.', report: true }
+        ];
+    }
+
+    // СВОБОДНЫЙ ДЕНЬ — расширенный план
     return [
-        { id: 't_wake', time: '06:00', icon: '🌅', title: 'Подъём и утренний уход', percent: 0.02,
-          desc: 'Стакан воды, умывание, крем, женское бельё — начни день с себя.',
-          details: ['Стакан тёплой воды натощак', 'Умывание + тоник + крем', 'Надеть женское бельё', 'Лёгкая улыбка в зеркало — ты начинаешь свой день'] },
-        { id: 't_mwork', time: '06:30', icon: '💪', title: 'Утренняя тренировка', percent: 0.03,
-          desc: '5 упражнений на женственный силуэт. Провались внутрь и отмечай каждое.',
-          workout: 'morning' },
-        { id: 't_ready', time: '07:15', icon: '👗', title: 'Сборы', percent: 0.015,
-          desc: 'Аккуратный женственный образ на весь день.',
-          details: p >= 25 ? ['Бритьё по графику', 'Женское бельё', 'Лёгкий макияж', 'Аккуратная причёска'] : ['Женское бельё', 'Аккуратная причёска', 'Чистая выглаженная одежда'] },
-        { id: 't_day', time: '12:00', icon: '☀️', title: 'Дневной контроль', percent: 0.01,
-          desc: 'Осанка, походка и манеры в течение дня.',
-          details: ['Спина прямая, плечи расправлены', 'Мелкие плавные шаги', 'Мягкие жесты, без резкости', 'Помни, что надето под одеждой'] },
-        { id: 't_ework', time: '19:00', icon: '🏋️‍♀️', title: 'Вечерняя тренировка', percent: 0.03,
-          desc: '4 упражнения: ягодицы, талия, гибкость. Отмечай каждое отдельно.',
-          workout: 'evening' },
-        { id: 't_wear', time: '20:00', icon: '👙', title: 'Бельё и такинг', percent: 0.02,
-          desc: p >= 50 ? 'Колготки + бельё 1-2 часа, практика такинга.' : 'Ношение женского белья 1-2 часа дома.',
-          details: p >= 50 ? ['Надеть колготки и бельё', 'Такинг 1-2 часа', 'Домашние дела в этом образе'] : ['Надеть женское бельё', 'Носить 1-2 часа', 'Прислушаться к ощущениям'] },
-        { id: 't_care', time: '20:45', icon: '🌙', title: 'Вечерний уход', percent: 0.015,
-          desc: 'Ритуал красоты перед сном.',
-          details: ['Душ + уход за телом', 'Очищение кожи лица', 'Увлажнение', 'Маска — по графику трекеров'] },
-        { id: 't_voice', time: '21:15', icon: '🎙️', title: 'Практика голоса', percent: 0.02,
-          desc: 'Подробная тренировка мягкого женственного голоса.', voice: true },
-        { id: 't_report', time: '22:00', icon: '📝', title: 'Вечерний отчёт', percent: 0.01,
-          desc: 'Блокнот: запиши итоги дня и ложись до 22:00.', report: true }
+        { id: 't_wake', time: '06:00', icon: '🌅', title: 'Подъём и аффирмации', percent: 0.003,
+          desc: 'Вода, 3 аффирмации вслух, улыбка в зеркало.',
+          details: ['Стакан тёплой воды натощак', '3 аффирмации вслух: «Я красивая», «Я женственная», «Я на правильном пути»', 'Улыбнись себе в зеркало', 'Открой окно — 5 минут свежего воздуха'] },
+        { id: 't_careM', time: '06:15', icon: '🪥', title: 'Утренний уход', percent: 0.005,
+          desc: 'Провались внутрь: зубы, умывание, крем — с таймерами.', care: 'morning' },
+        { id: 't_mwork', time: '07:00', icon: '💪', title: 'Утренняя тренировка + бег', percent: 0.007,
+          desc: 'Бег 10 минут и 5 упражнений.', workout: 'morning' },
+        { id: 't_breakfast', time: '07:45', icon: '🍳', title: 'Завтрак', percent: 0.003,
+          desc: 'Белок + сложные углеводы. Ешь медленно, без телефона.',
+          details: ['Стакан воды за 15 мин до еды', 'Белок + сложные углеводы + жиры (яйца, творог, овсянка с орехами)', 'Ешь медленно, маленькими кусочками', 'Без телефона и экрана', 'Красиво сервируй — даже для себя'] },
+        { id: 't_clean', time: '08:30', icon: '🧺', title: 'Уборка и уют', percent: 0.003,
+          desc: '20 минут женственного домашнего ритуала.',
+          details: ['Заправь постель', 'Помой посуду, протри пыль', 'Разложи вещи по местам', 'Включи приятную музыку', 'Двигайся плавно и аккуратно'] },
+        { id: 't_hobby', time: '09:30', icon: '🎨', title: 'Хобби и саморазвитие', percent: 0.003,
+          desc: '1 час на развитие: учёба, творчество, женские хобби.',
+          details: ['Курсы, учёба, творчество', 'Или женские хобби: готовка, вышивка, рисование', 'Без соцсетей и прокрастинации', 'Запиши 1 инсайт'] },
+        { id: 't_walk', time: '10:30', icon: '🚶‍♀️', title: 'Прогулка', percent: 0.004,
+          desc: '30-60 минут: практика походки на улице.',
+          details: ['Спина прямая, взгляд на горизонт (не в телефон)', 'Мелкие плавные шаги, движение от бедра', 'Дыши носом, ритмично', 'Наслаждайся видом — это медитация в движении'] },
+        { id: 't_lunch', time: '12:00', icon: '🥗', title: 'Обед осознанно', percent: 0.003,
+          desc: 'Правило тарелки: ½ овощи, ¼ белок, ¼ гарнир.',
+          details: ['Половина тарелки — овощи', 'Четверть — белок', 'Четверть — сложные углеводы', 'Жуй медленно, встань с лёгким чувством голода'] },
+        { id: 't_rest', time: '13:00', icon: '😴', title: 'Час отдыха', percent: 0.002,
+          desc: '20-30 минут сна или тишины без телефона.',
+          details: ['Лёгкий сон 20-30 минут ИЛИ просто полежи с закрытыми глазами', 'Без телефона', 'Красота вечера начинается с отдыха днём'] },
+        { id: 't_beauty', time: '14:00', icon: '✨', title: 'Бьюти-час', percent: 0.003,
+          desc: 'Маска, ногти или волосы — по графику трекеров.',
+          details: ['Проверь трекеры в разделе «Тело»', 'Маска / ногти / волосы — что подошло по сроку', 'Или разбери гардероб, составь образы на неделю'] },
+        { id: 't_snack', time: '15:30', icon: '🍎', title: 'Перекус', percent: 0.002,
+          desc: 'Фрукт, горсть орехов или йогурт. Без сахара.',
+          details: ['Выбери: фрукт, горсть орехов, йогурт, овощные палочки', 'Запей водой или травяным чаем', 'Избегай сахара и выпечки — они дают отёки и высыпания'] },
+        { id: 't_ework', time: '17:00', icon: '🏋️‍♀️', title: 'Вечерняя тренировка', percent: 0.007,
+          desc: '4 упражнения: ягодицы, талия, гибкость.', workout: 'evening' },
+        { id: 't_dinner', time: '18:30', icon: '🍽️', title: 'Лёгкий ужин', percent: 0.003,
+          desc: 'Белок + овощи, за 3 часа до сна.',
+          details: ['Белок + овощи (рыба, курица, тофу, салат)', 'Маленькая порция', 'За 3 часа до сна', 'Красивая тарелка и спокойная обстановка'] },
+        { id: 't_wear', time: '19:30', icon: '👙', title: 'Бельё и такинг', percent: 0.004,
+          desc: p >= 50 ? 'Колготки + бельё 1-2 часа, такинг.' : 'Женское бельё 1-2 часа дома.',
+          details: p >= 50 ? ['Колготки и бельё', 'Такинг 1-2 часа', 'Домашние дела в образе'] : ['Надеть женское бельё', 'Носить 1-2 часа', 'Прислушаться к ощущениям'] },
+        { id: 't_careE', time: '20:15', icon: '🌙', title: 'Вечерний уход', percent: 0.005,
+          desc: 'Провались внутрь: очищение, душ, крем, массаж — с таймерами.', care: 'evening' },
+        { id: 't_voice', time: '21:00', icon: '🎙️', title: 'Практика голоса', percent: 0.005,
+          desc: '15-20 минут: расслабление, дыхание, мычание, чтение, запись.', voice: true },
+        { id: 't_mirror', time: '21:25', icon: '🪞', title: 'Зеркальная практика', percent: 0.002,
+          desc: '2 минуты комплиментов себе перед зеркалом.', timed: true, timeSec: 120,
+          how: 'Встань перед зеркалом. Посмотри себе в глаза, улыбнись. Скажи вслух 5 комплиментов себе. Следи за осанкой и мимикой — расслабь лоб и челюсть.',
+          tips: 'Первые разы непривычно — это нормально. Продолжай, эффект накопительный.',
+          gives: 'Принятие себя, сияющий взгляд, расслабленное женственное лицо.' },
+        { id: 't_read', time: '21:40', icon: '📚', title: 'Чтение', percent: 0.002,
+          desc: '15 минут чтения перед сном вместо телефона.',
+          details: ['Женская литература, психология, саморазвитие', 'Бумажная книга или электронная (не соцсети!)', 'Запиши 1 мысль дня'] },
+        { id: 't_report', time: '22:00', icon: '📝', title: 'Вечерний отчёт', percent: 0.002,
+          desc: 'Блокнот, настроение, отбой до 22:00.', report: true }
     ];
 }
 
 // ============ ХРАНИЛИЩЕ ============
 function loadData() {
-    const saved = localStorage.getItem('fempath_data');
+    const saved = localStorage.getItem('femibloom_data');
     return saved ? { ...defaultData, ...JSON.parse(saved) } : { ...defaultData };
 }
-function saveData() { localStorage.setItem('fempath_data', JSON.stringify(data)); }
+function saveData() { localStorage.setItem('femibloom_data', JSON.stringify(data)); }
 function todayKey() { return new Date().toDateString(); }
 function formatDate(d) { return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); }
+function fmtTime(s) { return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
 
-// ============ UI ============
+// ============ ТАЙМЕР ============
+let timerState = { int: null, remaining: 0 };
+function stopTimer() { if (timerState.int) { clearInterval(timerState.int); timerState.int = null; } }
+function startTimerUI(seconds, doneFn) {
+    stopTimer();
+    timerState.remaining = seconds;
+    const el = document.getElementById('timerDisplay');
+    if (el) el.textContent = fmtTime(timerState.remaining);
+    const btn = document.getElementById('timerStartBtn');
+    if (btn) btn.style.display = 'none';
+    timerState.int = setInterval(() => {
+        timerState.remaining--;
+        const el2 = document.getElementById('timerDisplay');
+        if (el2) el2.textContent = fmtTime(Math.max(0, timerState.remaining));
+        if (timerState.remaining <= 0) { stopTimer(); doneFn(); }
+    }, 1000);
+}
+
 function updateUI() {
     const pct = data.percent.toFixed(2);
     document.getElementById('percentText').textContent = pct + '%';
@@ -402,45 +641,74 @@ function updateUI() {
     ];
     document.getElementById('dailyTip').textContent = tips[new Date().getDate() % tips.length];
 
+    // Профиль
+    document.getElementById('working').value = data.settings.working;
     document.getElementById('workStart').value = data.settings.workStart;
     document.getElementById('workEnd').value = data.settings.workEnd;
     document.getElementById('strictness').value = data.settings.strictness;
     document.getElementById('genderAddress').value = data.settings.genderAddress;
+    document.getElementById('workDaysRow').style.display = data.settings.working === 'yes' ? 'flex' : 'none';
+    document.getElementById('workHoursRows').style.display = data.settings.working === 'yes' ? 'block' : 'none';
+    renderWorkDays();
 
+    // Калькулятор
+    document.getElementById('calcAge').value = data.calc.age;
+    document.getElementById('calcHeight').value = data.calc.height;
+    document.getElementById('calcWeight').value = data.calc.weight;
+    document.getElementById('calcActivity').value = data.calc.activity;
+    document.getElementById('calcGoal').value = data.calc.goal;
+    if (data.calc.result) document.getElementById('calcResult').innerHTML = data.calc.result;
+
+    checkAchievements();
+    renderWater();
     renderPhotos();
     renderTasks();
     renderTrackers();
     renderOperations();
 }
 
-// ============ ФОТО (2 слота) ============
+// ============ ВОДА ============
+function renderWater() {
+    const today = new Date().toISOString().split('T')[0];
+    if (data.water.date !== today) data.water = { date: today, count: 0 };
+    const c = data.water.count;
+    const drops = '💧'.repeat(Math.min(c, 8)) + '·'.repeat(Math.max(0, 8 - c));
+    document.getElementById('waterCard').innerHTML = `
+        <div class="water-row">
+            <div>
+                <div class="card-title">💧 Вода сегодня</div>
+                <div class="water-drops">${drops}</div>
+            </div>
+            <div style="text-align:right">
+                <div class="stat-value" style="font-size:20px">${c}/8</div>
+                <button class="btn btn-pink btn-sm" onclick="addWater()">+ стакан</button>
+            </div>
+        </div>`;
+}
+function addWater() {
+    if (data.water.count < 8) { data.water.count++; saveData(); renderWater(); if (data.water.count === 8) showToast('💧 Норма воды выполнена!'); }
+    else showToast('💧 Норма уже выполнена!');
+}
+
+// ============ ФОТО ============
 function renderPhotos() {
     const grid = document.getElementById('photoGrid');
     const status = document.getElementById('photoStatus');
     const btn = document.getElementById('photoBtn');
-
     grid.innerHTML = `
-        <div class="photo-item" onclick="viewPhoto('before')">
-            ${data.photoBefore ? `<img src="${data.photoBefore.data}"><div class="day-label">ДО · ${formatDate(data.photoBefore.date)}</div>` : '📷'}
-        </div>
-        <div class="photo-item" onclick="viewPhoto('week')">
-            ${data.photoWeek ? `<img src="${data.photoWeek.data}"><div class="day-label">Неделя · ${formatDate(data.photoWeek.date)}</div>` : '📷'}
-        </div>
-    `;
-
+        <div class="photo-item" onclick="viewPhoto('before')">${data.photoBefore ? `<img src="${data.photoBefore.data}"><div class="day-label">ДО · ${formatDate(data.photoBefore.date)}</div>` : '📷'}</div>
+        <div class="photo-item" onclick="viewPhoto('week')">${data.photoWeek ? `<img src="${data.photoWeek.data}"><div class="day-label">Неделя · ${formatDate(data.photoWeek.date)}</div>` : '📷'}</div>`;
     if (!data.photoBefore) {
         photoMode = 'before';
-        status.innerHTML = '<div class="photo-warning">📸 Сделай первое фото «ДО» — оно останется навсегда как точка отсчёта.</div>';
-        btn.textContent = '📷 Сделать фото «ДО»';
-        btn.style.display = 'block';
+        status.innerHTML = '<div class="photo-warning">📸 Сделай первое фото «ДО» — оно останется навсегда.</div>';
+        btn.textContent = '📷 Сделать фото «ДО»'; btn.style.display = 'block';
     } else {
         const base = data.photoWeek ? data.photoWeek.date : data.photoBefore.date;
         const days = Math.floor((Date.now() - new Date(base)) / 86400000);
         if (days >= 7) {
             photoMode = 'week';
-            status.innerHTML = `<div class="photo-warning">⚠️ Прошло ${days} дней. Обнови недельное фото, чтобы открыть разделы!</div>`;
-            btn.textContent = '📷 Обновить недельное фото';
-            btn.style.display = 'block';
+            status.innerHTML = `<div class="photo-warning">⚠️ Прошло ${days} дней. Обнови недельное фото!</div>`;
+            btn.textContent = '📷 Обновить недельное фото'; btn.style.display = 'block';
         } else {
             photoMode = null;
             status.innerHTML = `<div class="card-text" style="margin-top:10px;color:var(--green)">✓ Следующее недельное фото через ${7 - days} дн.</div>`;
@@ -448,9 +716,7 @@ function renderPhotos() {
         }
     }
 }
-
 function takePhoto() { if (photoMode) document.getElementById('photoInput').click(); }
-
 function addPhoto(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -460,21 +726,17 @@ function addPhoto(event) {
         img.onload = () => {
             const canvas = document.createElement('canvas');
             const scale = Math.min(1, 480 / img.width);
-            canvas.width = img.width * scale;
-            canvas.height = img.height * scale;
+            canvas.width = img.width * scale; canvas.height = img.height * scale;
             canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
             const shot = { date: new Date().toISOString(), data: canvas.toDataURL('image/jpeg', 0.7) };
-            if (photoMode === 'before') data.photoBefore = shot;
-            else data.photoWeek = shot;
-            saveData(); updateUI();
-            showToast('✓ Фото сохранено');
+            if (photoMode === 'before') data.photoBefore = shot; else data.photoWeek = shot;
+            saveData(); updateUI(); showToast('✓ Фото сохранено');
         };
         img.src = e.target.result;
     };
     reader.readAsDataURL(file);
     event.target.value = '';
 }
-
 function viewPhoto(mode) {
     const ph = mode === 'before' ? data.photoBefore : data.photoWeek;
     if (!ph) { showToast('Фото ещё не сделано'); return; }
@@ -484,12 +746,11 @@ function viewPhoto(mode) {
     document.getElementById('modalButtons').innerHTML = '<button class="btn btn-pink" onclick="closeModal()">Закрыть</button>';
     document.getElementById('modal').classList.add('active');
 }
-
 function canAccess() {
     if (!data.photoBefore) return { ok: false, msg: 'Сделай первое фото «ДО» на главной!' };
     const base = data.photoWeek ? data.photoWeek.date : data.photoBefore.date;
     const days = Math.floor((Date.now() - new Date(base)) / 86400000);
-    if (days >= 7) return { ok: false, msg: `Прошло ${days} дней — обнови недельное фото на главной!` };
+    if (days >= 7) return { ok: false, msg: `Прошло ${days} дней — обнови недельное фото!` };
     return { ok: true };
 }
 
@@ -513,46 +774,47 @@ function switchSection(id, btn) {
 }
 
 // ============ ЗАДАНИЯ ============
-function workoutProgress(key) {
-    const list = EX_DB[key];
-    const done = list.filter((ex, i) => data.completedToday.includes(`ex_${key}_${i}`)).length;
+function listProgress(key, db) {
+    const list = db[key];
+    const done = list.filter((x, i) => data.completedToday.includes(`${key}_${i}`)).length;
     return { done, total: list.length };
 }
 
 function renderTasks() {
     if (data.lastActiveDate !== todayKey()) { data.completedToday = []; data.lastActiveDate = todayKey(); saveData(); }
+    const work = isWorkToday();
+    document.getElementById('dayModeBadge').innerHTML = work
+        ? '<span class="mode-badge mode-work">💼 Рабочий день — облегчённый план</span>'
+        : '<span class="mode-badge mode-free">🌸 Свободный день — полный план</span>';
+
     const tasks = getDailyTasks();
     const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
     let nowMarked = false;
 
     document.getElementById('tasksTimeline').innerHTML = tasks.map(t => {
-        const isWorkout = !!t.workout;
         let done = data.completedToday.includes(t.id);
         let metaRight = '';
-
-        if (isWorkout) {
-            const pr = workoutProgress(t.workout);
+        if (t.workout) {
+            const pr = listProgress(t.workout, EX_DB);
             done = pr.done === pr.total;
-            metaRight = done ? '<span class="task-status">✓ Выполнено</span>' : `<span style="color:var(--pink);font-weight:600">${pr.done}/${pr.total} упражнений</span>`;
+            metaRight = done ? '<span class="task-status">✓ Выполнено</span>' : `<span style="color:var(--pink);font-weight:600">${pr.done}/${pr.total} упр.</span>`;
+        } else if (t.care) {
+            const pr = listProgress(t.care, CARE_DB);
+            done = pr.done === pr.total;
+            metaRight = done ? '<span class="task-status">✓ Выполнено</span>' : `<span style="color:var(--pink);font-weight:600">${pr.done}/${pr.total} шагов</span>`;
         } else {
             metaRight = done ? '<span class="task-status">✓ Выполнено</span>' : '<span style="color:var(--pink);font-size:12px">Нажми →</span>';
         }
-
         const [h, m] = t.time.split(':').map(Number);
-        const tMin = h * 60 + m;
         let nowBadge = '';
-        if (!done && !nowMarked && tMin <= nowMin) { nowMarked = true; nowBadge = '<span class="now-badge">⏰ сейчас</span>'; }
-
+        if (!done && !nowMarked && h * 60 + m <= nowMin) { nowMarked = true; nowBadge = '<span class="now-badge">⏰ сейчас</span>'; }
         return `
         <div class="timeline-item">
             <div class="time-badge">${t.time}</div>
             <div class="task-card ${done ? 'done' : ''} ${nowBadge ? 'now' : ''}" onclick="openTask('${t.id}')">
                 <div class="task-title">${t.icon} ${t.title}</div>
                 <div class="task-desc">${t.desc}</div>
-                <div class="task-meta">
-                    <span class="task-percent">+${t.percent.toFixed(3)}%</span>
-                    ${nowBadge || metaRight}
-                </div>
+                <div class="task-meta"><span class="task-percent">+${t.percent.toFixed(3)}%</span>${nowBadge || metaRight}</div>
             </div>
         </div>`;
     }).join('');
@@ -561,7 +823,8 @@ function renderTasks() {
 function getTodayTask() {
     const tasks = getDailyTasks();
     const next = tasks.find(t => {
-        if (t.workout) { const pr = workoutProgress(t.workout); return pr.done < pr.total; }
+        if (t.workout) return listProgress(t.workout, EX_DB).done < listProgress(t.workout, EX_DB).total;
+        if (t.care) return listProgress(t.care, CARE_DB).done < listProgress(t.care, CARE_DB).total;
         return !data.completedToday.includes(t.id);
     });
     if (!next) { showToast('✨ Все задания на сегодня выполнены!'); return; }
@@ -570,10 +833,11 @@ function getTodayTask() {
 
 function openTask(id) {
     const t = getDailyTasks().find(x => x.id === id);
-
     if (t.workout) { openWorkout(t); return; }
+    if (t.care) { openCare(t); return; }
     if (t.voice) { openVoice(t); return; }
     if (t.report) { openReport(t); return; }
+    if (t.timed) { openTimedTask(t); return; }
 
     const done = data.completedToday.includes(t.id);
     document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
@@ -591,37 +855,28 @@ function openTask(id) {
     document.getElementById('modal').classList.add('active');
 }
 
-// --- ТРЕНИРОВКА: список упражнений ---
+// --- ТРЕНИРОВКИ ---
 function openWorkout(t) {
     const list = EX_DB[t.workout];
-    const pr = workoutProgress(t.workout);
-    const allDone = pr.done === pr.total;
-
+    const pr = listProgress(t.workout, EX_DB);
     document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
     document.getElementById('modalText').innerHTML = `
         <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
-            <strong style="color:var(--pink)">${t.time}</strong> · <strong style="color:var(--pink)">+${t.percent.toFixed(3)}%</strong> · выполнено ${pr.done}/${pr.total}
+            <strong style="color:var(--pink)">${t.time}</strong> · <strong style="color:var(--pink)">+${t.percent.toFixed(3)}%</strong> · ${pr.done}/${pr.total}
         </div>
-        <p>Нажми «Подробнее» — там техника, ошибки и что даёт упражнение. Отмечай каждое. Когда все будут отмечены — тренировка засчитается автоматически.</p>`;
-
+        <p>«Подробнее» — техника, ошибки, что даёт. Отмечай каждое или запускай таймер. Все отмечены = тренировка засчитана.</p>`;
     document.getElementById('modalExtra').innerHTML = list.map((ex, i) => {
-        const done = data.completedToday.includes(`ex_${t.workout}_${i}`);
+        const done = data.completedToday.includes(`${t.workout}_${i}`);
         return `
         <div class="ex-row">
-            <div class="ex-top">
-                <div class="ex-name ${done ? 'done' : ''}">${done ? '✓' : '○'} ${ex.name}</div>
-                <div class="ex-reps">${ex.reps}</div>
-            </div>
+            <div class="ex-top"><div class="ex-name ${done ? 'done' : ''}">${done ? '✓' : '○'} ${ex.name}</div><div class="ex-reps">${ex.reps}</div></div>
             <div class="ex-actions">
                 <button class="btn btn-sec btn-sm" onclick="openExercise('${t.workout}',${i})">Подробнее</button>
-                ${done
-                    ? '<button class="btn btn-green btn-sm" disabled>✓ Готово</button>'
-                    : `<button class="btn btn-pink btn-sm" onclick="completeExercise('${t}',${i},'${t.id}',${t.percent})">Отметить</button>`}
+                ${done ? '<button class="btn btn-green btn-sm" disabled>✓ Готово</button>' : `<button class="btn btn-pink btn-sm" onclick="completeExercise('${t.workout}',${i},'${t.id}',${t.percent})">Отметить</button>`}
             </div>
         </div>`;
     }).join('');
-
-    document.getElementById('modalButtons').innerHTML = allDone
+    document.getElementById('modalButtons').innerHTML = pr.done === pr.total
         ? '<button class="btn btn-green" onclick="closeModal()">✓ Тренировка засчитана</button>'
         : '<button class="btn btn-sec" onclick="closeModal()">Выйти</button>';
     document.getElementById('modal').classList.add('active');
@@ -629,41 +884,130 @@ function openWorkout(t) {
 
 function openExercise(key, i) {
     const ex = EX_DB[key][i];
-    const done = data.completedToday.includes(`ex_${key}_${i}`);
-    const task = key === 'morning' ? 't_mwork' : 't_ework';
-    const percent = key === 'morning' ? 0.03 : 0.03;
-
+    const done = data.completedToday.includes(`${key}_${i}`);
+    const task = getDailyTasks().find(t => t.workout === key);
     document.getElementById('modalTitle').textContent = `💪 ${ex.name}`;
     document.getElementById('modalText').innerHTML = `
-        <p><strong>🔢 Подходы:</strong> ${ex.reps}</p>
+        <p><strong>🔢 Объём:</strong> ${ex.reps}</p>
         <p style="margin-top:10px"><strong>📝 Техника:</strong></p><p>${ex.technique}</p>
         <p style="margin-top:10px"><strong>⚠️ Частые ошибки:</strong></p><p>${ex.mistakes}</p>
         <p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${ex.gives}</p>
         <p style="margin-top:10px"><strong>💡 Совет:</strong></p><p>${ex.tips}</p>`;
-    document.getElementById('modalExtra').innerHTML = '';
+    document.getElementById('modalExtra').innerHTML = ex.time && !done ? `
+        <div class="timer-display" id="timerDisplay">${fmtTime(ex.time)}</div>
+        <button class="btn btn-pink" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать выполнение</button>` : '';
+    if (ex.time && !done) {
+        window.startCurrentTimer = () => startTimerUI(ex.time, () => { completeExercise(key, i, task.id, task.percent); });
+    }
     document.getElementById('modalButtons').innerHTML = done
-        ? '<button class="btn btn-green" onclick="openWorkout(getDailyTasks().find(x=>x.id===\'' + task + '\'))">✓ Выполнено</button>'
-        : `<button class="btn btn-sec" onclick="openWorkout(getDailyTasks().find(x=>x.id==='${task}'))">← Назад</button>
-           <button class="btn btn-pink" onclick="completeExercise('${key}',${i},'${task}',${percent})">✓ Отметить</button>`;
+        ? `<button class="btn btn-green" onclick="openWorkout(getDailyTasks().find(x=>x.workout==='${key}'))">✓ Выполнено</button>`
+        : `<button class="btn btn-sec" onclick="openWorkout(getDailyTasks().find(x=>x.workout==='${key}'))">← Назад</button>
+           ${ex.time ? '' : `<button class="btn btn-pink" onclick="completeExercise('${key}',${i},'${task.id}',${task.percent})">✓ Отметить</button>`}`;
     document.getElementById('modal').classList.add('active');
 }
 
 function completeExercise(key, i, taskId, percent) {
-    const exId = `ex_${key}_${i}`;
+    const exId = `${key}_${i}`;
     if (!data.completedToday.includes(exId)) data.completedToday.push(exId);
-
-    const pr = workoutProgress(key);
+    const pr = listProgress(key, EX_DB);
     if (pr.done === pr.total && !data.completedToday.includes(taskId)) {
+        data.stats.workouts++;
         award(taskId, percent);
         showToast('🎉 Все упражнения отмечены — тренировка засчитана!');
     } else {
-        showToast(`✓ ${EX_DB[key][i].name} — отмечено (${pr.done}/${pr.total})`);
+        showToast(`✓ ${EX_DB[key][i].name} (${pr.done}/${pr.total})`);
     }
     saveData(); updateUI();
     openWorkout(getDailyTasks().find(x => x.id === taskId));
 }
 
-// --- ПРАКТИКА ГОЛОСА (подробно) ---
+// --- УХОД С ТАЙМЕРАМИ ---
+function openCare(t) {
+    const list = CARE_DB[t.care];
+    const pr = listProgress(t.care, CARE_DB);
+    document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
+    document.getElementById('modalText').innerHTML = `
+        <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
+            <strong style="color:var(--pink)">${t.time}</strong> · <strong style="color:var(--pink)">+${t.percent.toFixed(3)}%</strong> · ${pr.done}/${pr.total}
+        </div>
+        <p>Провались в каждый шаг: там техника и таймер. Все шаги = уход засчитан.</p>`;
+    document.getElementById('modalExtra').innerHTML = list.map((item, i) => {
+        const done = data.completedToday.includes(`${t.care}_${i}`);
+        return `
+        <div class="ex-row">
+            <div class="ex-top"><div class="ex-name ${done ? 'done' : ''}">${done ? '✓' : '○'} ${item.name}</div><div class="ex-reps">${fmtTime(item.time)}</div></div>
+            <div class="ex-actions">
+                <button class="btn btn-sec btn-sm" onclick="openCareItem('${t.care}',${i})">Подробнее</button>
+                ${done ? '<button class="btn btn-green btn-sm" disabled>✓ Готово</button>' : `<button class="btn btn-pink btn-sm" onclick="startCareFromList('${t.care}',${i})">▶ Начать</button>`}
+            </div>
+        </div>`;
+    }).join('');
+    document.getElementById('modalButtons').innerHTML = pr.done === pr.total
+        ? '<button class="btn btn-green" onclick="closeModal()">✓ Уход засчитан</button>'
+        : '<button class="btn btn-sec" onclick="closeModal()">Выйти</button>';
+    document.getElementById('modal').classList.add('active');
+}
+
+function openCareItem(key, i) {
+    const item = CARE_DB[key][i];
+    const done = data.completedToday.includes(`${key}_${i}`);
+    const task = getDailyTasks().find(t => t.care === key);
+    document.getElementById('modalTitle').textContent = item.name;
+    document.getElementById('modalText').innerHTML = `
+        <p><strong>⏱ Время:</strong> ${fmtTime(item.time)}</p>
+        <p style="margin-top:10px"><strong>📝 Как делать:</strong></p><p>${item.how}</p>
+        <p style="margin-top:10px"><strong>💡 Советы:</strong></p><p>${item.tips}</p>
+        <p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${item.gives}</p>`;
+    document.getElementById('modalExtra').innerHTML = !done ? `
+        <div class="timer-display" id="timerDisplay">${fmtTime(item.time)}</div>
+        <button class="btn btn-pink" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать выполнение</button>` : '';
+    if (!done) {
+        window.startCurrentTimer = () => startTimerUI(item.time, () => { completeCareItem(key, i, task.id, task.percent); });
+    }
+    document.getElementById('modalButtons').innerHTML = done
+        ? `<button class="btn btn-green" onclick="openCare(getDailyTasks().find(x=>x.care==='${key}'))">✓ Выполнено</button>`
+        : `<button class="btn btn-sec" onclick="openCare(getDailyTasks().find(x=>x.care==='${key}'))">← Назад</button>`;
+    document.getElementById('modal').classList.add('active');
+}
+
+function startCareFromList(key, i) { openCareItem(key, i); const item = CARE_DB[key][i]; const task = getDailyTasks().find(t => t.care === key); window.startCurrentTimer = () => startTimerUI(item.time, () => { completeCareItem(key, i, task.id, task.percent); }); }
+
+function completeCareItem(key, i, taskId, percent) {
+    const id = `${key}_${i}`;
+    if (!data.completedToday.includes(id)) data.completedToday.push(id);
+    const pr = listProgress(key, CARE_DB);
+    if (pr.done === pr.total && !data.completedToday.includes(taskId)) {
+        award(taskId, percent);
+        showToast(' Весь уход выполнен — засчитано!');
+    } else {
+        showToast(`✓ ${CARE_DB[key][i].name} готово (${pr.done}/${pr.total})`);
+    }
+    saveData(); updateUI();
+    openCare(getDailyTasks().find(x => x.id === taskId));
+}
+
+// --- ЗАДАНИЕ С ТАЙМЕРОМ (зеркало) ---
+function openTimedTask(t) {
+    const done = data.completedToday.includes(t.id);
+    document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
+    document.getElementById('modalText').innerHTML = `
+        <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
+            <strong style="color:var(--pink)">${t.time}</strong> · <strong style="color:var(--pink)">+${t.percent.toFixed(3)}%</strong>
+        </div>
+        <p><strong>📝 Как делать:</strong></p><p>${t.how}</p>
+        <p style="margin-top:10px"><strong>💡 Советы:</strong></p><p>${t.tips}</p>
+        <p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${t.gives}</p>`;
+    document.getElementById('modalExtra').innerHTML = !done ? `
+        <div class="timer-display" id="timerDisplay">${fmtTime(t.timeSec)}</div>
+        <button class="btn btn-pink" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать выполнение</button>` : '';
+    if (!done) window.startCurrentTimer = () => startTimerUI(t.timeSec, () => { completeTask(t.id, t.percent); });
+    document.getElementById('modalButtons').innerHTML = done
+        ? '<button class="btn btn-green" onclick="closeModal()">✓ Уже выполнено</button>'
+        : '<button class="btn btn-sec" onclick="closeModal()">Выйти</button>';
+    document.getElementById('modal').classList.add('active');
+}
+
+// --- ГОЛОС ---
 function openVoice(t) {
     const done = data.completedToday.includes(t.id);
     document.getElementById('modalTitle').textContent = `🎙️ ${t.title}`;
@@ -673,14 +1017,14 @@ function openVoice(t) {
         </div>
         <p><strong>План тренировки (15-20 минут):</strong></p>
         <ul>
-            <li><strong>1. Расслабление (2 мин).</strong> Помассируй шею и плечи, пожевай, позевай. Челюсть и горло должны быть свободны.</li>
-            <li><strong>2. Дыхание (3 мин).</strong> Дыши животом (диафрагмой). Вдох носом, длинный плавный выдох через рот на «фффф».</li>
-            <li><strong>3. Мычание (5 мин).</strong> Мурчи «мммм» на комфортной высокой ноте. Вибрация должна ощущаться в губах и лице, а НЕ в груди.</li>
-            <li><strong>4. Чтение вслух (5-10 мин).</strong> Читай любой текст мягко, с плавными интонациями, чуть выше обычного тона. Представляй, что говоришь ласково и спокойно.</li>
-            <li><strong>5. Запись (2 мин).</strong> Запиши себя на диктофон и послушай. Отмечай, что уже получается мягко.</li>
+            <li><strong>1. Расслабление (2 мин).</strong> Помассируй шею и плечи, пожевай, позевай. Челюсть и горло свободны.</li>
+            <li><strong>2. Дыхание (3 мин).</strong> Дыши животом. Вдох носом, длинный выдох на «фффф».</li>
+            <li><strong>3. Мычание (5 мин).</strong> Мурчи «мммм» на комфортной высокой ноте. Вибрация в губах и лице, НЕ в груди.</li>
+            <li><strong>4. Чтение вслух (5-10 мин).</strong> Читай мягко, с плавными интонациями, чуть выше обычного тона.</li>
+            <li><strong>5. Запись (2 мин).</strong> Запиши себя на диктофон и послушай прогресс.</li>
         </ul>
-        <p><strong>⚠️ Частые ошибки:</strong> говорить на связках (если горло болит или голос хрипит — СТОП), зажимать горло, торопиться, давить силой вместо лёгкости.</p>
-        <p><strong>🌸 Что даёт:</strong> мягкий высокий тембр, плавные женственные интонации, уверенность в речи. Голос меняется месяцами регулярной практики — это нормально.</p>`;
+        <p><strong>⚠️ Ошибки:</strong> говорить на связках (боль/хрипота = СТОП), зажимать горло, торопиться.</p>
+        <p><strong>🌸 Что даёт:</strong> мягкий высокий тембр, женственные интонации, уверенность в речи.</p>`;
     document.getElementById('modalExtra').innerHTML = '';
     document.getElementById('modalButtons').innerHTML = done
         ? '<button class="btn btn-green" onclick="closeModal()">✓ Уже выполнено</button>'
@@ -689,7 +1033,7 @@ function openVoice(t) {
     document.getElementById('modal').classList.add('active');
 }
 
-// --- ВЕЧЕРНИЙ ОТЧЁТ С БЛОКНОТОМ ---
+// --- ОТЧЁТ ---
 function openReport(t) {
     const done = data.completedToday.includes(t.id);
     const key = new Date().toISOString().split('T')[0];
@@ -698,23 +1042,28 @@ function openReport(t) {
         <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
             <strong style="color:var(--pink)">${t.time}</strong> · <strong style="color:var(--pink)">+${t.percent.toFixed(3)}%</strong>
         </div>
-        <p>Твой личный блокнот. Запиши, как прошёл день, что получилось, что чувствуешь. Записи сохраняются в приложении.</p>`;
-    document.getElementById('modalExtra').innerHTML = `
-        <textarea id="journalText" placeholder="Сегодня я... Мне понравилось... Завтра я...">${data.journal[key] || ''}</textarea>`;
+        <p><strong>Как ты себя чувствуешь сегодня?</strong></p>
+        <div class="mood-grid">
+            ${['😄','🙂','😐','😔','😢'].map(m => `<button class="mood-btn ${data.mood[key]===m?'selected':''}" onclick="setMood('${m}',this)">${m}</button>`).join('')}
+        </div>
+        <p>Твой личный блокнот. Запиши итоги дня.</p>`;
+    document.getElementById('modalExtra').innerHTML = `<textarea id="journalText" placeholder="Сегодня я... Мне понравилось... Завтра я...">${data.journal[key] || ''}</textarea>`;
     document.getElementById('modalButtons').innerHTML = `
         <button class="btn btn-sec" onclick="saveJournal()">💾 Сохранить</button>
-        ${done ? '<button class="btn btn-green" disabled>✓ Готово</button>'
-               : `<button class="btn btn-pink" onclick="finishReport('${t.id}',${t.percent})">✓ Завершить день</button>`}`;
+        ${done ? '<button class="btn btn-green" disabled>✓ Готово</button>' : `<button class="btn btn-pink" onclick="finishReport('${t.id}',${t.percent})">✓ Завершить день</button>`}`;
     document.getElementById('modal').classList.add('active');
 }
-
+function setMood(emoji, el) {
+    const key = new Date().toISOString().split('T')[0];
+    data.mood[key] = emoji; saveData();
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+}
 function saveJournal() {
     const key = new Date().toISOString().split('T')[0];
     data.journal[key] = document.getElementById('journalText').value;
-    saveData();
-    showToast('💾 Запись сохранена');
+    saveData(); showToast('💾 Запись сохранена');
 }
-
 function finishReport(id, percent) {
     saveJournal();
     if (!data.completedToday.includes(id)) award(id, percent);
@@ -722,22 +1071,19 @@ function finishReport(id, percent) {
     showToast('🌙 День завершён. Сладких снов!');
 }
 
-// ============ НАЧИСЛЕНИЕ ПРОЦЕНТОВ ============
+// ============ ПРОЦЕНТЫ ============
 function award(taskId, percent) {
     const mult = { soft: 0.8, normal: 1.0, strict: 1.2 }[data.settings.strictness];
     const lvlMult = data.percent < 25 ? 1.0 : data.percent < 50 ? 1.1 : data.percent < 75 ? 1.2 : 1.3;
     const final = percent * mult * lvlMult;
-
     data.percent = Math.min(100, data.percent + final);
     data.tasksDone++;
     if (!data.completedToday.includes(taskId)) data.completedToday.push(taskId);
-
     const today = todayKey();
     const yesterday = new Date(Date.now() - 86400000).toDateString();
     if (data.lastActiveDate === yesterday) data.streak++;
     else if (data.lastActiveDate !== today) data.streak = 1;
     data.lastActiveDate = today;
-
     const bonuses = { 7: 0.1, 30: 0.5, 90: 1.5, 180: 3.0, 365: 7.0 };
     for (const [days, bonus] of Object.entries(bonuses)) {
         if (data.streak === parseInt(days)) {
@@ -747,7 +1093,6 @@ function award(taskId, percent) {
     }
     showToast(`✨ +${final.toFixed(3)}% к прогрессу!`);
 }
-
 function completeTask(id, percent) {
     award(id, percent);
     saveData(); updateUI(); closeModal();
@@ -761,27 +1106,21 @@ function renderTrackers() {
         if (tr.lastDone) {
             const days = Math.floor((Date.now() - new Date(tr.lastDone)) / 86400000);
             daysLeft = tr.freq - days;
-            if (daysLeft > 0) { info = `Последнее: ${formatDate(tr.lastDone)} · следующее через ${daysLeft} дн.`; canDo = false; }
+            if (daysLeft > 0) { info = `Последнее: ${formatDate(tr.lastDone)} · через ${daysLeft} дн.`; canDo = false; }
             else info = `Последнее: ${formatDate(tr.lastDone)} · пора повторить!`;
         }
         return `
         <div class="tracker-card">
-            <div class="tracker-header">
-                <div class="tracker-name">${tr.name}</div>
-                <div class="tracker-freq">${tr.freqText}</div>
-            </div>
+            <div class="tracker-header"><div class="tracker-name">${tr.name}</div><div class="tracker-freq">${tr.freqText}</div></div>
             <div class="tracker-desc">${tr.shortDesc}</div>
             <div class="tracker-info">${info}</div>
             <div style="display:flex;gap:8px">
                 <button class="btn btn-sec btn-sm" style="flex:1" onclick="openTracker('${key}')">Подробнее</button>
-                ${canDo
-                    ? `<button class="btn btn-pink btn-sm" style="flex:1" onclick="markTracker('${key}')">✓ Отметить</button>`
-                    : `<button class="btn btn-sec btn-sm" style="flex:1;opacity:.5" disabled>Рано (${daysLeft} дн.)</button>`}
+                ${canDo ? `<button class="btn btn-pink btn-sm" style="flex:1" onclick="markTracker('${key}')">✓ Отметить</button>` : `<button class="btn btn-sec btn-sm" style="flex:1;opacity:.5" disabled>Рано (${daysLeft} дн.)</button>`}
             </div>
         </div>`;
     }).join('');
 }
-
 function openTracker(key) {
     const tr = data.trackers[key];
     document.getElementById('modalTitle').textContent = tr.name;
@@ -793,11 +1132,36 @@ function openTracker(key) {
     document.getElementById('modalButtons').innerHTML = '<button class="btn btn-pink" onclick="closeModal()">Понятно</button>';
     document.getElementById('modal').classList.add('active');
 }
-
 function markTracker(key) {
     data.trackers[key].lastDone = new Date().toISOString();
     saveData(); updateUI();
     showToast(`✓ ${data.trackers[key].name} отмечено`);
+}
+
+// ============ КАЛЬКУЛЯТОР КАЛОРИЙ ============
+function calcCalories() {
+    const age = parseInt(document.getElementById('calcAge').value);
+    const h = parseInt(document.getElementById('calcHeight').value);
+    const w = parseInt(document.getElementById('calcWeight').value);
+    const act = parseFloat(document.getElementById('calcActivity').value);
+    const goal = parseFloat(document.getElementById('calcGoal').value);
+    if (!age || !h || !w) { showToast('Заполни возраст, рост и вес'); return; }
+    const bmr = 10 * w + 6.25 * h - 5 * age - 161; // формула для женского тела
+    const tdee = bmr * act;
+    const target = Math.round(tdee * (1 + goal));
+    const protein = Math.round(w * 1.6);
+    const fat = Math.round((target * 0.3) / 9);
+    const carbs = Math.round((target - protein * 4 - fat * 9) / 4);
+    const result = `
+        <div class="calc-result">
+            <strong> Твоя норма: ${target} ккал/день</strong><br>
+            Белки: <strong>${protein} г</strong> · Жиры: <strong>${fat} г</strong> · Углеводы: <strong>${carbs} г</strong><br>
+            <span style="font-size:12px;color:var(--soft)">База (обмен): ${Math.round(bmr)} ккал · с активностью: ${Math.round(tdee)} ккал</span>
+        </div>`;
+    data.calc = { age, height: h, weight: w, activity: String(act), goal: String(goal), result };
+    saveData();
+    document.getElementById('calcResult').innerHTML = result;
+    showToast('✓ Расчёт готов');
 }
 
 // ============ ОПЕРАЦИИ ============
@@ -822,7 +1186,6 @@ function renderOperations() {
     document.getElementById('totalSaved').textContent = totalSaved.toLocaleString('ru-RU') + ' ₽';
     document.getElementById('totalCost').textContent = totalCost.toLocaleString('ru-RU') + ' ₽';
 }
-
 function addSavings(id) {
     const op = data.operations.find(o => o.id === id);
     document.getElementById('modalTitle').textContent = 'Добавить накопления';
@@ -834,7 +1197,6 @@ function addSavings(id) {
     document.getElementById('modal').classList.add('active');
     setTimeout(() => document.getElementById('savingsAmount').focus(), 100);
 }
-
 function saveSavings(id) {
     const amount = parseInt(document.getElementById('savingsAmount').value);
     if (!amount || amount <= 0) { showToast('Введите сумму'); return; }
@@ -844,7 +1206,6 @@ function saveSavings(id) {
     saveData(); updateUI(); closeModal();
     showToast(`✓ Добавлено ${amount.toLocaleString('ru-RU')} ₽`);
 }
-
 function changeStatus(id) {
     const op = data.operations.find(o => o.id === id);
     const s = ['not_started', 'saving', 'done'];
@@ -855,8 +1216,59 @@ function changeStatus(id) {
     showToast(`Статус: ${l[(i + 1) % 3]}`);
 }
 
+// ============ ДОСТИЖЕНИЯ ============
+function checkAchievements() {
+    const a = data.achievements;
+    const unlock = (key) => { if (!a[key].unlocked) { a[key].unlocked = true; setTimeout(() => showToast(`🏆 Достижение: ${a[key].name}!`), 800); } };
+    if (data.tasksDone >= 1) unlock('first_task');
+    if (data.streak >= 7) unlock('streak_7');
+    if (data.streak >= 30) unlock('streak_30');
+    if (data.streak >= 100) unlock('streak_100');
+    if (data.percent >= 25) unlock('percent_25');
+    if (data.percent >= 50) unlock('percent_50');
+    if (data.percent >= 75) unlock('percent_75');
+    if (data.photoBefore) unlock('photo_first');
+    if (data.stats.workouts >= 10) unlock('workout_10');
+    if (data.operations.some(op => op.saved > 0)) unlock('savings_first');
+}
+function showAchievements() {
+    document.getElementById('modalTitle').textContent = '🏆 Достижения';
+    document.getElementById('modalText').innerHTML = Object.values(data.achievements).map(ach => `
+        <div class="achievement ${ach.unlocked ? '' : 'locked'}">
+            <div class="ach-icon">${ach.unlocked ? ach.icon : '🔒'}</div>
+            <div class="ach-info"><div class="ach-name">${ach.name}</div><div class="ach-desc">${ach.desc}</div>${ach.unlocked ? '<div class="ach-progress">✓ Получено</div>' : ''}</div>
+        </div>`).join('');
+    document.getElementById('modalExtra').innerHTML = '';
+    document.getElementById('modalButtons').innerHTML = '<button class="btn btn-pink" onclick="closeModal()">Закрыть</button>';
+    document.getElementById('modal').classList.add('active');
+}
+
+function showArchive() {
+    document.getElementById('modalTitle').textContent = '📖 Архив блокнота';
+    const entries = Object.entries(data.journal).sort((a, b) => b[0].localeCompare(a[0]));
+    document.getElementById('modalText').innerHTML = entries.length === 0
+        ? '<p>Записей пока нет. Начни вести дневник в вечернем отчёте!</p>'
+        : entries.map(([date, text]) => `<div class="archive-item"><div class="archive-date">${formatDate(date)} ${data.mood[date] || ''}</div><div class="archive-text">${text}</div></div>`).join('');
+    document.getElementById('modalExtra').innerHTML = '';
+    document.getElementById('modalButtons').innerHTML = '<button class="btn btn-pink" onclick="closeModal()">Закрыть</button>';
+    document.getElementById('modal').classList.add('active');
+}
+
 // ============ ПРОФИЛЬ ============
+function renderWorkDays() {
+    const names = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+    document.getElementById('workDaysBtns').innerHTML = names.map((n, i) => `
+        <button class="day-btn ${data.settings.workDays.includes(i) ? 'active' : ''}" onclick="toggleWorkDay(${i})">${n}</button>`).join('');
+}
+function toggleWorkDay(i) {
+    const idx = data.settings.workDays.indexOf(i);
+    if (idx >= 0) data.settings.workDays.splice(idx, 1);
+    else data.settings.workDays.push(i);
+    saveData(); renderWorkDays();
+    showToast('✓ Дни обновлены');
+}
 function saveSettings() {
+    data.settings.working = document.getElementById('working').value;
     data.settings.workStart = document.getElementById('workStart').value;
     data.settings.workEnd = document.getElementById('workEnd').value;
     data.settings.strictness = document.getElementById('strictness').value;
@@ -870,12 +1282,12 @@ function showPrivacy() {
     document.getElementById('modalText').innerHTML = `
     <div class="policy-text">
         <h3>1. Какие данные мы собираем</h3>
-        <p>Приложение FemPath собирает только данные, которые ты вводишь самостоятельно:</p>
-        <ul><li>Прогресс заданий и процент феминизации</li><li>Настройки расписания и предпочтений</li><li>Фотографии прогресса (2 снимка)</li><li>Записи личного блокнота</li><li>Данные о накоплениях и процедурах ухода</li></ul>
+        <p>Femi Bloom собирает только данные, которые ты вводишь самостоятельно:</p>
+        <ul><li>Прогресс заданий и процент феминизации</li><li>Настройки расписания и занятости</li><li>Фотографии прогресса (2 снимка)</li><li>Записи блокнота и настроение</li><li>Данные о накоплениях, процедурах, воде и параметрах тела</li></ul>
         <h3>2. Как хранятся данные</h3>
         <p>Все данные хранятся <strong>локально на твоём устройстве</strong> (localStorage браузера). Мы не передаём и не загружаем их на внешние серверы.</p>
         <h3>3. Использование данных</h3>
-        <ul><li>Отслеживание личного прогресса</li><li>Персонализация заданий</li><li>Напоминания о процедурах</li></ul>
+        <ul><li>Отслеживание личного прогресса</li><li>Персонализация заданий под режим работы</li><li>Напоминания о процедурах</li></ul>
         <h3>4. Твои права</h3>
         <ul><li>Экспорт всех данных (Профиль → Экспорт)</li><li>Полное удаление (Профиль → Сброс)</li></ul>
         <h3>5. Конфиденциальность фотографий</h3>
@@ -895,11 +1307,10 @@ function exportData() {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `fempath_${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `femibloom_${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     showToast('✓ Данные экспортированы');
 }
-
 function importData(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -910,7 +1321,6 @@ function importData(event) {
     };
     reader.readAsText(file);
 }
-
 function resetProgress() {
     document.getElementById('modalTitle').textContent = '⚠️ Сброс прогресса';
     document.getElementById('modalText').innerHTML = '<p>Сбросить ВЕСЬ прогресс, фото и записи?</p><p style="color:#c62828;margin-top:10px">Это действие нельзя отменить!</p>';
@@ -920,15 +1330,14 @@ function resetProgress() {
         <button class="btn btn-danger" onclick="confirmReset()">Сбросить</button>`;
     document.getElementById('modal').classList.add('active');
 }
-
 function confirmReset() {
-    localStorage.removeItem('fempath_data');
+    localStorage.removeItem('femibloom_data');
     data = { ...defaultData };
     saveData(); updateUI(); closeModal();
     showToast('✓ Прогресс сброшен');
 }
 
-function closeModal() { document.getElementById('modal').classList.remove('active'); }
+function closeModal() { stopTimer(); document.getElementById('modal').classList.remove('active'); }
 function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
