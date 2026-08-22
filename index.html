@@ -6,1361 +6,917 @@
     <title>FemPath</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
-            --pink-main: #ff6b9d;
-            --pink-light: #ffa8c5;
-            --pink-bg: #fff5f7;
-            --pink-bg-2: #ffe8f0;
-            --text-main: #333;
-            --text-soft: #777;
-            --white: #fff;
-            --shadow: 0 4px 20px rgba(255, 107, 157, 0.15);
-            --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.06);
+            --pink: #ff6b9d; --pink-light: #ffa8c5; --bg: #fff5f7; --bg2: #ffe8f0;
+            --text: #333; --soft: #777; --white: #fff; --green: #4caf50; --orange: #ff9800;
         }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--pink-bg) 0%, var(--pink-bg-2) 100%);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding-bottom: 90px;
-            overflow-x: hidden;
-            font-size: 15px;
-            line-height: 1.5;
+            font-family: 'Inter', sans-serif; background: linear-gradient(135deg, var(--bg), var(--bg2));
+            color: var(--text); min-height: 100vh; padding-bottom: 90px; font-size: 15px;
         }
 
-        /* === ШАПКА === */
+        /* ШАПКА */
         .header {
-            background: linear-gradient(135deg, var(--pink-main) 0%, var(--pink-light) 100%);
-            color: white;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background: linear-gradient(135deg, var(--pink), var(--pink-light));
+            color: white; padding: 20px; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 4px 20px rgba(255,107,157,0.3);
         }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .logo { font-size: 22px; font-weight: 700; }
+        .level-badge { background: rgba(255,255,255,0.25); padding: 6px 12px; border-radius: 12px; font-size: 12px; backdrop-filter: blur(10px); }
+        .progress-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; opacity: 0.95; }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.3); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: white; border-radius: 10px; transition: width 0.6s ease; }
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
+        /* КОНТЕНТ */
+        .content { padding: 20px; display: none; animation: fadeIn 0.3s ease; }
+        .content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section-title { font-size: 20px; font-weight: 600; margin-bottom: 15px; }
+
+        /* КНОПКИ */
+        .btn {
+            width: 100%; background: white; color: var(--pink); border: none; padding: 16px;
+            border-radius: 15px; font-size: 16px; font-weight: 600; cursor: pointer;
+            font-family: inherit; margin-bottom: 12px; transition: all 0.2s;
         }
+        .btn:active { transform: scale(0.98); }
+        .btn-pink { background: linear-gradient(135deg, var(--pink), var(--pink-light)); color: white; }
+        .btn-sec { background: white; color: var(--text); border: 1px solid #eee; }
+        .btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 10px; width: auto; display: inline-block; margin: 0; }
+        .btn-danger { background: #ffebee; color: #c62828; }
+        .btn-green { background: #e8f5e9; color: var(--green); }
 
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+        /* КАРТОЧКИ */
+        .card { background: white; border-radius: 15px; padding: 18px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .card-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+        .card-text { font-size: 14px; color: var(--soft); margin-bottom: 10px; line-height: 1.4; }
+
+        /* ТАЙМЛАЙН ЗАДАНИЙ */
+        .timeline-item {
+            display: flex; align-items: flex-start; margin-bottom: 16px; position: relative;
         }
-
-        .level-badge {
-            background: rgba(255, 255, 255, 0.25);
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
+        .timeline-item::before {
+            content: ''; position: absolute; left: 29px; top: 35px; bottom: -16px; width: 2px; background: var(--pink-light);
         }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            margin-bottom: 6px;
-            opacity: 0.95;
+        .timeline-item:last-child::before { display: none; }
+        .time-badge {
+            background: var(--pink); color: white; padding: 6px 10px; border-radius: 10px;
+            font-size: 12px; font-weight: 600; min-width: 55px; text-align: center; margin-right: 12px; flex-shrink: 0; z-index: 1;
         }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            overflow: hidden;
+        .task-card {
+            flex: 1; background: white; border-radius: 12px; padding: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.2s;
         }
+        .task-card:active { transform: scale(0.98); }
+        .task-card.done { opacity: 0.6; background: #f9f9f9; }
+        .task-card.done .task-title { text-decoration: line-through; }
+        .task-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+        .task-desc { font-size: 13px; color: var(--soft); margin-bottom: 8px; }
+        .task-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        .task-percent { color: var(--pink); font-weight: 600; background: var(--bg); padding: 3px 8px; border-radius: 8px; }
+        .task-status { color: var(--green); font-weight: 500; }
 
-        .progress-fill {
-            height: 100%;
-            background: white;
-            border-radius: 10px;
-            transition: width 0.6s ease;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
+        /* ТРЕКЕРЫ */
+        .tracker-card { background: white; border-radius: 15px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .tracker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .tracker-name { font-size: 15px; font-weight: 600; }
+        .tracker-freq { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: var(--bg); color: var(--pink); }
+        .tracker-info { font-size: 13px; color: var(--soft); margin-bottom: 10px; }
+        .tracker-info strong { color: var(--text); }
 
-        /* === КОНТЕНТ === */
-        .content {
-            padding: 20px;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
+        /* ОПЕРАЦИИ */
+        .op-card { background: white; border-radius: 15px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .op-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .op-name { font-size: 15px; font-weight: 600; flex: 1; }
+        .op-status { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: #f0f0f0; color: var(--soft); }
+        .op-status.saving { background: #fff3e0; color: #f57c00; }
+        .op-status.done { background: #e8f5e9; color: #388e3c; }
+        .op-cost { font-size: 13px; color: var(--soft); margin-bottom: 6px; }
+        .op-saved { font-size: 14px; font-weight: 600; color: var(--pink); margin-bottom: 8px; }
+        .progress-small { width: 100%; height: 6px; background: #f0f0f0; border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
+        .progress-small-fill { height: 100%; background: linear-gradient(90deg, var(--pink), var(--pink-light)); border-radius: 10px; transition: width 0.4s; }
 
-        .content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--text-main);
-        }
-
-        /* === КНОПКИ === */
-        .btn-main {
-            width: 100%;
-            background: white;
-            color: var(--pink-main);
-            border: none;
-            padding: 18px;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            box-shadow: var(--shadow-soft);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-            margin-bottom: 12px;
-        }
-
-        .btn-main:active {
-            transform: scale(0.98);
-        }
-
-        .btn-pink {
-            background: linear-gradient(135deg, var(--pink-main) 0%, var(--pink-light) 100%);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--text-main);
-            border: 1px solid #eee;
-        }
-
-        /* === КАРТОЧКИ === */
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 18px;
-            margin-bottom: 12px;
-            box-shadow: var(--shadow-soft);
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
-
-        .card-text {
-            font-size: 14px;
-            color: var(--text-soft);
-            margin-bottom: 10px;
-        }
-
-        .task-time {
-            display: inline-block;
-            background: var(--pink-bg-2);
-            color: var(--pink-main);
-            padding: 4px 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-
-        /* === НАВИГАЦИЯ === */
-        .nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0 12px;
-            box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.05);
-            z-index: 100;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-        }
-
-        .nav-item {
-            flex: 1;
-            text-align: center;
-            padding: 8px 4px;
-            cursor: pointer;
-            color: var(--text-soft);
-            font-size: 12px;
-            font-weight: 500;
-            transition: color 0.2s ease;
-            border: none;
-            background: none;
-            font-family: inherit;
-        }
-
-        .nav-item.active {
-            color: var(--pink-main);
-        }
-
-        .nav-icon {
-            font-size: 22px;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        /* === УПРАЖНЕНИЯ === */
-        .category-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-
-        .category-tab {
-            background: white;
-            border: 1px solid #eee;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            white-space: nowrap;
-            cursor: pointer;
-            font-family: inherit;
-            color: var(--text-main);
-            transition: all 0.2s ease;
-        }
-
-        .category-tab.active {
-            background: var(--pink-main);
-            color: white;
-            border-color: var(--pink-main);
-        }
-
-        /* === ОПЕРАЦИИ === */
-        .operation-card {
-            background: white;
-            border-radius: 15px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: var(--shadow-soft);
-        }
-
-        .operation-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .operation-name {
-            font-size: 15px;
-            font-weight: 600;
-            flex: 1;
-        }
-
-        .operation-status {
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 8px;
-            background: #f0f0f0;
-            color: var(--text-soft);
-        }
-
-        .operation-status.saving {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .operation-status.done {
-            background: #e8f5e9;
-            color: #388e3c;
-        }
-
-        .operation-cost {
-            font-size: 13px;
-            color: var(--text-soft);
-            margin-bottom: 8px;
-        }
-
-        .operation-saved {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--pink-main);
-            margin-bottom: 8px;
-        }
-
-        .progress-bar-small {
-            width: 100%;
-            height: 6px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .progress-fill-small {
-            height: 100%;
-            background: linear-gradient(90deg, var(--pink-main), var(--pink-light));
-            border-radius: 10px;
-            transition: width 0.4s ease;
-        }
-
-        /* === ПРОФИЛЬ === */
+        /* ПРОФИЛЬ */
         .setting-row {
-            background: white;
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow-soft);
+            background: white; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
         }
-
-        .setting-label {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .setting-value {
-            font-size: 14px;
-            color: var(--pink-main);
-            font-weight: 600;
-        }
-
+        .setting-label { font-size: 14px; font-weight: 500; }
         input[type="time"], select {
-            border: 1px solid #eee;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            background: var(--pink-bg);
-            color: var(--text-main);
+            border: 1px solid #eee; padding: 6px 10px; border-radius: 8px; font-family: inherit; font-size: 14px; background: var(--bg);
+        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-card { background: white; border-radius: 12px; padding: 14px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .stat-value { font-size: 22px; font-weight: 700; color: var(--pink); margin-bottom: 4px; }
+        .stat-label { font-size: 12px; color: var(--soft); }
+
+        /* ФОТО ПРОГРЕССА */
+        .photo-section { background: white; border-radius: 15px; padding: 18px; margin-top: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+        .photo-item {
+            aspect-ratio: 3/4; background: var(--bg); border-radius: 10px; display: flex;
+            align-items: center; justify-content: center; font-size: 24px; color: var(--soft);
+            overflow: hidden; position: relative; border: 2px dashed var(--pink-light);
+        }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-item .day-label {
+            position: absolute; bottom: 4px; left: 4px; background: rgba(255,255,255,0.9);
+            padding: 2px 6px; border-radius: 6px; font-size: 10px; font-weight: 600;
+        }
+        .photo-warning {
+            background: #fff3e0; border: 1px solid var(--orange); color: #e65100;
+            padding: 12px; border-radius: 12px; margin-top: 12px; font-size: 13px;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
+        /* НАВИГАЦИЯ */
+        .nav {
+            position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex;
+            justify-content: space-around; padding: 10px 0 12px; box-shadow: 0 -2px 15px rgba(0,0,0,0.05);
+            z-index: 100; border-top-left-radius: 20px; border-top-right-radius: 20px;
         }
-
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 14px;
-            text-align: center;
-            box-shadow: var(--shadow-soft);
+        .nav-item {
+            flex: 1; text-align: center; padding: 8px 4px; cursor: pointer; color: var(--soft);
+            font-size: 11px; font-weight: 500; border: none; background: none; font-family: inherit;
         }
+        .nav-item.active { color: var(--pink); }
+        .nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
 
-        .stat-value {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--pink-main);
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-soft);
-        }
-
-        /* === МОДАЛЬНОЕ ОКНО === */
+        /* МОДАЛКА */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px;
         }
-
-        .modal.active {
-            display: flex;
-        }
-
+        .modal.active { display: flex; }
         .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 400px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
+            background: white; border-radius: 20px; padding: 24px; max-width: 400px; width: 100%;
+            max-height: 85vh; overflow-y: auto;
         }
+        .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+        .modal-text { font-size: 14px; color: var(--soft); margin-bottom: 15px; line-height: 1.6; }
+        .modal-text strong { color: var(--text); }
+        .modal-text ul { margin: 10px 0; padding-left: 20px; }
+        .modal-text li { margin-bottom: 6px; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .modal-buttons .btn { margin-bottom: 0; flex: 1; }
 
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .modal-text {
-            font-size: 14px;
-            color: var(--text-soft);
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
-        .modal-text strong {
-            color: var(--text-main);
-        }
-
-        .modal-text ol, .modal-text ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-
-        .modal-text li {
-            margin-bottom: 6px;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            font-size: 16px;
-            font-family: inherit;
-            margin-bottom: 12px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .modal-buttons button {
-            flex: 1;
-        }
-
-        /* === УВЕДОМЛЕНИЕ === */
+        /* ТОСТ */
         .toast {
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            color: var(--text-main);
-            padding: 12px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            z-index: 2000;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            font-size: 14px;
-            font-weight: 500;
-            border-left: 4px solid var(--pink-main);
-            max-width: 90%;
+            position: fixed; top: 100px; left: 50%; transform: translateX(-50%);
+            background: white; padding: 12px 20px; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 2000; opacity: 0;
+            transition: opacity 0.3s; font-size: 14px; font-weight: 500;
+            border-left: 4px solid var(--pink); max-width: 90%;
         }
+        .toast.show { opacity: 1; }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        /* ПОЛИТИКА */
+        .policy-text { font-size: 13px; line-height: 1.7; color: var(--soft); }
+        .policy-text h3 { color: var(--text); margin: 15px 0 8px; font-size: 15px; }
+        .policy-text p { margin-bottom: 10px; }
+        .policy-text ul { padding-left: 20px; margin-bottom: 10px; }
 
-        /* === ПУСТОЕ СОСТОЯНИЕ === */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-soft);
-        }
-
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
-        /* === СКРОЛЛ === */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--pink-light);
-            border-radius: 10px;
-        }
-
-        .btn-small {
-            padding: 8px 14px;
-            font-size: 13px;
-            border-radius: 10px;
-        }
-
-        .btn-danger {
-            background: #ffebee;
-            color: #c62828;
-        }
+        input[type="file"] { display: none; }
+        .privacy-link { color: var(--pink); text-decoration: underline; cursor: pointer; font-size: 13px; }
     </style>
 </head>
 <body>
-    <!-- ШАПКА -->
-    <div class="header">
-        <div class="header-top">
-            <div class="logo">✨ FemPath</div>
-            <div class="level-badge" id="levelBadge">Новичок</div>
+
+<!-- ШАПКА -->
+<div class="header">
+    <div class="header-top">
+        <div class="logo">✨ FemPath</div>
+        <div class="level-badge" id="levelBadge">Новичок</div>
+    </div>
+    <div class="progress-info">
+        <span>Прогресс феминизации</span>
+        <span id="percentText">0.00%</span>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+</div>
+
+<!-- ГЛАВНАЯ -->
+<div class="content active" id="home">
+    <button class="btn btn-pink" onclick="getTodayTask()">🌸 Получить задание на сегодня</button>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="streakValue">0</div>
+            <div class="stat-label">дней подряд 🔥</div>
         </div>
-        <div class="progress-info">
-            <span>Прогресс феминизации</span>
-            <span id="percentText">0.00%</span>
-        </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        <div class="stat-card">
+            <div class="stat-value" id="tasksDone">0</div>
+            <div class="stat-label">заданий выполнено</div>
         </div>
     </div>
 
-    <!-- ГЛАВНЫЙ ЭКРАН -->
-    <div class="content active" id="home">
-        <button class="btn-main btn-pink" onclick="getTodayTask()">
-            🌸 Получить задание на сегодня
+    <div class="card">
+        <div class="card-title">💡 Совет дня</div>
+        <div class="card-text" id="dailyTip">Маленькие шаги каждый день ведут к большим переменам.</div>
+    </div>
+
+    <!-- ФОТО ПРОГРЕССА -->
+    <div class="photo-section">
+        <div class="card-title">📸 Фото прогресса</div>
+        <div class="card-text">Делай фото каждые 7 дней, чтобы отслеживать изменения. Без свежего фото доступ к разделам ограничен.</div>
+        <div class="photo-grid" id="photoGrid"></div>
+        <div id="photoWarning"></div>
+        <button class="btn btn-sec btn-sm" style="margin-top: 12px; width: 100%;" onclick="document.getElementById('photoInput').click()">
+            📷 Сделать фото
         </button>
+        <input type="file" id="photoInput" accept="image/*" capture="user" onchange="addPhoto(event)">
+    </div>
+</div>
 
-        <div id="currentTaskContainer"></div>
+<!-- ЗАДАНИЯ -->
+<div class="content" id="tasks">
+    <div class="section-title">📋 Задания на сегодня</div>
+    <div class="card-text" style="margin-bottom: 15px;">Нажми на задание, чтобы посмотреть подробности и отметить выполнение.</div>
+    <div id="tasksTimeline"></div>
+</div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="streakValue">0</div>
-                <div class="stat-label">дней подряд 🔥</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="tasksDone">0</div>
-                <div class="stat-label">заданий выполнено</div>
-            </div>
+<!-- ТЕЛО (ТРЕКЕРЫ) -->
+<div class="content" id="body">
+    <div class="section-title">💆 Уход за телом</div>
+    <div class="card-text" style="margin-bottom: 15px;">Отмечай процедуры с учётом рекомендуемой частоты.</div>
+    <div id="trackersList"></div>
+</div>
+
+<!-- ОПЕРАЦИИ -->
+<div class="content" id="operations">
+    <div class="section-title">💎 Операции</div>
+    <div class="card-text" style="margin-bottom: 15px;">
+        Общий прогресс: <strong id="totalSaved">0 ₽</strong> из <strong id="totalCost">0 ₽</strong>
+    </div>
+    <div id="operationsList"></div>
+</div>
+
+<!-- ПРОФИЛЬ -->
+<div class="content" id="profile">
+    <div class="section-title">👤 Профиль</div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="profilePercent">0.00%</div>
+            <div class="stat-label">прогресс</div>
         </div>
-
-        <div class="card">
-            <div class="card-title">💡 Совет дня</div>
-            <div class="card-text" id="dailyTip">Маленькие шаги каждый день ведут к большим переменам. Ты на правильном пути!</div>
+        <div class="stat-card">
+            <div class="stat-value" id="profileStreak">0</div>
+            <div class="stat-label">дней подряд</div>
         </div>
     </div>
 
-    <!-- РАЗДЕЛ ЗАДАНИЯ -->
-    <div class="content" id="tasks">
-        <div class="section-title">📋 Задания</div>
-
-        <div class="category-tabs">
-            <button class="category-tab active" onclick="switchTimeOfDay('morning', this)">🌅 Утро</button>
-            <button class="category-tab" onclick="switchTimeOfDay('day', this)">☀️ День</button>
-            <button class="category-tab" onclick="switchTimeOfDay('evening', this)">🌙 Вечер</button>
-        </div>
-
-        <div id="tasksList"></div>
+    <div class="section-title" style="font-size: 16px; margin-top: 20px;"> Расписание</div>
+    <div class="setting-row"><span class="setting-label">Подъём</span><input type="time" id="wakeUp" value="06:00" onchange="saveSettings()"></div>
+    <div class="setting-row"><span class="setting-label">Работа с</span><input type="time" id="workStart" value="09:00" onchange="saveSettings()"></div>
+    <div class="setting-row"><span class="setting-label">Работа до</span><input type="time" id="workEnd" value="18:00" onchange="saveSettings()"></div>
+    <div class="setting-row"><span class="setting-label">Отбой</span><input type="time" id="bedTime" value="23:00" onchange="saveSettings()"></div>
+    <div class="setting-row">
+        <span class="setting-label">Строгость</span>
+        <select id="strictness" onchange="saveSettings()">
+            <option value="soft">Мягкий</option>
+            <option value="normal" selected>Обычный</option>
+            <option value="strict">Строгий</option>
+        </select>
+    </div>
+    <div class="setting-row">
+        <span class="setting-label">Обращение</span>
+        <select id="genderAddress" onchange="saveSettings()">
+            <option value="female" selected>Женский род</option>
+            <option value="neutral">Нейтральный род</option>
+        </select>
     </div>
 
-    <!-- РАЗДЕЛ ТЕЛО -->
-    <div class="content" id="body">
-        <div class="section-title">💪 Тело</div>
-
-        <div class="category-tabs">
-            <button class="category-tab active" onclick="switchExerciseCategory('buttocks', this)">Ягодицы</button>
-            <button class="category-tab" onclick="switchExerciseCategory('waist', this)">Талия</button>
-            <button class="category-tab" onclick="switchExerciseCategory('posture', this)">Осанка</button>
-            <button class="category-tab" onclick="switchExerciseCategory('stretch', this)">Растяжка</button>
-        </div>
-
-        <div id="exercisesList"></div>
-
-        <div class="card" style="margin-top: 20px;">
-            <div class="card-title">🪒 Трекер бритья</div>
-            <div class="card-text" id="shaveInfo">Последнее бритьё: не указано</div>
-            <button class="btn-main btn-secondary btn-small" onclick="markShave()">Отметить бритьё сегодня</button>
-        </div>
+    <div class="section-title" style="font-size: 16px; margin-top: 20px;">📄 Информация</div>
+    <div class="card" onclick="showPrivacy()" style="cursor: pointer;">
+        <div class="card-title">🔒 Политика конфиденциальности</div>
+        <div class="card-text">Как мы храним и используем твои данные</div>
     </div>
 
-    <!-- РАЗДЕЛ ОПЕРАЦИИ -->
-    <div class="content" id="operations">
-        <div class="section-title">💎 Операции</div>
-        <div class="card-text" style="margin-bottom: 15px;">
-            Общий прогресс: <strong id="totalSaved">0 ₽</strong> из <strong id="totalCost">0 ₽</strong>
-        </div>
-        <div id="operationsList"></div>
-    </div>
+    <div class="section-title" style="font-size: 16px; margin-top: 20px;">⚙️ Данные</div>
+    <button class="btn btn-sec" onclick="exportData()">📤 Экспорт данных</button>
+    <button class="btn btn-sec" onclick="document.getElementById('importFile').click()">📥 Импорт данных</button>
+    <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+    <button class="btn btn-danger" onclick="resetProgress()">🗑️ Сбросить прогресс</button>
+</div>
 
-    <!-- РАЗДЕЛ ПРОФИЛЬ -->
-    <div class="content" id="profile">
-        <div class="section-title">👤 Профиль</div>
+<!-- НАВИГАЦИЯ -->
+<div class="nav">
+    <button class="nav-item active" onclick="switchSection('home', this)"><span class="nav-icon"></span>Главная</button>
+    <button class="nav-item" onclick="switchSection('tasks', this)"><span class="nav-icon"></span>Задания</button>
+    <button class="nav-item" onclick="switchSection('body', this)"><span class="nav-icon">💆</span>Тело</button>
+    <button class="nav-item" onclick="switchSection('operations', this)"><span class="nav-icon"></span>Операции</button>
+    <button class="nav-item" onclick="switchSection('profile', this)"><span class="nav-icon"></span>Профиль</button>
+</div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="profilePercent">0.00%</div>
-                <div class="stat-label">прогресс</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="profileStreak">0</div>
-                <div class="stat-label">дней подряд</div>
-            </div>
-        </div>
-
-        <div class="section-title" style="font-size: 16px; margin-top: 20px;">⏰ Расписание</div>
-
-        <div class="setting-row">
-            <span class="setting-label">Подъём</span>
-            <input type="time" id="wakeUpTime" value="06:00" onchange="saveSettings()">
-        </div>
-
-        <div class="setting-row">
-            <span class="setting-label">Работа с</span>
-            <input type="time" id="workStart" value="09:00" onchange="saveSettings()">
-        </div>
-
-        <div class="setting-row">
-            <span class="setting-label">Работа до</span>
-            <input type="time" id="workEnd" value="18:00" onchange="saveSettings()">
-        </div>
-
-        <div class="setting-row">
-            <span class="setting-label">Отбой</span>
-            <input type="time" id="bedTime" value="23:00" onchange="saveSettings()">
-        </div>
-
-        <div class="setting-row">
-            <span class="setting-label">Строгость</span>
-            <select id="strictness" onchange="saveSettings()">
-                <option value="soft">Мягкий</option>
-                <option value="normal" selected>Обычный</option>
-                <option value="strict">Строгий</option>
-            </select>
-        </div>
-
-        <div class="setting-row">
-            <span class="setting-label">Обращение</span>
-            <select id="genderAddress" onchange="saveSettings()">
-                <option value="female" selected>Женский род</option>
-                <option value="neutral">Нейтральный род</option>
-            </select>
-        </div>
-
-        <div class="section-title" style="font-size: 16px; margin-top: 20px;">⚙️ Данные</div>
-
-        <button class="btn-main btn-secondary" onclick="exportData()">📤 Экспорт данных</button>
-        <button class="btn-main btn-secondary" onclick="document.getElementById('importFile').click()">📥 Импорт данных</button>
-        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-        <button class="btn-main btn-danger" onclick="resetProgress()">🗑️ Сбросить прогресс</button>
-    </div>
-
-    <!-- НАВИГАЦИЯ -->
-    <div class="nav">
-        <button class="nav-item active" onclick="switchSection('home', this)">
-            <span class="nav-icon">🏠</span>
-            Главная
-        </button>
-        <button class="nav-item" onclick="switchSection('tasks', this)">
-            <span class="nav-icon">📋</span>
-            Задания
-        </button>
-        <button class="nav-item" onclick="switchSection('body', this)">
-            <span class="nav-icon">💪</span>
-            Тело
-        </button>
-        <button class="nav-item" onclick="switchSection('operations', this)">
-            <span class="nav-icon">💎</span>
-            Операции
-        </button>
-        <button class="nav-item" onclick="switchSection('profile', this)">
-            <span class="nav-icon">👤</span>
-            Профиль
-        </button>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <div class="modal-title" id="modalTitle">Заголовок</div>
-            <div class="modal-text" id="modalText">Текст</div>
-            <div id="modalExtra"></div>
-            <div class="modal-buttons" id="modalButtons">
-                <button class="btn-main btn-secondary" onclick="closeModal()">Закрыть</button>
-            </div>
+<!-- МОДАЛКА -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div class="modal-title" id="modalTitle">Заголовок</div>
+        <div class="modal-text" id="modalText">Текст</div>
+        <div id="modalExtra"></div>
+        <div class="modal-buttons" id="modalButtons">
+            <button class="btn btn-sec" onclick="closeModal()">Закрыть</button>
         </div>
     </div>
+</div>
 
-    <!-- УВЕДОМЛЕНИЕ -->
-    <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-    <script>
-        // === ДАННЫЕ ===
-        const defaultData = {
-            percent: 0,
-            streak: 0,
-            lastActiveDate: null,
-            tasksDone: 0,
-            completedToday: [],
-            settings: {
-                wakeUpTime: '06:00',
-                workStart: '09:00',
-                workEnd: '18:00',
-                bedTime: '23:00',
-                strictness: 'normal',
-                genderAddress: 'female'
-            },
-            operations: [
-                { id: 1, name: 'Орхиэктомия', cost: 200000, saved: 0, status: 'not_started', notes: '' },
-                { id: 2, name: 'Трахеальное бритьё', cost: 120000, saved: 0, status: 'not_started', notes: '' },
-                { id: 3, name: 'Увеличение груди', cost: 300000, saved: 0, status: 'not_started', notes: '' },
-                { id: 4, name: 'Феминизация голоса', cost: 200000, saved: 0, status: 'not_started', notes: '' },
-                { id: 5, name: 'Феминизация лица', cost: 1000000, saved: 0, status: 'not_started', notes: '' },
-                { id: 6, name: 'Вагинопластика', cost: 1200000, saved: 0, status: 'not_started', notes: '' }
-            ],
-            body: {
-                lastShave: null,
-                sensitiveAreas: []
-            },
-            startDate: new Date().toISOString().split('T')[0]
-        };
+<script>
+// === ДАННЫЕ ===
+const defaultData = {
+    percent: 0, streak: 0, lastActiveDate: null, tasksDone: 0,
+    completedToday: [], photos: [],
+    settings: { wakeUp: '06:00', workStart: '09:00', workEnd: '18:00', bedTime: '23:00', strictness: 'normal', genderAddress: 'female' },
+    operations: [
+        { id: 1, name: 'Орхиэктомия', cost: 200000, saved: 0, status: 'not_started' },
+        { id: 2, name: 'Трахеальное бритьё', cost: 120000, saved: 0, status: 'not_started' },
+        { id: 3, name: 'Увеличение груди', cost: 300000, saved: 0, status: 'not_started' },
+        { id: 4, name: 'Феминизация голоса', cost: 200000, saved: 0, status: 'not_started' },
+        { id: 5, name: 'Феминизация лица', cost: 1000000, saved: 0, status: 'not_started' },
+        { id: 6, name: 'Вагинопластика', cost: 1200000, saved: 0, status: 'not_started' }
+    ],
+    trackers: {
+        shave: { name: '🪒 Бритьё', freq: 2, freqText: 'раз в 2 дня', lastDone: null },
+        scrub: { name: '🧴 Скраб тела', freq: 3, freqText: 'раз в 3 дня', lastDone: null },
+        mask: { name: '🎭 Маска для лица', freq: 7, freqText: 'раз в неделю', lastDone: null },
+        moisturize: { name: '💧 Увлажнение кожи', freq: 1, freqText: 'ежедневно', lastDone: null },
+        nails: { name: '💅 Уход за ногтями', freq: 7, freqText: 'раз в неделю', lastDone: null },
+        hair: { name: '💇 Уход за волосами', freq: 3, freqText: 'раз в 3 дня', lastDone: null }
+    },
+    startDate: new Date().toISOString().split('T')[0]
+};
 
-        let data = loadData();
+let data = loadData();
 
-        // === ЗАДАНИЯ ===
-        const tasksDB = {
-            morning: {
-                0: [
-                    { title: 'Утренняя зарядка', desc: '10 минут лёгкой разминки для пробуждения', percent: 0.015, type: 'exercise' },
-                    { title: 'Вакуум живота', desc: '10 повторений по 15 секунд', percent: 0.01, type: 'exercise' },
-                    { title: 'Умывание и уход', desc: 'Очищение кожи, нанесение увлажняющего крема', percent: 0.01, type: 'skincare' },
-                    { title: 'Надеть женское бельё', desc: 'Начни день с ощущения женственности', percent: 0.01, type: 'basic' }
-                ],
-                25: [
-                    { title: 'Ягодичный мост', desc: '3 подхода по 15 повторений', percent: 0.015, type: 'exercise' },
-                    { title: 'Уход за кожей лица', desc: 'Сыворотка + крем + SPF', percent: 0.01, type: 'skincare' },
-                    { title: 'Бритьё ног', desc: 'Аккуратно, с увлажнением', percent: 0.015, type: 'basic' }
-                ],
-                50: [
-                    { title: 'Лёгкий макияж', desc: 'Тональный + тушь + бальзам для губ', percent: 0.02, type: 'makeup' },
-                    { title: 'Комплекс на ягодицы', desc: 'Мост + выпады + сумо (20 мин)', percent: 0.02, type: 'exercise' },
-                    { title: 'Укладка волос', desc: 'Придать аккуратную женственную форму', percent: 0.01, type: 'basic' }
-                ],
-                75: [
-                    { title: 'Полный макияж', desc: 'Полноценный дневной макияж', percent: 0.025, type: 'makeup' },
-                    { title: 'Интенсивная тренировка', desc: '30 минут на женственный силуэт', percent: 0.025, type: 'exercise' },
-                    { title: 'Полный уход за телом', desc: 'Скраб + крем + массаж', percent: 0.02, type: 'skincare' }
-                ]
-            },
-            day: {
-                0: [
-                    { title: 'Следи за осанкой', desc: 'Спина прямая, плечи расправлены', percent: 0.005, type: 'posture' },
-                    { title: 'Контроль белья', desc: 'Помни, что на тебе надето', percent: 0.01, type: 'control' }
-                ],
-                25: [
-                    { title: 'Женственная походка', desc: 'Мелкие шаги, плавные движения бёдрами', percent: 0.008, type: 'posture' },
-                    { title: 'Мягкие жесты', desc: 'Плавные движения руками, без резкости', percent: 0.008, type: 'manners' }
-                ],
-                50: [
-                    { title: 'Практика голоса', desc: '10 минут мягкого, высокого голоса', percent: 0.015, type: 'voice' },
-                    { title: 'Ношение колготок', desc: '1-2 часа дома (дискретно)', percent: 0.015, type: 'control' }
-                ],
-                75: [
-                    { title: 'Длительная практика голоса', desc: '20 минут в течение дня', percent: 0.02, type: 'voice' },
-                    { title: 'Женственные манеры', desc: 'Аккуратность в еде, движениях, речи', percent: 0.015, type: 'manners' }
-                ]
-            },
-            evening: {
-                0: [
-                    { title: 'Тренировка ягодиц', desc: 'Мост + отведения (15 мин)', percent: 0.02, type: 'workout' },
-                    { title: 'Вечерний уход', desc: 'Очищение + крем', percent: 0.01, type: 'skincare' },
-                    { title: 'Аккуратная уборка', desc: 'Женственный домашний ритуал', percent: 0.01, type: 'rituals' }
-                ],
-                25: [
-                    { title: 'Полная тренировка', desc: 'Ягодицы + талия (25 мин)', percent: 0.025, type: 'workout' },
-                    { title: 'Практика голоса', desc: 'Чтение вслух женственным голосом', percent: 0.015, type: 'voice' },
-                    { title: 'Ношение белья 1-2 часа', desc: 'Дискретно, дома', percent: 0.015, type: 'control' }
-                ],
-                50: [
-                    { title: 'Интенсивная тренировка', desc: 'Силовая + кардио (35 мин)', percent: 0.03, type: 'workout' },
-                    { title: 'Такинг', desc: 'Практика 1-2 часа', percent: 0.025, type: 'tucking' },
-                    { title: 'Ритуал красоты', desc: 'Маска + массаж + уход', percent: 0.02, type: 'rituals' }
-                ],
-                75: [
-                    { title: 'Максимальная тренировка', desc: '45 минут на женственный силуэт', percent: 0.035, type: 'workout' },
-                    { title: 'Длительный такинг', desc: '2-3 часа', percent: 0.03, type: 'tucking' },
-                    { title: 'Глубокий уход', desc: 'Полный ритуал красоты', percent: 0.025, type: 'rituals' }
-                ]
-            }
-        };
+// === ЗАДАНИЯ НА ДЕНЬ ===
+function getDailyTasks() {
+    const s = data.settings;
+    const p = data.percent;
+    const tasks = [];
 
-        // === УПРАЖНЕНИЯ ===
-        const exercisesDB = {
-            buttocks: [
-                {
-                    name: 'Ягодичный мост',
-                    technique: 'Ляг на спину, ноги согнуты в коленях, стопы на ширине плеч. Поднимай таз вверх, сжимая ягодицы в верхней точке. Задержись на 2 секунды и опустись.',
-                    tips: 'Дави пятками в пол, не прогибай поясницу, сжимай ягодицы в верхней точке.',
-                    mistakes: 'Слишком быстрый темп, прогиб в пояснице, недостаточное сжатие ягодиц.',
-                    reps: '3 подхода по 15-20 повторений'
-                },
-                {
-                    name: 'Ягодичный мост на одной ноге',
-                    technique: 'То же, что обычный мост, но одна нога вытянута вперёд. Работает одна нога.',
-                    tips: 'Держи таз ровно, не заваливайся на бок.',
-                    mistakes: 'Перекос таза, недостаточная амплитуда.',
-                    reps: '3 подхода по 10-12 повторений на каждую ногу'
-                },
-                {
-                    name: 'Выпады',
-                    technique: 'Шагни вперёд, опустись пока оба колена не согнутся под 90°. Переднее колено не выходит за носок. Вернись в исходное положение.',
-                    tips: 'Держи корпус прямо, смотри вперёд, напрягай пресс.',
-                    mistakes: 'Наклон корпуса вперёд, колено заходит за носок.',
-                    reps: '3 подхода по 12-15 повторений на каждую ногу'
-                },
-                {
-                    name: 'Сумо-приседания',
-                    technique: 'Ноги шире плеч, носки развёрнуты наружу. Приседай, отводя таз назад, колени в стороны. Спина прямая.',
-                    tips: 'Вес на пятках, колени смотрят в сторону носков.',
-                    mistakes: 'Завал коленей внутрь, круглая спина.',
-                    reps: '3 подхода по 15-20 повторений'
-                },
-                {
-                    name: 'Отведения ноги назад',
-                    technique: 'Стоя на четвереньках, отводи согнутую ногу назад и вверх, сжимая ягодицу. Можно делать с утяжелителем.',
-                    tips: 'Не прогибай поясницу, работай именно ягодицей.',
-                    mistakes: 'Рывки, прогиб в пояснице.',
-                    reps: '3 подхода по 20 повторений на каждую ногу'
-                }
-            ],
-            waist: [
-                {
-                    name: 'Вакуум живота',
-                    technique: 'Встань прямо, выдохни весь воздух, втяни живот под рёбра. Задержись на 15-30 секунд. Можно делать стоя, сидя или лёжа.',
-                    tips: 'Делай утром натощак. Дыши ровно во время задержки.',
-                    mistakes: 'Задержка дыхания, недостаточное втягивание.',
-                    reps: '10 повторений по 15-30 секунд'
-                },
-                {
-                    name: 'Планка',
-                    technique: 'Упор на предплечья и носки. Тело — прямая линия. Напряги пресс, ягодицы, бёдра.',
-                    tips: 'Не прогибай поясницу, не поднимай таз.',
-                    mistakes: 'Провисание поясницы, подъём таза, задержка дыхания.',
-                    reps: '3 подхода по 30-60 секунд'
-                },
-                {
-                    name: 'Боковая планка',
-                    technique: 'Упор на одно предплечье, тело в линию. Свободная рука вверх или на бедре.',
-                    tips: 'Держи корпус ровно, не заваливайся.',
-                    mistakes: 'Перекос корпуса, провисание бёдер.',
-                    reps: '3 подхода по 20-40 секунд на каждую сторону'
-                }
-            ],
-            posture: [
-                {
-                    name: 'Упражнение у стены',
-                    technique: 'Встань спиной к стене. Прижми затылок, лопатки, ягодицы, колени и пятки. Стой 5-10 минут.',
-                    tips: 'Расслабь плечи, дыши ровно.',
-                    mistakes: 'Напряжение в шее, отрыв точек от стены.',
-                    reps: '5-10 минут ежедневно'
-                },
-                {
-                    name: 'Женственная походка',
-                    technique: 'Шагай по одной линии (как по канату), мелкие шаги, плавное движение бёдер. Плечи расслаблены, спина прямая.',
-                    tips: 'Представь, что идёшь по узкой линии. Движение от бедра.',
-                    mistakes: 'Широкий шаг, размахивание руками, сутулость.',
-                    reps: '10-15 минут практики в день'
-                }
-            ],
-            stretch: [
-                {
-                    name: 'Растяжка бёдер',
-                    technique: 'Выпад вперёд, задняя нога на колене. Опускай таз вниз, чувствуя растяжение передней поверхности бедра.',
-                    tips: 'Дыши глубоко, не делай рывков.',
-                    mistakes: 'Резкие движения, боль.',
-                    reps: '30-60 секунд на каждую сторону'
-                },
-                {
-                    name: 'Бабочка',
-                    technique: 'Сидя, стопы вместе, колени в стороны. Мягко дави на колени локтями.',
-                    tips: 'Спина прямая, расслабься.',
-                    mistakes: 'Круглая спина, давление через боль.',
-                    reps: '1-2 минуты'
-                },
-                {
-                    name: 'Растяжка спины',
-                    technique: 'Поза ребёнка: сидя на пятках, вытяни руки вперёд по полу, лоб на пол.',
-                    tips: 'Дыши глубоко, расслабь спину.',
-                    mistakes: 'Напряжение в плечах.',
-                    reps: '1-2 минуты'
-                }
-            ]
-        };
+    // Утренний блок
+    tasks.push({
+        time: s.wakeUp, title: 'Подъём и утренний уход', icon: '🌅',
+        desc: 'Проснись, выпей стакан воды, умойся, нанеси крем и сыворотку.',
+        details: ['Умывание прохладной водой', 'Тоник + сыворотка + крем', 'SPF если день', 'Надеть женское бельё'],
+        percent: 0.02, type: 'care'
+    });
 
-        // === СОВЕТЫ ДНЯ ===
-        const tips = [
-            'Маленькие шаги каждый день ведут к большим переменам. Ты на правильном пути!',
-            'Помни: регулярность важнее интенсивности. Лучше мало, но каждый день.',
-            'Твоё тело меняется. Дай ему время и заботу.',
-            'Женственность — это не только внешность, но и внутреннее состояние.',
-            'Каждый день ты становишься ближе к себе настоящей.',
-            'Не сравнивай себя с другими. Твой путь уникален.',
-            'Забота о себе — это не эгоизм, а необходимость.',
-            'Ты заслуживаешь быть счастливой. Работай над этим каждый день.'
-        ];
+    tasks.push({
+        time: addMinutes(s.wakeUp, 30), title: 'Утренняя тренировка', icon: '💪',
+        desc: 'Комплекс упражнений на женственный силуэт.',
+        isWorkout: true,
+        exercises: [
+            { name: 'Ягодичный мост', reps: '3×15', desc: 'Ляг на спину, ноги согнуты, поднимай таз, сжимая ягодицы.' },
+            { name: 'Сумо-приседания', reps: '3×20', desc: 'Ноги шире плеч, носки наружу, приседай отводя таз назад.' },
+            { name: 'Выпады', reps: '3×12 на ногу', desc: 'Шаг вперёд, оба колена под 90°, спина прямая.' },
+            { name: 'Вакуум живота', reps: '10×15 сек', desc: 'Выдохни, втяни живот под рёбра, задержись.' },
+            { name: 'Планка', reps: '3×30 сек', desc: 'Упор на предплечья, тело в линию, напряги пресс.' }
+        ],
+        percent: 0.03, type: 'workout'
+    });
 
-        // === ЗАГРУЗКА / СОХРАНЕНИЕ ===
-        function loadData() {
-            const saved = localStorage.getItem('fempath_data');
-            if (saved) {
-                return { ...defaultData, ...JSON.parse(saved) };
-            }
-            return { ...defaultData };
+    tasks.push({
+        time: addMinutes(s.wakeUp, 60), title: 'Сборы', icon: '👗',
+        desc: 'Аккуратный внешний вид на весь день.',
+        details: p >= 25 ? ['Бритьё (если нужно)', 'Женское бельё', 'Лёгкий макияж', 'Аккуратная причёска'] : ['Женское бельё', 'Аккуратная причёска', 'Чистая одежда'],
+        percent: 0.015, type: 'care'
+    });
+
+    // Дневной блок
+    tasks.push({
+        time: '12:00', title: 'Дневное напоминание', icon: '☀️',
+        desc: 'Следи за осанкой и манерами в течение дня.',
+        details: ['Спина прямая, плечи расправлены', 'Мелкие плавные шаги', 'Мягкие жесты без резкости', 'Помни о бельё'],
+        percent: 0.01, type: 'posture'
+    });
+
+    // Вечерний блок
+    tasks.push({
+        time: '19:00', title: 'Вечерняя тренировка', icon: '',
+        desc: 'Интенсивная проработка ягодиц и талии.',
+        isWorkout: true,
+        exercises: [
+            { name: 'Ягодичный мост на одной ноге', reps: '3×12', desc: 'Как обычный мост, но одна нога вытянута.' },
+            { name: 'Отведения ноги назад', reps: '3×20', desc: 'На четвереньках, отводи ногу назад и вверх.' },
+            { name: 'Боковая планка', reps: '3×30 сек', desc: 'Упор на одно предплечье, корпус в линию.' },
+            { name: 'Растяжка бёдер', reps: '2 мин', desc: 'Выпад вперёд, задняя нога на колене.' }
+        ],
+        percent: 0.03, type: 'workout'
+    });
+
+    tasks.push({
+        time: '20:30', title: 'Ношение белья / такинг', icon: '👙',
+        desc: p >= 50 ? 'Ношение колготок и белья 1-2 часа. Практика такинга.' : 'Ношение женского белья 1-2 часа дома.',
+        details: p >= 50 ? ['Надеть колготки и бельё', 'Практика такинга 1-2 часа', 'Следи за осанкой'] : ['Надеть женское бельё', 'Носить 1-2 часа', 'Следи за ощущениями'],
+        percent: 0.02, type: 'control'
+    });
+
+    tasks.push({
+        time: '21:30', title: 'Вечерний уход', icon: '🌙',
+        desc: 'Ритуал красоты перед сном.',
+        details: ['Очищение кожи', 'Маска (по графику)', 'Увлажнение', 'Уход за телом после душа'],
+        percent: 0.015, type: 'care'
+    });
+
+    tasks.push({
+        time: '22:00', title: 'Практика голоса', icon: '',
+        desc: p >= 25 ? '10-15 минут чтения вслух женственным голосом.' : '5 минут мягкого дыхания и расслабления.',
+        details: p >= 25 ? ['Чтение вслух 10 мин', 'Высокий мягкий тембр', 'Плавные интонации', 'Запись на диктофон'] : ['Глубокое дыхание', 'Расслабление челюсти', 'Мягкое мычание'],
+        percent: 0.02, type: 'voice'
+    });
+
+    tasks.push({
+        time: s.bedTime, title: 'Вечерний отчёт', icon: '📝',
+        desc: 'Подведи итоги дня и отметь настроение.',
+        details: ['Что выполнено?', 'Что не получилось?', 'Настроение сегодня', 'План на завтра'],
+        percent: 0.01, type: 'report'
+    });
+
+    return tasks;
+}
+
+function addMinutes(time, mins) {
+    const [h, m] = time.split(':').map(Number);
+    const total = h * 60 + m + mins;
+    const nh = Math.floor(total / 60) % 24;
+    const nm = total % 60;
+    return `${String(nh).padStart(2,'0')}:${String(nm).padStart(2,'0')}`;
+}
+
+// === ЗАГРУЗКА / СОХРАНЕНИЕ ===
+function loadData() {
+    const saved = localStorage.getItem('fempath_data');
+    return saved ? { ...defaultData, ...JSON.parse(saved) } : { ...defaultData };
+}
+function saveData() { localStorage.setItem('fempath_data', JSON.stringify(data)); }
+
+// === ОБНОВЛЕНИЕ UI ===
+function updateUI() {
+    const pct = data.percent.toFixed(2);
+    document.getElementById('percentText').textContent = pct + '%';
+    document.getElementById('profilePercent').textContent = pct + '%';
+    document.getElementById('progressFill').style.width = Math.min(data.percent, 100) + '%';
+
+    let level = 'Новичок';
+    if (data.percent >= 91) level = 'Финальная трансформация';
+    else if (data.percent >= 76) level = 'Глубокая феминизация';
+    else if (data.percent >= 51) level = 'Развитие';
+    else if (data.percent >= 26) level = 'Привыкание';
+    document.getElementById('levelBadge').textContent = level;
+
+    document.getElementById('streakValue').textContent = data.streak;
+    document.getElementById('profileStreak').textContent = data.streak;
+    document.getElementById('tasksDone').textContent = data.tasksDone;
+
+    const tips = [
+        'Маленькие шаги каждый день ведут к большим переменам.',
+        'Регулярность важнее интенсивности. Лучше мало, но каждый день.',
+        'Твоё тело меняется. Дай ему время и заботу.',
+        'Женственность — это не только внешность, но и внутреннее состояние.',
+        'Каждый день ты становишься ближе к себе настоящей.',
+        'Не сравнивай себя с другими. Твой путь уникален.',
+        'Забота о себе — это не эгоизм, а необходимость.'
+    ];
+    document.getElementById('dailyTip').textContent = tips[new Date().getDate() % tips.length];
+
+    document.getElementById('wakeUp').value = data.settings.wakeUp;
+    document.getElementById('workStart').value = data.settings.workStart;
+    document.getElementById('workEnd').value = data.settings.workEnd;
+    document.getElementById('bedTime').value = data.settings.bedTime;
+    document.getElementById('strictness').value = data.settings.strictness;
+    document.getElementById('genderAddress').value = data.settings.genderAddress;
+
+    renderPhotos();
+    renderTasks();
+    renderTrackers();
+    renderOperations();
+}
+
+// === ФОТО ===
+function renderPhotos() {
+    const grid = document.getElementById('photoGrid');
+    const warning = document.getElementById('photoWarning');
+    grid.innerHTML = '';
+
+    // Показываем последние 7 фото
+    const recent = data.photos.slice(-7);
+    for (let i = 0; i < 7; i++) {
+        const item = document.createElement('div');
+        item.className = 'photo-item';
+        if (recent[i]) {
+            const img = document.createElement('img');
+            img.src = recent[i].data;
+            item.appendChild(img);
+            const label = document.createElement('div');
+            label.className = 'day-label';
+            label.textContent = recent[i].day;
+            item.appendChild(label);
+        } else {
+            item.textContent = '📷';
         }
+        grid.appendChild(item);
+    }
 
-        function saveData() {
-            localStorage.setItem('fempath_data', JSON.stringify(data));
-        }
+    // Проверка: прошло ли 7 дней с последнего фото
+    const lastPhoto = data.photos[data.photos.length - 1];
+    let daysSince = 999;
+    if (lastPhoto) {
+        const last = new Date(lastPhoto.date);
+        const now = new Date();
+        daysSince = Math.floor((now - last) / (1000*60*60*24));
+    }
 
-        // === ОБНОВЛЕНИЕ UI ===
-        function updateUI() {
-            // Процент
-            const percent = data.percent.toFixed(2);
-            document.getElementById('percentText').textContent = percent + '%';
-            document.getElementById('profilePercent').textContent = percent + '%';
-            document.getElementById('progressFill').style.width = Math.min(data.percent, 100) + '%';
+    if (daysSince >= 7 && data.photos.length > 0) {
+        warning.innerHTML = `<div class="photo-warning">⚠️ Прошло ${daysSince} дней с последнего фото. Пожалуйста, сделай новое фото, чтобы продолжить полноценное использование приложения.</div>`;
+    } else if (data.photos.length === 0) {
+        warning.innerHTML = `<div class="photo-warning"> Сделай первое фото "до", чтобы начать отслеживать прогресс!</div>`;
+    } else {
+        warning.innerHTML = `<div class="card-text" style="margin-top: 10px; color: var(--green);">✓ Следующее фото через ${7 - daysSince} дн.</div>`;
+    }
+}
 
-            // Уровень
-            let level = 'Новичок';
-            if (data.percent >= 91) level = 'Финальная трансформация';
-            else if (data.percent >= 76) level = 'Глубокая феминизация';
-            else if (data.percent >= 51) level = 'Развитие';
-            else if (data.percent >= 26) level = 'Привыкание';
-            document.getElementById('levelBadge').textContent = level;
+function addPhoto(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const today = new Date();
+        const dayLabel = `${today.getDate()}.${String(today.getMonth()+1).padStart(2,'0')}`;
+        data.photos.push({
+            date: today.toISOString(),
+            day: dayLabel,
+            data: e.target.result
+        });
+        saveData();
+        updateUI();
+        showToast('✓ Фото сохранено');
+    };
+    reader.readAsDataURL(file);
+}
 
-            // Статистика
-            document.getElementById('streakValue').textContent = data.streak;
-            document.getElementById('profileStreak').textContent = data.streak;
-            document.getElementById('tasksDone').textContent = data.tasksDone;
+// === ПРОВЕРКА ФОТО ПЕРЕД ПЕРЕХОДОМ ===
+function canAccessSections() {
+    if (data.photos.length === 0) return { ok: false, msg: 'Сначала сделай фото "до" на главной странице!' };
+    const last = data.photos[data.photos.length - 1];
+    const days = Math.floor((Date.now() - new Date(last.date)) / (1000*60*60*24));
+    if (days >= 7) return { ok: false, msg: `Прошло ${days} дней. Сделай новое фото на главной!` };
+    return { ok: true };
+}
 
-            // Совет дня
-            const dayIndex = new Date().getDate() % tips.length;
-            document.getElementById('dailyTip').textContent = tips[dayIndex];
-
-            // Настройки
-            document.getElementById('wakeUpTime').value = data.settings.wakeUpTime;
-            document.getElementById('workStart').value = data.settings.workStart;
-            document.getElementById('workEnd').value = data.settings.workEnd;
-            document.getElementById('bedTime').value = data.settings.bedTime;
-            document.getElementById('strictness').value = data.settings.strictness;
-            document.getElementById('genderAddress').value = data.settings.genderAddress;
-
-            // Бритьё
-            if (data.body.lastShave) {
-                document.getElementById('shaveInfo').textContent = 'Последнее бритьё: ' + formatDate(data.body.lastShave);
-            } else {
-                document.getElementById('shaveInfo').textContent = 'Последнее бритьё: не указано';
-            }
-
-            // Операции
-            renderOperations();
-        }
-
-        function formatDate(dateStr) {
-            const d = new Date(dateStr);
-            return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
-        }
-
-        // === НАВИГАЦИЯ ===
-        function switchSection(sectionId, btn) {
+// === НАВИГАЦИЯ ===
+function switchSection(id, btn) {
+    // Проверка фото для всех разделов кроме главной и профиля
+    if (id !== 'home' && id !== 'profile') {
+        const check = canAccessSections();
+        if (!check.ok) {
+            showToast('⚠️ ' + check.msg);
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            btn.classList.add('active');
-
-            if (sectionId === 'tasks') renderTasks();
-            if (sectionId === 'body') renderExercises('buttocks');
-            if (sectionId === 'operations') renderOperations();
+            document.getElementById('home').classList.add('active');
+            document.querySelector('.nav-item').classList.add('active');
+            return;
         }
+    }
 
-        // === ЗАДАНИЯ ===
-        function getCurrentTimeOfDay() {
-            const now = new Date();
-            const hours = now.getHours();
-            const wake = timeToMinutes(data.settings.wakeUpTime);
-            const workStart = timeToMinutes(data.settings.workStart);
-            const workEnd = timeToMinutes(data.settings.workEnd);
-            const bed = timeToMinutes(data.settings.bedTime);
-            const current = hours * 60 + now.getMinutes();
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+}
 
-            if (current >= wake && current < workStart) return 'morning';
-            if (current >= workStart && current < workEnd) return 'day';
-            if (current >= workEnd && current < bed) return 'evening';
-            return 'morning';
-        }
+// === ЗАДАНИЯ ===
+function renderTasks() {
+    const tasks = getDailyTasks();
+    const container = document.getElementById('tasksTimeline');
+    const today = new Date().toDateString();
+    if (data.lastActiveDate !== today) { data.completedToday = []; data.lastActiveDate = today; saveData(); }
 
-        function timeToMinutes(timeStr) {
-            const [h, m] = timeStr.split(':').map(Number);
-            return h * 60 + m;
-        }
-
-        function getTasksForTime(timeOfDay) {
-            const percent = data.percent;
-            let threshold = 0;
-            if (percent >= 75) threshold = 75;
-            else if (percent >= 50) threshold = 50;
-            else if (percent >= 25) threshold = 25;
-
-            const baseTasks = tasksDB[timeOfDay][0] || [];
-            const levelTasks = tasksDB[timeOfDay][threshold] || [];
-
-            // Уникальные задачи
-            const allTasks = [...baseTasks];
-            levelTasks.forEach(t => {
-                if (!allTasks.find(x => x.title === t.title)) {
-                    allTasks.push(t);
-                }
-            });
-
-            return allTasks;
-        }
-
-        function getTodayTask() {
-            const timeOfDay = getCurrentTimeOfDay();
-            const tasks = getTasksForTime(timeOfDay);
-
-            // Находим невыполненное задание
-            const today = new Date().toDateString();
-            if (data.lastActiveDate !== today) {
-                data.completedToday = [];
-                data.lastActiveDate = today;
-                saveData();
-            }
-
-            const uncompleted = tasks.filter(t => !data.completedToday.includes(t.title));
-
-            if (uncompleted.length === 0) {
-                showToast('✨ Все задания на это время выполнены!');
-                return;
-            }
-
-            const task = uncompleted[0];
-            showTaskModal(task, timeOfDay);
-        }
-
-        function showTaskModal(task, timeOfDay) {
-            const timeLabels = { morning: '🌅 Утро', day: '☀️ День', evening: '🌙 Вечер' };
-            document.getElementById('modalTitle').textContent = task.title;
-            document.getElementById('modalText').innerHTML = `
-                <div class="task-time">${timeLabels[timeOfDay]}</div>
-                <p style="margin-top: 10px;">${task.desc}</p>
-                <p style="margin-top: 10px; color: var(--pink-main); font-weight: 600;">+${task.percent.toFixed(3)}% к прогрессу</p>
-            `;
-            document.getElementById('modalExtra').innerHTML = '';
-            document.getElementById('modalButtons').innerHTML = `
-                <button class="btn-main btn-secondary" onclick="closeModal()">Позже</button>
-                <button class="btn-main btn-pink" onclick="completeTask('${task.title.replace(/'/g, "\\'")}', ${task.percent})">✓ Выполнено</button>
-            `;
-            document.getElementById('modal').classList.add('active');
-        }
-
-        function completeTask(title, percent) {
-            // Множители
-            const strictnessMult = { soft: 0.8, normal: 1.0, strict: 1.2 };
-            const levelMult = data.percent < 25 ? 1.0 : data.percent < 50 ? 1.1 : data.percent < 75 ? 1.2 : 1.3;
-
-            const finalPercent = percent * strictnessMult[data.settings.strictness] * levelMult;
-
-            data.percent = Math.min(100, data.percent + finalPercent);
-            data.tasksDone++;
-            data.completedToday.push(title);
-
-            // Обновление серии
-            const today = new Date().toDateString();
-            const yesterday = new Date(Date.now() - 86400000).toDateString();
-            if (data.lastActiveDate === yesterday || data.lastActiveDate === null) {
-                if (data.lastActiveDate === yesterday) {
-                    data.streak++;
-                } else {
-                    data.streak = 1;
-                }
-            } else if (data.lastActiveDate !== today) {
-                data.streak = 1;
-            }
-            data.lastActiveDate = today;
-
-            // Бонус за серии
-            const streakBonuses = { 7: 0.1, 30: 0.5, 90: 1.5, 180: 3.0, 365: 7.0 };
-            let streakBonus = 0;
-            for (const [days, bonus] of Object.entries(streakBonuses)) {
-                if (data.streak === parseInt(days)) {
-                    streakBonus = bonus;
-                    data.percent = Math.min(100, data.percent + streakBonus);
-                    showToast(`🔥 Бонус за серию ${days} дней: +${bonus}%!`);
-                }
-            }
-
-            saveData();
-            updateUI();
-            closeModal();
-            showToast(`✨ +${finalPercent.toFixed(3)}% к твоему прогрессу!`);
-
-            // Обновляем список заданий
-            renderTasks();
-        }
-
-        function switchTimeOfDay(timeOfDay, btn) {
-            document.querySelectorAll('#tasks .category-tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            renderTasks(timeOfDay);
-        }
-
-        function renderTasks(timeOfDay) {
-            if (!timeOfDay) timeOfDay = getCurrentTimeOfDay();
-            const tasks = getTasksForTime(timeOfDay);
-            const container = document.getElementById('tasksList');
-
-            const today = new Date().toDateString();
-            if (data.lastActiveDate !== today) {
-                data.completedToday = [];
-            }
-
-            const timeLabels = { morning: '🌅 Утро', day: '☀️ День', evening: '🌙 Вечер' };
-
-            container.innerHTML = tasks.map(task => {
-                const completed = data.completedToday.includes(task.title);
-                return `
-                    <div class="card" style="${completed ? 'opacity: 0.6;' : ''}">
-                        <div class="task-time">${timeLabels[timeOfDay]}${completed ? ' ✓' : ''}</div>
-                        <div class="card-title">${task.title}</div>
-                        <div class="card-text">${task.desc}</div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                            <span style="font-size: 13px; color: var(--pink-main); font-weight: 600;">+${task.percent.toFixed(3)}%</span>
-                            ${completed ? '<span style="color: #388e3c; font-size: 13px;">Выполнено ✓</span>' :
-                            `<button class="btn-main btn-pink btn-small" style="margin: 0; width: auto; padding: 8px 16px;" onclick="completeTask('${task.title.replace(/'/g, "\\'")}', ${task.percent})">Выполнить</button>`}
-                        </div>
+    container.innerHTML = tasks.map((t, i) => {
+        const done = data.completedToday.includes('task_' + i);
+        return `
+            <div class="timeline-item">
+                <div class="time-badge">${t.time}</div>
+                <div class="task-card ${done ? 'done' : ''}" onclick="openTask(${i})">
+                    <div class="task-header">
+                        <div class="task-title">${t.icon} ${t.title}</div>
                     </div>
-                `;
-            }).join('');
-        }
-
-        // === УПРАЖНЕНИЯ ===
-        function switchExerciseCategory(category, btn) {
-            document.querySelectorAll('#body .category-tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            renderExercises(category);
-        }
-
-        function renderExercises(category) {
-            const exercises = exercisesDB[category] || [];
-            const container = document.getElementById('exercisesList');
-
-            container.innerHTML = exercises.map((ex, i) => `
-                <div class="card">
-                    <div class="card-title">${ex.name}</div>
-                    <div class="card-text">${ex.reps}</div>
-                    <button class="btn-main btn-secondary btn-small" style="margin: 0;" onclick="showExerciseDetails('${category}', ${i})">Подробнее →</button>
+                    <div class="task-desc">${t.desc}</div>
+                    <div class="task-meta">
+                        <span class="task-percent">+${t.percent.toFixed(3)}%</span>
+                        ${done ? '<span class="task-status">✓ Выполнено</span>' : '<span style="color: var(--pink); font-size: 12px;">Нажми →</span>'}
+                    </div>
                 </div>
-            `).join('');
-        }
+            </div>
+        `;
+    }).join('');
+}
 
-        function showExerciseDetails(category, index) {
-            const ex = exercisesDB[category][index];
-            document.getElementById('modalTitle').textContent = ex.name;
-            document.getElementById('modalText').innerHTML = `
-                <p><strong>📝 Техника:</strong></p>
-                <p>${ex.technique}</p>
-                <p style="margin-top: 12px;"><strong>💡 На что обратить внимание:</strong></p>
-                <p>${ex.tips}</p>
-                <p style="margin-top: 12px;"><strong>⚠️ Частые ошибки:</strong></p>
-                <p>${ex.mistakes}</p>
-                <p style="margin-top: 12px;"><strong>🔢 Рекомендуется:</strong></p>
-                <p>${ex.reps}</p>
-            `;
-            document.getElementById('modalExtra').innerHTML = '';
-            document.getElementById('modalButtons').innerHTML = `
-                <button class="btn-main btn-pink" onclick="closeModal()">Понятно</button>
-            `;
-            document.getElementById('modal').classList.add('active');
-        }
+function openTask(index) {
+    const tasks = getDailyTasks();
+    const t = tasks[index];
+    const done = data.completedToday.includes('task_' + index);
 
-        function markShave() {
-            data.body.lastShave = new Date().toISOString().split('T')[0];
-            saveData();
-            updateUI();
-            showToast('✓ Бритьё отмечено');
-        }
-
-        // === ОПЕРАЦИИ ===
-        function renderOperations() {
-            const container = document.getElementById('operationsList');
-            let totalSaved = 0;
-            let totalCost = 0;
-
-            container.innerHTML = data.operations.map(op => {
-                totalSaved += op.saved;
-                totalCost += op.cost;
-                const percent = Math.min(100, (op.saved / op.cost) * 100);
-                const statusLabels = {
-                    'not_started': 'Не начато',
-                    'saving': 'Коплю',
-                    'done': 'Сделано'
-                };
-
-                return `
-                    <div class="operation-card">
-                        <div class="operation-header">
-                            <div class="operation-name">${op.name}</div>
-                            <div class="operation-status ${op.status}">${statusLabels[op.status]}</div>
-                        </div>
-                        <div class="operation-cost">Стоимость: ${op.cost.toLocaleString('ru-RU')} ₽</div>
-                        <div class="operation-saved">Накоплено: ${op.saved.toLocaleString('ru-RU')} ₽ (${percent.toFixed(1)}%)</div>
-                        <div class="progress-bar-small">
-                            <div class="progress-fill-small" style="width: ${percent}%"></div>
-                        </div>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button class="btn-main btn-pink btn-small" style="margin: 0; flex: 1;" onclick="addSavings(${op.id})">+ Добавить</button>
-                            <button class="btn-main btn-secondary btn-small" style="margin: 0; flex: 1;" onclick="changeStatus(${op.id})">Статус</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('totalSaved').textContent = totalSaved.toLocaleString('ru-RU') + ' ₽';
-            document.getElementById('totalCost').textContent = totalCost.toLocaleString('ru-RU') + ' ₽';
-        }
-
-        function addSavings(id) {
-            const op = data.operations.find(o => o.id === id);
-            document.getElementById('modalTitle').textContent = 'Добавить накопления';
-            document.getElementById('modalText').innerHTML = `
-                <p>Сколько добавить к «${op.name}»?</p>
-                <p style="font-size: 13px; color: var(--text-soft);">Сейчас накоплено: ${op.saved.toLocaleString('ru-RU')} ₽</p>
-            `;
-            document.getElementById('modalExtra').innerHTML = `
-                <input type="number" id="savingsAmount" placeholder="Сумма в рублях" min="0">
-            `;
-            document.getElementById('modalButtons').innerHTML = `
-                <button class="btn-main btn-secondary" onclick="closeModal()">Отмена</button>
-                <button class="btn-main btn-pink" onclick="saveSavings(${id})">Добавить</button>
-            `;
-            document.getElementById('modal').classList.add('active');
-            setTimeout(() => document.getElementById('savingsAmount').focus(), 100);
-        }
-
-        function saveSavings(id) {
-            const amount = parseInt(document.getElementById('savingsAmount').value);
-            if (!amount || amount <= 0) {
-                showToast('Введите корректную сумму');
-                return;
-            }
-            const op = data.operations.find(o => o.id === id);
-            op.saved += amount;
-            if (op.status === 'not_started') op.status = 'saving';
-            saveData();
-            updateUI();
-            closeModal();
-            showToast(`✓ Добавлено ${amount.toLocaleString('ru-RU')} ₽`);
-        }
-
-        function changeStatus(id) {
-            const op = data.operations.find(o => o.id === id);
-            const statuses = ['not_started', 'saving', 'done'];
-            const labels = ['Не начато', 'Коплю', 'Сделано'];
-            const currentIndex = statuses.indexOf(op.status);
-            op.status = statuses[(currentIndex + 1) % 3];
-            saveData();
-            updateUI();
-            showToast(`Статус: ${labels[(currentIndex + 1) % 3]}`);
-        }
-
-        // === ПРОФИЛЬ ===
-        function saveSettings() {
-            data.settings.wakeUpTime = document.getElementById('wakeUpTime').value;
-            data.settings.workStart = document.getElementById('workStart').value;
-            data.settings.workEnd = document.getElementById('workEnd').value;
-            data.settings.bedTime = document.getElementById('bedTime').value;
-            data.settings.strictness = document.getElementById('strictness').value;
-            data.settings.genderAddress = document.getElementById('genderAddress').value;
-            saveData();
-            showToast('✓ Настройки сохранены');
-        }
-
-        function exportData() {
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `fempath_backup_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('✓ Данные экспортированы');
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    data = { ...defaultData, ...imported };
-                    saveData();
-                    updateUI();
-                    showToast('✓ Данные импортированы');
-                } catch (err) {
-                    showToast('Ошибка импорта');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function resetProgress() {
-            document.getElementById('modalTitle').textContent = '⚠️ Сброс прогресса';
-            document.getElementById('modalText').innerHTML = `
-                <p>Ты действительно хочешь сбросить весь прогресс?</p>
-                <p style="color: #c62828; margin-top: 10px;">Это действие нельзя отменить!</p>
-            `;
-            document.getElementById('modalExtra').innerHTML = '';
-            document.getElementById('modalButtons').innerHTML = `
-                <button class="btn-main btn-secondary" onclick="closeModal()">Отмена</button>
-                <button class="btn-main btn-danger" onclick="confirmReset()">Сбросить</button>
-            `;
-            document.getElementById('modal').classList.add('active');
-        }
-
-        function confirmReset() {
-            data = { ...defaultData };
-            saveData();
-            updateUI();
-            closeModal();
-            showToast('✓ Прогресс сброшен');
-        }
-
-        // === МОДАЛКА И ТОСТ ===
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        // === ИНИЦИАЛИЗАЦИЯ ===
-        document.getElementById('modal').addEventListener('click', (e) => {
-            if (e.target.id === 'modal') closeModal();
+    let detailsHtml = '';
+    if (t.isWorkout) {
+        detailsHtml = `<p style="margin-bottom: 10px;"><strong>Упражнения:</strong></p><ul>`;
+        t.exercises.forEach(ex => {
+            detailsHtml += `<li><strong>${ex.name}</strong> (${ex.reps})<br><span style="font-size: 13px; color: var(--soft);">${ex.desc}</span></li>`;
         });
+        detailsHtml += `</ul>`;
+    } else if (t.details) {
+        detailsHtml = `<ul>${t.details.map(d => `<li>${d}</li>`).join('')}</ul>`;
+    }
 
-        updateUI();
-    </script>
+    document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
+    document.getElementById('modalText').innerHTML = `
+        <div style="background: var(--bg); padding: 10px; border-radius: 10px; margin-bottom: 12px; text-align: center;">
+            <strong style="color: var(--pink);">${t.time}</strong> · <strong style="color: var(--pink);">+${t.percent.toFixed(3)}%</strong>
+        </div>
+        <p>${t.desc}</p>
+        ${detailsHtml}
+    `;
+    document.getElementById('modalExtra').innerHTML = '';
+    document.getElementById('modalButtons').innerHTML = `
+        ${done ? '<button class="btn btn-green" onclick="closeModal()">✓ Уже выполнено</button>' :
+        `<button class="btn btn-sec" onclick="closeModal()">Выйти</button>
+         <button class="btn btn-pink" onclick="completeTask(${index}, ${t.percent})">✓ Выполнено</button>`}
+    `;
+    document.getElementById('modal').classList.add('active');
+}
+
+function getTodayTask() {
+    const tasks = getDailyTasks();
+    const today = new Date().toDateString();
+    if (data.lastActiveDate !== today) { data.completedToday = []; data.lastActiveDate = today; }
+    const uncompleted = tasks.map((t, i) => ({t, i})).filter(x => !data.completedToday.includes('task_' + x.i));
+    if (uncompleted.length === 0) { showToast('✨ Все задания на сегодня выполнены!'); return; }
+    openTask(uncompleted[0].i);
+}
+
+function completeTask(index, percent) {
+    const mult = { soft: 0.8, normal: 1.0, strict: 1.2 }[data.settings.strictness];
+    const lvlMult = data.percent < 25 ? 1.0 : data.percent < 50 ? 1.1 : data.percent < 75 ? 1.2 : 1.3;
+    const final = percent * mult * lvlMult;
+
+    data.percent = Math.min(100, data.percent + final);
+    data.tasksDone++;
+    data.completedToday.push('task_' + index);
+
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (data.lastActiveDate === yesterday) data.streak++;
+    else if (data.lastActiveDate !== today) data.streak = 1;
+    data.lastActiveDate = today;
+
+    const bonuses = { 7: 0.1, 30: 0.5, 90: 1.5, 180: 3.0, 365: 7.0 };
+    for (const [days, bonus] of Object.entries(bonuses)) {
+        if (data.streak === parseInt(days)) {
+            data.percent = Math.min(100, data.percent + bonus);
+            showToast(`🔥 Бонус за серию ${days} дней: +${bonus}%!`);
+        }
+    }
+
+    saveData();
+    updateUI();
+    closeModal();
+    showToast(`✨ +${final.toFixed(3)}% к прогрессу!`);
+}
+
+// === ТРЕКЕРЫ ===
+function renderTrackers() {
+    const container = document.getElementById('trackersList');
+    container.innerHTML = Object.entries(data.trackers).map(([key, tr]) => {
+        let status = 'Можно сделать';
+        let canDo = true;
+        let daysLeft = 0;
+
+        if (tr.lastDone) {
+            const last = new Date(tr.lastDone);
+            const days = Math.floor((Date.now() - last) / (1000*60*60*24));
+            daysLeft = tr.freq - days;
+            if (daysLeft > 0) {
+                status = `Следующее через ${daysLeft} дн.`;
+                canDo = false;
+            } else {
+                status = `Последнее: ${formatDate(tr.lastDone)}`;
+            }
+        } else {
+            status = 'Ещё не отмечено';
+        }
+
+        return `
+            <div class="tracker-card">
+                <div class="tracker-header">
+                    <div class="tracker-name">${tr.name}</div>
+                    <div class="tracker-freq">${tr.freqText}</div>
+                </div>
+                <div class="tracker-info">${status}</div>
+                ${canDo ?
+                    `<button class="btn btn-pink btn-sm" style="width: 100%;" onclick="markTracker('${key}')">✓ Отметить выполнение</button>` :
+                    `<button class="btn btn-sec btn-sm" style="width: 100%; opacity: 0.6;" disabled>Рано (${daysLeft} дн.)</button>`
+                }
+            </div>
+        `;
+    }).join('');
+}
+
+function markTracker(key) {
+    data.trackers[key].lastDone = new Date().toISOString();
+    saveData();
+    updateUI();
+    showToast(`✓ ${data.trackers[key].name} отмечено`);
+}
+
+function formatDate(d) {
+    return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+}
+
+// === ОПЕРАЦИИ ===
+function renderOperations() {
+    const container = document.getElementById('operationsList');
+    let totalSaved = 0, totalCost = 0;
+    const statusLabels = { not_started: 'Не начато', saving: 'Коплю', done: 'Сделано' };
+
+    container.innerHTML = data.operations.map(op => {
+        totalSaved += op.saved; totalCost += op.cost;
+        const pct = Math.min(100, (op.saved / op.cost) * 100);
+        return `
+            <div class="op-card">
+                <div class="op-header">
+                    <div class="op-name">${op.name}</div>
+                    <div class="op-status ${op.status}">${statusLabels[op.status]}</div>
+                </div>
+                <div class="op-cost">Стоимость: ${op.cost.toLocaleString('ru-RU')} ₽</div>
+                <div class="op-saved">Накоплено: ${op.saved.toLocaleString('ru-RU')} ₽ (${pct.toFixed(1)}%)</div>
+                <div class="progress-small"><div class="progress-small-fill" style="width: ${pct}%"></div></div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-pink btn-sm" style="flex: 1;" onclick="addSavings(${op.id})">+ Добавить</button>
+                    <button class="btn btn-sec btn-sm" style="flex: 1;" onclick="changeStatus(${op.id})">Статус</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    document.getElementById('totalSaved').textContent = totalSaved.toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('totalCost').textContent = totalCost.toLocaleString('ru-RU') + ' ₽';
+}
+
+function addSavings(id) {
+    const op = data.operations.find(o => o.id === id);
+    document.getElementById('modalTitle').textContent = 'Добавить накопления';
+    document.getElementById('modalText').innerHTML = `<p>Сколько добавить к «${op.name}»?</p><p style="font-size: 13px; color: var(--soft);">Сейчас: ${op.saved.toLocaleString('ru-RU')} ₽</p>`;
+    document.getElementById('modalExtra').innerHTML = `<input type="number" id="savingsAmount" placeholder="Сумма в рублях" min="0">`;
+    document.getElementById('modalButtons').innerHTML = `
+        <button class="btn btn-sec" onclick="closeModal()">Отмена</button>
+        <button class="btn btn-pink" onclick="saveSavings(${id})">Добавить</button>
+    `;
+    document.getElementById('modal').classList.add('active');
+    setTimeout(() => document.getElementById('savingsAmount').focus(), 100);
+}
+
+function saveSavings(id) {
+    const amount = parseInt(document.getElementById('savingsAmount').value);
+    if (!amount || amount <= 0) { showToast('Введите сумму'); return; }
+    const op = data.operations.find(o => o.id === id);
+    op.saved += amount;
+    if (op.status === 'not_started') op.status = 'saving';
+    saveData(); updateUI(); closeModal();
+    showToast(`✓ Добавлено ${amount.toLocaleString('ru-RU')} ₽`);
+}
+
+function changeStatus(id) {
+    const op = data.operations.find(o => o.id === id);
+    const statuses = ['not_started', 'saving', 'done'];
+    const labels = ['Не начато', 'Коплю', 'Сделано'];
+    const idx = statuses.indexOf(op.status);
+    op.status = statuses[(idx + 1) % 3];
+    saveData(); updateUI();
+    showToast(`Статус: ${labels[(idx + 1) % 3]}`);
+}
+
+// === ПРОФИЛЬ ===
+function saveSettings() {
+    data.settings.wakeUp = document.getElementById('wakeUp').value;
+    data.settings.workStart = document.getElementById('workStart').value;
+    data.settings.workEnd = document.getElementById('workEnd').value;
+    data.settings.bedTime = document.getElementById('bedTime').value;
+    data.settings.strictness = document.getElementById('strictness').value;
+    data.settings.genderAddress = document.getElementById('genderAddress').value;
+    saveData(); updateUI();
+    showToast('✓ Настройки сохранены');
+}
+
+function showPrivacy() {
+    document.getElementById('modalTitle').textContent = '🔒 Политика конфиденциальности';
+    document.getElementById('modalText').innerHTML = `
+        <div class="policy-text">
+            <h3>1. Какие данные мы собираем</h3>
+            <p>Приложение FemPath собирает только те данные, которые ты вводишь самостоятельно:</p>
+            <ul>
+                <li>Прогресс выполнения заданий и процент феминизации</li>
+                <li>Настройки расписания и предпочтений</li>
+                <li>Фотографии прогресса (хранятся только на твоём устройстве)</li>
+                <li>Данные о накоплениях на операции</li>
+                <li>Отметки о выполнении процедур ухода</li>
+            </ul>
+
+            <h3>2. Как хранятся данные</h3>
+            <p>Все данные хранятся <strong>локально на твоём устройстве</strong> в браузере (localStorage). Мы не передаём и не загружаем твои данные на внешние серверы без твоего явного согласия.</p>
+            <p>Фотографии сжимаются и сохраняются в зашифрованном виде в памяти браузера.</p>
+
+            <h3>3. Использование данных</h3>
+            <p>Данные используются исключительно для:</p>
+            <ul>
+                <li>Отслеживания твоего личного прогресса</li>
+                <li>Персонализации заданий под твой график</li>
+                <li>Напоминаний о процедурах и тренировках</li>
+            </ul>
+
+            <h3>4. Твои права</h3>
+            <p>Ты в любой момент можешь:</p>
+            <ul>
+                <li>Экспортировать все свои данные (раздел Профиль → Экспорт)</li>
+                <li>Полностью удалить все данные (раздел Профиль → Сброс прогресса)</li>
+                <li>Удалить отдельные фотографии из истории</li>
+            </ul>
+
+            <h3>5. Конфиденциальность фотографий</h3>
+            <p>Фотографии прогресса предназначены только для твоего личного использования. Приложение не имеет функции автоматической отправки или публикации фото. Делись ими только по собственному желанию.</p>
+
+            <h3>6. Безопасность</h3>
+            <p>Поскольку данные хранятся локально, они доступны только на твоём устройстве. Рекомендуем использовать блокировку экрана на телефоне для дополнительной защиты.</p>
+
+            <h3>7. Изменения политики</h3>
+            <p>Мы можем обновлять эту политику. Актуальная версия всегда доступна в разделе Профиль.</p>
+
+            <p style="margin-top: 15px; font-style: italic; color: var(--pink);">Последнее обновление: ${new Date().toLocaleDateString('ru-RU')}</p>
+        </div>
+    `;
+    document.getElementById('modalExtra').innerHTML = '';
+    document.getElementById('modalButtons').innerHTML = `<button class="btn btn-pink" onclick="closeModal()">Понятно</button>`;
+    document.getElementById('modal').classList.add('active');
+}
+
+function exportData() {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fempath_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✓ Данные экспортированы');
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            data = { ...defaultData, ...JSON.parse(e.target.result) };
+            saveData(); updateUI();
+            showToast('✓ Данные импортированы');
+        } catch (err) { showToast('Ошибка импорта'); }
+    };
+    reader.readAsText(file);
+}
+
+function resetProgress() {
+    document.getElementById('modalTitle').textContent = '️ Сброс прогресса';
+    document.getElementById('modalText').innerHTML = `<p>Ты действительно хочешь сбросить весь прогресс?</p><p style="color: #c62828; margin-top: 10px;">Это действие нельзя отменить!</p>`;
+    document.getElementById('modalExtra').innerHTML = '';
+    document.getElementById('modalButtons').innerHTML = `
+        <button class="btn btn-sec" onclick="closeModal()">Отмена</button>
+        <button class="btn btn-danger" onclick="confirmReset()">Сбросить</button>
+    `;
+    document.getElementById('modal').classList.add('active');
+}
+
+function confirmReset() {
+    data = { ...defaultData };
+    saveData(); updateUI(); closeModal();
+    showToast('✓ Прогресс сброшен');
+}
+
+// === МОДАЛКА И ТОСТ ===
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+document.getElementById('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+
+updateUI();
+</script>
 </body>
 </html>
