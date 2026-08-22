@@ -1,1577 +1,331 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Femi Bloom</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Femi Bloom</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--pink:#ff6b9d;--pink-light:#ffa8c5;--bg:#fff5f7;--bg2:#ffe8f0;--text:#333;--soft:#777;--green:#4caf50;--orange:#ff9800}
-body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;padding-bottom:90px;font-size:15px}
-
-.header{background:linear-gradient(135deg,var(--pink),var(--pink-light));color:#fff;padding:20px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(255,107,157,.3)}
-.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+:root{--p:#ff6b9d;--pl:#ffa8c5;--bg:#fff5f7;--bg2:#ffe8f0;--t:#333;--s:#777;--g:#4caf50;--o:#ff9800}
+body{font-family:Inter,sans-serif;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--t);min-height:100vh;padding-bottom:90px;font-size:15px}
+.splash{position:fixed;inset:0;background:linear-gradient(135var(--p),var(--pl));display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff}
+.spn{width:40px;height:40px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite;margin-top:25px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.header{background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;padding:20px;position:sticky;top:0;z-index:100}
+.ht{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .logo{font-size:20px;font-weight:700}
-.ver{font-size:10px;opacity:.85;font-weight:500;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:8px;margin-left:6px;vertical-align:middle}
-.level-badge{background:rgba(255,255,255,.25);padding:6px 12px;border-radius:12px;font-size:12px;backdrop-filter:blur(10px)}
-.progress-info{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;opacity:.95}
-.progress-bar{width:100%;height:8px;background:rgba(255,255,255,.3);border-radius:10px;overflow:hidden}
-.progress-fill{height:100%;background:#fff;border-radius:10px;transition:width .6s ease}
-
-.content{padding:20px;display:none;animation:fadeIn .3s ease}
+.ver{font-size:10px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:8px;margin-left:6px}
+.cs{font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,255,255,.25);margin-left:6px}
+.cs.ok{background:rgba(76,175,80,.5)}
+.cs.sy{background:rgba(255,152,0,.5)}
+.lb{background:rgba(255,255,255,.25);padding:6px 12px;border-radius:12px;font-size:12px}
+.pi{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.pb{height:8px;background:rgba(255,255,255,.3);border-radius:10px;overflow:hidden}
+.pf{height:100%;background:#fff;border-radius:10px;transition:width .6s}
+.content{padding:20px;display:none}
 .content.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.section-title{font-size:20px;font-weight:600;margin-bottom:15px}
-
-.btn{width:100%;background:#fff;color:var(--pink);border:none;padding:16px;border-radius:15px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px;transition:all .2s}
+.st{font-size:20px;font-weight:600;margin-bottom:15px}
+.btn{width:100%;background:#fff;color:var(--p);border:none;padding:16px;border-radius:15px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px}
 .btn:active{transform:scale(.98)}
-.btn-pink{background:linear-gradient(135deg,var(--pink),var(--pink-light));color:#fff}
-.btn-sec{background:#fff;color:var(--text);border:1px solid #eee}
-.btn-sm{padding:8px 12px;font-size:13px;border-radius:10px;width:auto;display:inline-block;margin:0}
-.btn-danger{background:#ffebee;color:#c62828}
-.btn-green{background:#e8f5e9;color:var(--green)}
-
+.bp{background:linear-gradient(135deg,var(--p),var(--pl));color:#fff}
+.bs{background:#fff;color:var(--t);border:1px solid #eee}
+.bsm{padding:8px 12px;font-size:13px;border-radius:10px;width:auto;display:inline-block;margin:0}
+.bd{background:#ffebee;color:#c62828}
+.bg{background:#e8f5e9;color:var(--g)}
 .card{background:#fff;border-radius:15px;padding:18px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.card-title{font-size:16px;font-weight:600;margin-bottom:6px}
-.card-text{font-size:14px;color:var(--soft);margin-bottom:10px;line-height:1.4}
-
-.mode-badge{display:inline-block;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:15px}
-.mode-work{background:#e3f2fd;color:#1976d2}
-.mode-free{background:#e8f5e9;color:#388e3c}
-
-.timeline-item{display:flex;align-items:flex-start;margin-bottom:16px;position:relative}
-.timeline-item::before{content:'';position:absolute;left:29px;top:35px;bottom:-16px;width:2px;background:var(--pink-light)}
-.timeline-item:last-child::before{display:none}
-.time-badge{background:var(--pink);color:#fff;padding:6px 8px;border-radius:10px;font-size:12px;font-weight:600;min-width:52px;text-align:center;margin-right:12px;flex-shrink:0;z-index:1}
-.task-card{flex:1;background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);cursor:pointer;transition:all .2s;border:2px solid transparent}
-.task-card:active{transform:scale(.98)}
-.task-card.done{opacity:.6;background:#f9f9f9}
-.task-card.done .task-title{text-decoration:line-through}
-.task-card.now{border-color:var(--pink)}
-.task-title{font-size:15px;font-weight:600;margin-bottom:4px}
-.task-desc{font-size:13px;color:var(--soft);margin-bottom:8px}
-.task-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px}
-.task-percent{color:var(--pink);font-weight:600;background:var(--bg);padding:3px 8px;border-radius:8px}
-.task-status{color:var(--green);font-weight:500}
-.now-badge{background:var(--pink);color:#fff;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:600}
-
-.ex-row{background:var(--bg);border-radius:12px;padding:12px;margin-bottom:10px}
-.ex-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.ex-name{font-size:14px;font-weight:600}
-.ex-name.done{color:var(--green);text-decoration:line-through}
-.ex-reps{font-size:12px;color:var(--pink);font-weight:600}
-.ex-actions{display:flex;gap:8px}
-.ex-actions .btn{flex:1}
-
-.timer-display{font-size:52px;font-weight:700;color:var(--pink);text-align:center;margin:15px 0;font-variant-numeric:tabular-nums}
-
-.tracker-card{background:#fff;border-radius:15px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.tracker-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.tracker-name{font-size:15px;font-weight:600}
-.tracker-freq{font-size:11px;padding:3px 8px;border-radius:8px;background:var(--bg);color:var(--pink)}
-.tracker-desc{font-size:13px;color:var(--soft);margin-bottom:10px;line-height:1.4}
-.tracker-info{font-size:12px;color:var(--soft);margin-bottom:10px}
-
-.op-card{background:#fff;border-radius:15px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.op-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.op-name{font-size:15px;font-weight:600;flex:1}
-.op-status{font-size:11px;padding:3px 8px;border-radius:8px;background:#f0f0f0;color:var(--soft)}
-.op-status.saving{background:#fff3e0;color:#f57c00}
-.op-status.done{background:#e8f5e9;color:#388e3c}
-.op-cost{font-size:13px;color:var(--soft);margin-bottom:6px}
-.op-saved{font-size:14px;font-weight:600;color:var(--pink);margin-bottom:8px}
-.progress-small{width:100%;height:6px;background:#f0f0f0;border-radius:10px;overflow:hidden;margin-bottom:10px}
-.progress-small-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--pink-light));border-radius:10px;transition:width .4s}
-
-.setting-row{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06);flex-wrap:wrap;gap:8px}
-.setting-label{font-size:14px;font-weight:500}
-.setting-value{font-size:14px;color:var(--pink);font-weight:600}
-input[type="time"],input[type="number"],input[type="text"],select{border:1px solid #eee;padding:8px 10px;border-radius:8px;font-family:inherit;font-size:14px;background:var(--bg)}
-input[type="number"],input[type="text"]{max-width:140px;width:100%}
-input[type="time"],select{max-width:150px;width:auto}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}
-.stat-card{background:#fff;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.stat-value{font-size:22px;font-weight:700;color:var(--pink);margin-bottom:4px}
-.stat-label{font-size:12px;color:var(--soft)}
-
-.day-btn{padding:8px 10px;border-radius:10px;border:1px solid #eee;background:#fff;font-size:12px;font-family:inherit;cursor:pointer}
-.day-btn.active{background:var(--pink);color:#fff;border-color:var(--pink)}
-
-.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.photo-item{aspect-ratio:3/4;background:var(--bg);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--soft);overflow:hidden;position:relative;border:2px dashed var(--pink-light);cursor:pointer}
-.photo-item img{width:100%;height:100%;object-fit:cover}
-.photo-item .day-label{position:absolute;bottom:6px;left:6px;background:rgba(255,255,255,.92);padding:3px 8px;border-radius:8px;font-size:11px;font-weight:600}
-.photo-warning{background:#fff3e0;border:1px solid var(--orange);color:#e65100;padding:12px;border-radius:12px;margin-top:12px;font-size:13px}
-
-.water-row{display:flex;justify-content:space-between;align-items:center}
-.water-drops{font-size:20px;letter-spacing:4px}
-
-.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:8px 0 10px;box-shadow:0 -2px 15px rgba(0,0,0,.05);z-index:100;border-top-left-radius:20px;border-top-right-radius:20px}
-.nav-item{flex:1;text-align:center;padding:6px 2px;cursor:pointer;color:var(--soft);font-size:10px;font-weight:500;border:none;background:none;font-family:inherit}
-.nav-item.active{color:var(--pink)}
-.nav-icon{font-size:20px;display:block;margin-bottom:2px}
-
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.ct{font-size:16px;font-weight:600;margin-bottom:6px}
+.cx{font-size:14px;color:var(--s);line-height:1.4}
+.mb{display:inline-block;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:15px}
+.mw{background:#e3f2fd;color:#1976d2}
+.mf{background:#e8f5e9;color:#388e3c}
+.ti{display:flex;margin-bottom:16px;position:relative}
+.ti::before{content:'';position:absolute;left:29px;top:35px;bottom:-16px;width:2px;background:var(--pl)}
+.ti:last-child::before{display:none}
+.tb{background:var(--p);color:#fff;padding:6px 8px;border-radius:10px;font-size:12px;font-weight:600;min-width:52px;text-align:center;margin-right:12px;z-index:1}
+.tc{flex:1;background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);cursor:pointer;border:2px solid transparent}
+.tc.done{opacity:.6}
+.tc.done .tt{text-decoration:line-through}
+.tc.now{border-color:var(--p)}
+.tt{font-size:15px;font-weight:600;margin-bottom:4px}
+.td{font-size:13px;color:var(--s);margin-bottom:8px}
+.tm{display:flex;justify-content:space-between;font-size:12px}
+.tp{color:var(--p);font-weight:600;background:var(--bg);padding:3px 8px;border-radius:8px}
+.ts{color:var(--g);font-weight:500}
+.nb{background:var(--p);color:#fff;padding:2px 8px;border-radius:8px;font-size:11px}
+.er{background:var(--bg);border-radius:12px;padding:12px;margin-bottom:10px}
+.et{display:flex;justify-content:space-between;margin-bottom:6px}
+.en{font-size:14px;font-weight:600}
+.en.done{color:var(--g);text-decoration:line-through}
+.ep{font-size:12px;color:var(--p);font-weight:600}
+.ea{display:flex;gap:8px}
+.ea .btn{flex:1}
+.td2{font-size:52px;font-weight:700;color:var(--p);text-align:center;margin:15px 0}
+.tk{background:#fff;border-radius:15px;padding:16px;margin-bottom:12px}
+.th{display:flex;justify-content:space-between;margin-bottom:6px}
+.tn{font-size:15px;font-weight:600}
+.tf{font-size:11px;padding:3px 8px;border-radius:8px;background:var(--bg);color:var(--p)}
+.tds{font-size:13px;color:var(--s);margin-bottom:10px}
+.ti2{font-size:12px;color:var(--s);margin-bottom:10px}
+.oc{background:#fff;border-radius:15px;padding:16px;margin-bottom:12px}
+.oh{display:flex;justify-content:space-between;margin-bottom:10px}
+.on{font-size:15px;font-weight:600;flex:1}
+.os{font-size:11px;padding:3px 8px;border-radius:8px;background:#f0f0f0;color:var(--s)}
+.os.saving{background:#fff3e0;color:#f57c00}
+.os.done{background:#e8f5e9;color:#388e3c}
+.ox{font-size:13px;color:var(--s);margin-bottom:6px}
+.ov{font-size:14px;font-weight:600;color:var(--p);margin-bottom:8px}
+.ps{width:100%;height:6px;background:#f0f0f0;border-radius:10px;overflow:hidden;margin-bottom:10px}
+.psf{height:100%;background:linear-gradient(90deg,var(--p),var(--pl));border-radius:10px}
+.sr{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.sl{font-size:14px;font-weight:500}
+.sv{font-size:14px;color:var(--p);font-weight:600}
+input,select{border:1px solid #eee;padding:8px 10px;border-radius:8px;font-family:inherit;font-size:14px;background:var(--bg)}
+input[type=number],input[type=text]{max-width:140px;width:100%}
+input[type=time],select{max-width:150px;width:auto}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}
+.sc{background:#fff;border-radius:12px;padding:14px;text-align:center}
+.svl{font-size:22px;font-weight:700;color:var(--p)}
+.slb{font-size:12px;color:var(--s)}
+.db{padding:8px 10px;border-radius:10px;border:1px solid #eee;background:#fff;font-size:12px;cursor:pointer}
+.db.a{background:var(--p);color:#fff}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.ph{aspect-ratio:3/4;background:var(--bg);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--s);overflow:hidden;position:relative;border:2px dashed var(--pl);cursor:pointer}
+.ph img{width:100%;height:100%;object-fit:cover}
+.ph .dl{position:absolute;bottom:6px;left:6px;background:rgba(255,255,255,.92);padding:3px 8px;border-radius:8px;font-size:11px;font-weight:600}
+.pw{background:#fff3e0;border:1px solid var(--o);color:#e65100;padding:12px;border-radius:12px;margin-top:12px;font-size:13px}
+.wr{display:flex;justify-content:space-between;align-items:center}
+.wd{font-size:20px;letter-spacing:4px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:8px 0 10px;z-index:100;border-top-left-radius:20px;border-top-right-radius:20px;box-shadow:0 -2px 15px rgba(0,0,0,.05)}
+.ni{flex:1;text-align:center;padding:6px 2px;cursor:pointer;color:var(--s);font-size:10px;font-weight:500;border:none;background:none;font-family:inherit}
+.ni.active{color:var(--p)}
+.nic{font-size:20px;display:block;margin-bottom:2px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
 .modal.active{display:flex}
-.modal-content{background:#fff;border-radius:20px;padding:24px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto}
-.modal-title{font-size:18px;font-weight:600;margin-bottom:12px}
-.modal-text{font-size:14px;color:var(--soft);margin-bottom:15px;line-height:1.6}
-.modal-text strong{color:var(--text)}
-.modal-text ul{margin:10px 0;padding-left:20px}
-.modal-text li{margin-bottom:6px}
-.modal-buttons{display:flex;gap:10px;margin-top:15px}
-.modal-buttons .btn{margin-bottom:0;flex:1}
-textarea{width:100%;min-height:120px;padding:12px;border:1px solid #eee;border-radius:12px;font-family:inherit;font-size:14px;resize:vertical;background:var(--bg)}
-
-.toast{position:fixed;top:100px;left:50%;transform:translateX(-50%);background:#fff;padding:12px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:2000;opacity:0;transition:opacity .3s;font-size:14px;font-weight:500;border-left:4px solid var(--pink);max-width:90%;text-align:center}
+.mc{background:#fff;border-radius:20px;padding:24px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto}
+.mt{font-size:18px;font-weight:600;margin-bottom:12px}
+.mx{font-size:14px;color:var(--s);line-height:1.6;margin-bottom:15px}
+.mx strong{color:var(--t)}
+.mx ul{margin:10px 0;padding-left:20px}
+.mx li{margin-bottom:6px}
+.mbtn{display:flex;gap:10px;margin-top:15px}
+.mbtn .btn{margin:0;flex:1}
+textarea{width:100%;min-height:120px;padding:12px;border:1px solid #eee;border-radius:12px;font-family:inherit;font-size:14px;background:var(--bg)}
+.toast{position:fixed;top:100px;left:50%;transform:translateX(-50%);background:#fff;padding:12px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:2000;opacity:0;transition:opacity .3s;font-size:14px;font-weight:500;border-left:4px solid var(--p);max-width:90%;text-align:center}
 .toast.show{opacity:1}
-
-.policy-text{font-size:13px;line-height:1.7;color:var(--soft)}
-.policy-text h3{color:var(--text);margin:15px 0 8px;font-size:15px}
-.policy-text p{margin-bottom:10px}
-.policy-text ul{padding-left:20px;margin-bottom:10px}
-input[type="file"]{display:none}
-
-.achievement{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
-.achievement.locked{opacity:.5}
-.ach-icon{font-size:32px;flex-shrink:0}
-.ach-info{flex:1}
-.ach-name{font-size:14px;font-weight:600;margin-bottom:4px}
-.ach-desc{font-size:12px;color:var(--soft)}
-.ach-progress{font-size:11px;color:var(--pink);font-weight:600;margin-top:4px}
-
-.mood-btn{background:var(--bg);border:2px solid transparent;padding:12px;border-radius:12px;font-size:24px;cursor:pointer;transition:all .2s}
-.mood-btn.selected{border-color:var(--pink);background:#fff}
-.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
-.archive-item{background:var(--bg);border-radius:10px;padding:12px;margin-bottom:10px}
-.archive-date{font-size:12px;color:var(--pink);font-weight:600;margin-bottom:6px}
-.archive-text{font-size:13px;color:var(--text);line-height:1.5}
-.calc-result{background:var(--bg);border-radius:12px;padding:14px;margin-top:12px;font-size:14px;line-height:1.7}
-.calc-result strong{color:var(--pink)}
-
-.onboard{position:fixed;inset:0;background:linear-gradient(135deg,var(--pink),var(--pink-light));z-index:5000;padding:20px;overflow-y:auto}
-.onboard-card{background:#fff;border-radius:20px;padding:24px;max-width:420px;margin:20px auto}
-.onboard-title{font-size:22px;font-weight:700;margin-bottom:4px;color:var(--pink);text-align:center}
-.onboard-sub{font-size:13px;color:var(--soft);text-align:center;margin-bottom:20px}
-.onboard-field{margin-bottom:12px}
-.onboard-field label{display:block;font-size:13px;font-weight:500;margin-bottom:4px;color:var(--text)}
-.onboard-field input,.onboard-field select{width:100%;max-width:100%}
-.rec-box{background:var(--bg);border-radius:12px;padding:12px;font-size:13px;line-height:1.5;margin-bottom:12px;display:none}
-
-.ward-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:15px;padding-bottom:5px}
-.ward-tab{background:#fff;border:1px solid #eee;padding:8px 14px;border-radius:20px;font-size:12px;white-space:nowrap;cursor:pointer;font-family:inherit;color:var(--text);font-weight:500}
-.ward-tab.active{background:var(--pink);color:#fff;border-color:var(--pink)}
-.ward-item{background:#fff;border-radius:15px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.06);cursor:pointer;display:flex;align-items:center;gap:12px}
-.ward-item:active{transform:scale(.98)}
-.ward-icon{font-size:24px}
-.ward-info{flex:1}
-.ward-name{font-size:14px;font-weight:600}
-.ward-sub{font-size:12px;color:var(--soft)}
-.ward-owned{background:#e8f5e9;color:#388e3c;font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px}
-.ward-detail{background:#fff;border-radius:15px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.ward-detail-title{font-size:18px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:10px}
-.ward-usage{background:var(--bg);padding:12px;border-radius:10px;font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.5}
-.ward-usage strong{color:var(--pink)}
-.outfit-card{background:#fff;border-radius:15px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.outfit-name{font-size:16px;font-weight:600;margin-bottom:6px}
-.outfit-season{display:inline-block;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:600;margin-bottom:8px}
-.s-spring{background:#e8f5e9;color:#2e7d32}
-.s-summer{background:#fff8e1;color:#f57c00}
-.s-autumn{background:#efebe9;color:#6d4c41}
-.s-winter{background:#e3f2fd;color:#1565c0}
-.outfit-items{font-size:13px;line-height:1.6;padding-left:18px}
-.outfit-items li{margin-bottom:4px}
-.tg-link{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#2AABEE,#229ED9);color:#fff;padding:16px;border-radius:15px;text-decoration:none;font-weight:600;margin-bottom:15px}
-</style>
-</head>
-<body>
-
-<!-- ОНБОРДИНГ -->
-<div class="onboard" id="onboard" style="display:none">
-    <div class="onboard-card">
-        <div class="onboard-title">🌸 Femi Bloom <span class="ver" style="background:var(--bg);color:var(--pink)">v0.6 Beta</span></div>
-        <div class="onboard-sub">Заполни профиль — план подстроится под тебя</div>
-        <div class="onboard-field"><label>Как к тебе обращаться?</label><input type="text" id="ob_name" placeholder="Имя"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div class="onboard-field"><label>Возраст</label><input type="number" id="ob_age" placeholder="25"></div>
-            <div class="onboard-field"><label>Рост, см</label><input type="number" id="ob_height" placeholder="170"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div class="onboard-field"><label>Вес, кг</label><input type="number" id="ob_weight" placeholder="65"></div>
-            <div class="onboard-field"><label>Талия, см</label><input type="number" id="ob_waist" placeholder="80"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div class="onboard-field"><label>Грудь, см</label><input type="number" id="ob_chest" placeholder="90"></div>
-            <div class="onboard-field"><label>Бёдра, см</label><input type="number" id="ob_hips" placeholder="95"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div class="onboard-field"><label>Длина без эрекции, см</label><input type="number" id="ob_flaccid" placeholder="9" step="0.1"></div>
-            <div class="onboard-field"><label>Длина при эрекции, см</label><input type="number" id="ob_erect" placeholder="14" step="0.1" oninput="showChastityRec()"></div>
-        </div>
-        <div class="rec-box" id="obRec"></div>
-        <div class="onboard-field"><label>Работа / учёба</label><input type="text" id="ob_job" placeholder="офис / учусь / не работаю"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div class="onboard-field"><label>Работа с</label><input type="time" id="ob_wStart" value="09:00"></div>
-            <div class="onboard-field"><label>Работа до</label><input type="time" id="ob_wEnd" value="18:00"></div>
-        </div>
-        <div class="onboard-field">
-            <label>Интенсивность трансформации</label>
-            <select id="ob_strict">
-                <option value="soft">🌱 Мягкий — базовые практики</option>
-                <option value="normal" selected>🌸 Обычный — + женская рутина</option>
-                <option value="strict">🔥 Строгий — + психология, голос, книги</option>
-            </select>
-        </div>
-        <button class="btn btn-pink" style="margin-top:10px" onclick="finishOnboard()">Начать путь 🌸</button>
-    </div>
-</div>
-
-<div class="header">
-    <div class="header-top">
-        <div class="logo">🌸 Femi Bloom<span class="ver">v0.6 Beta</span></div>
-        <div class="level-badge" id="levelBadge">Новичок</div>
-    </div>
-    <div class="progress-info"><span>Прогресс феминизации</span><span id="percentText">0.00%</span></div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-</div>
-
-<!-- ГЛАВНАЯ -->
+.pt{font-size:13px;line-height:1.7;color:var(--s)}
+.pt h3{color:var(--t);margin:15px 0 8px}
+.pt p{margin-bottom:10px}
+input[type=file]{display:none}
+.ach{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+.ach.lk{opacity:.5}
+.ai{font-size:32px}
+.an{font-size:14px;font-weight:600}
+.ad{font-size:12px;color:var(--s)}
+.mdb{background:var(--bg);border:2px solid transparent;padding:12px;border-radius:12px;font-size:24px;cursor:pointer}
+.mdb.sel{border-color:var(--p);background:#fff}
+.mg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.ar{background:var(--bg);border-radius:10px;padding:12px;margin-bottom:10px}
+.ard{font-size:12px;color:var(--p);font-weight:600;margin-bottom:6px}
+.art{font-size:13px;line-height:1.5}
+.cr{background:var(--bg);border-radius:12px;padding:14px;margin-top:12px;font-size:14px}
+.cr strong{color:var(--p)}
+.ob{position:fixed;inset:0;background:linear-gradient(135deg,var(--p),var(--pl));z-index:5000;padding:20px;overflow-y:auto}
+.obc{background:#fff;border-radius:20px;padding:24px;max-width:420px;margin:20px auto}
+.obt{font-size:22px;font-weight:700;color:var(--p);text-align:center}
+.obs{font-size:13px;color:var(--s);text-align:center;margin:6px 0 20px}
+.obf{margin-bottom:12px}
+.obf label{display:block;font-size:13px;font-weight:500;margin-bottom:4px}
+.obf input,.obf select{width:100%;max-width:100%}
+.rb{background:var(--bg);border-radius:12px;padding:12px;font-size:13px;line-height:1.5;margin-bottom:12px;display:none}
+.wt{display:flex;gap:6px;overflow-x:auto;margin-bottom:15px;padding-bottom:5px}
+.wtab{background:#fff;border:1px solid #eee;padding:8px 14px;border-radius:20px;font-size:12px;white-space:nowrap;cursor:pointer;font-family:inherit;font-weight:500}
+.wtab.a{background:var(--p);color:#fff}
+.wi{background:#fff;border-radius:15px;padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;gap:12px;align-items:center}
+.wic{font-size:24px}
+.wif{flex:1}
+.win{font-size:14px;font-weight:600}
+.wis{font-size:12px;color:var(--s)}
+.wo{background:#e8f5e9;color:#388e3c;font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px}
+.wd2{background:#fff;border-radius:15px;padding:20px}
+.wdt{font-size:18px;font-weight:700;margin-bottom:12px}
+.wu{background:var(--bg);padding:12px;border-radius:10px;font-size:13px;margin-bottom:10px;line-height:1.5}
+.wu strong{color:var(--p)}
+.ofc{background:#fff;border-radius:15px;padding:16px;margin-bottom:12px}
+.ofn{font-size:16px;font-weight:600;margin-bottom:6px}
+.ofs{display:inline-block;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:600;margin-bottom:8px}
+.s-sp{background:#e8f5e9;color:#2e7d32}
+.s-su{background:#fff8e1;color:#f57c00}
+.s-au{background:#efebe9;color:#6d4c41}
+.s-wi{background:#e3f2fd;color:#1565c0}
+.ofi{font-size:13px;line-height:1.6;padding-left:18px}
+.tgl{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#2AABEE,#229ED9);color:#fff;padding:16px;border-radius:15px;text-decoration:none;font-weight:600;margin-bottom:15px}
+</style></head><body>
+<div class="splash" id="splash"><div style="font-size:64px">🌸</div><div style="font-size:24px;font-weight:700;margin-top:10px">Femi Bloom</div><div style="font-size:13px;margin-top:8px">v0.7 Beta · облако</div><div class="spn"></div><div id="splashStatus" style="font-size:13px;margin-top:15px">Подключение...</div></div>
+<div class="ob" id="onboard" style="display:none"><div class="obc">
+<div class="obt">🌸 Femi Bloom</div><div class="obs">Аккаунт создан ☁️ Заполни профиль</div>
+<div class="obf"><label>Имя</label><input type="text" id="ob_name"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="obf"><label>Возраст</label><input type="number" id="ob_age"></div><div class="obf"><label>Рост, см</label><input type="number" id="ob_height"></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="obf"><label>Вес, кг</label><input type="number" id="ob_weight"></div><div class="obf"><label>Талия, см</label><input type="number" id="ob_waist"></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="obf"><label>Грудь, см</label><input type="number" id="ob_chest"></div><div class="obf"><label>Бёдра, см</label><input type="number" id="ob_hips"></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="obf"><label>Длина без эрекции, см</label><input type="number" id="ob_flaccid" step="0.1"></div><div class="obf"><label>При эрекции, см</label><input type="number" id="ob_erect" step="0.1" oninput="showChastityRec()"></div></div>
+<div class="rb" id="obRec"></div>
+<div class="obf"><label>Работа / учёба</label><input type="text" id="ob_job" placeholder="офис / учусь / не работаю"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="obf"><label>Работа с</label><input type="time" id="ob_wStart" value="09:00"></div><div class="obf"><label>Работа до</label><input type="time" id="ob_wEnd" value="18:00"></div></div>
+<div class="obf"><label>Интенсивность</label><select id="ob_strict"><option value="soft">🌱 Мягкий</option><option value="normal" selected> Обычный</option><option value="strict"> Строгий</option></select></div>
+<button class="btn bp" onclick="finishOnboard()">Начать путь 🌸</button>
+</div></div>
+<div class="header"><div class="ht"><div><span class="logo">🌸 Femi Bloom<span class="ver">v0.7</span></span><span class="cs" id="cloudStatus">☁️</span></div><div class="lb" id="levelBadge">Новичок</div></div>
+<div class="pi"><span>Прогресс феминизации</span><span id="percentText">0.00%</span></div><div class="pb"><div class="pf" id="progressFill" style="width:0%"></div></div></div>
 <div class="content active" id="home">
-    <a href="https://t.me/femibloom" target="_blank" class="tg-link">✈️ Наше сообщество в Telegram</a>
-    <button class="btn btn-pink" onclick="getTodayTask()">🌸 Получить задание на сегодня</button>
-    <div class="stats-grid">
-        <div class="stat-card"><div class="stat-value" id="streakValue">0</div><div class="stat-label">дней подряд 🔥</div></div>
-        <div class="stat-card"><div class="stat-value" id="tasksDone">0</div><div class="stat-label">заданий выполнено</div></div>
-    </div>
-    <div class="card">
-        <div class="card-title">💡 Совет дня</div>
-        <div class="card-text" id="dailyTip"></div>
-    </div>
-    <div class="card" id="waterCard"></div>
-    <div class="card">
-        <div class="card-title">📸 Фото прогресса</div>
-        <div class="card-text">Первое фото — «до», навсегда. Второе обновляется раз в неделю.</div>
-        <div class="photo-grid" id="photoGrid"></div>
-        <div id="photoStatus"></div>
-        <button class="btn btn-sec btn-sm" id="photoBtn" style="width:100%;margin-top:12px" onclick="takePhoto()">📷 Сделать фото</button>
-        <input type="file" id="photoInput" accept="image/*" capture="user" onchange="addPhoto(event)">
-    </div>
-    <div class="card" onclick="showAchievements()" style="cursor:pointer">
-        <div class="card-title">🏆 Достижения</div>
-        <div class="card-text">Посмотри свои награды и прогресс к новым</div>
-    </div>
+<a href="https://t.me/femibloom" target="_blank" class="tgl">✈️ Сообщество в Telegram</a>
+<button class="btn bp" onclick="getTodayTask()">🌸 Задание на сегодня</button>
+<div class="sg"><div class="sc"><div class="svl" id="streakValue">0</div><div class="slb">дней подряд 🔥</div></div><div class="sc"><div class="svl" id="tasksDone">0</div><div class="slb">заданий выполнено</div></div></div>
+<div class="card"><div class="ct">💡 Совет дня</div><div class="cx" id="dailyTip"></div></div>
+<div class="card" id="waterCard"></div>
+<div class="card"><div class="ct"> Фото прогресса</div><div class="cx">«До» — навсегда, недельное — раз в 7 дней. Хранится в облаке 🔒</div>
+<div class="pg" id="photoGrid"></div><div id="photoStatus"></div>
+<button class="btn bs bsm" id="photoBtn" style="width:100%;margin-top:12px" onclick="takePhoto()">📷 Сделать фото</button>
+<input type="file" id="photoInput" accept="image/*" capture="user" onchange="addPhoto(event)"></div>
+<div class="card" onclick="showAchievements()" style="cursor:pointer"><div class="ct">🏆 Достижения</div><div class="cx">Твои награды</div></div>
 </div>
-
-<!-- ЗАДАНИЯ -->
-<div class="content" id="tasks">
-    <div class="section-title">📋 План на сегодня</div>
-    <div id="dayModeBadge"></div>
-    <div id="tasksTimeline"></div>
+<div class="content" id="tasks"><div class="st">📋 План на сегодня</div><div id="dayModeBadge"></div><div id="tasksTimeline"></div></div>
+<div class="content" id="body"><div class="st">💆 Уход за телом</div><div id="trackersList"></div>
+<div class="card" style="margin-top:20px"><div class="ct">🍽️ Калькулятор калорий</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0"><input type="number" id="calcAge" placeholder="Возраст"><input type="number" id="calcHeight" placeholder="Рост"><input type="number" id="calcWeight" placeholder="Вес"></div>
+<select id="calcActivity" style="width:100%;margin-bottom:8px"><option value="1.2">Минимальная</option><option value="1.375" selected>Лёгкая</option><option value="1.55">Средняя</option><option value="1.725">Высокая</option></select>
+<select id="calcGoal" style="width:100%;margin-bottom:12px"><option value="-0.15">Похудение</option><option value="0" selected>Поддержание</option><option value="0.1">Набор</option></select>
+<button class="btn bp bsm" style="width:100%" onclick="calcCalories()">Рассчитать</button><div id="calcResult"></div></div></div>
+<div class="content" id="wardrobe"><div class="st">👗 Гардероб</div><div class="cx">Отмечай купленное — появятся новые задания.</div><div class="wt" id="wardTabs"></div><div id="wardContent"></div></div>
+<div class="content" id="operations"><div class="st">💎 Операции</div><div class="cx">Всего: <strong id="totalSaved">0 ₽</strong> из <strong id="totalCost">0 ₽</strong></div><div id="operationsList"></div></div>
+<div class="content" id="profile"><div class="st">👤 Профиль</div>
+<div class="sg"><div class="sc"><div class="svl" id="profilePercent">0.00%</div><div class="slb">прогресс</div></div><div class="sc"><div class="svl" id="profileStreak">0</div><div class="slb">дней подряд</div></div></div>
+<a href="https://t.me/femibloom" target="_blank" class="tgl">✈️ Сообщество t.me/femibloom</a>
+<div class="card"><div class="ct">☁️ Облачное хранилище</div><div class="cx" id="cloudInfo" style="margin:0">Загрузка...</div></div>
+<div class="card" id="adminCard" style="display:none;cursor:pointer" onclick="showAdmin()"><div class="ct">👑 Админ-панель</div><div class="cx" style="margin:0">Все пользователи и их прогресс</div></div>
+<div class="card" onclick="showArchive()" style="cursor:pointer"><div class="ct"> Архив блокнота</div><div class="cx">Все твои вечерние записи</div></div>
+<div class="st" style="font-size:16px;margin-top:20px">👩 Личные данные</div>
+<div class="sr"><span class="sl">Имя</span><input type="text" id="pName" onchange="saveProfile()"></div>
+<div class="sr"><span class="sl">Возраст</span><input type="number" id="pAge" onchange="saveProfile()"></div>
+<div class="sr"><span class="sl">Рост, см</span><input type="number" id="pHeight" onchange="saveProfile()"></div>
+<div class="sr"><span class="sl">Вес, кг</span><input type="number" id="pWeight" onchange="saveProfile()"></div>
+<div class="sr"><span class="sl">Талия, см</span><input type="number" id="pWaist" onchange="saveProfile()"></div>
+<div class="sr"><span class="sl">Грудь, см</span><input type="number" id="pChest" onchange="saveProfile()"></div>
+<div class="sr"><span class="sl">Бёдра, см</span><input type="number" id="pHips" onchange="saveProfile()"></div>
+<div class="sr"><span class="sl">Работа / учёба</span><input type="text" id="pJob" onchange="saveProfile()"></div>
+<div class="card" id="chastityRecCard" style="background:var(--bg)"></div>
+<div class="st" style="font-size:16px;margin-top:20px">⏰ Режим и интенсивность</div>
+<div class="sr"><span class="sl">Подъём</span><span class="sv">06:00</span></div>
+<div class="sr"><span class="sl">Отбой</span><span class="sv">22:00</span></div>
+<div class="sr"><span class="sl">Занятость</span><select id="working" onchange="saveSettings()"><option value="yes">Работаю</option><option value="no">Не работаю</option></select></div>
+<div id="workDaysRow" class="sr" style="display:flex"><span class="sl">Рабочие дни:</span><div id="workDaysBtns" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+<div id="workHoursRows"><div class="sr"><span class="sl">Работа с</span><input type="time" id="workStart" onchange="saveSettings()"></div><div class="sr"><span class="sl">Работа до</span><input type="time" id="workEnd" onchange="saveSettings()"></div></div>
+<div class="sr"><span class="sl">Интенсивность</span><select id="strictness" onchange="saveSettings()"><option value="soft">🌱 Мягкий</option><option value="normal">🌸 Обычный</option><option value="strict">🔥 Строгий</option></select></div>
+<div class="sr"><span class="sl">Обращение</span><select id="genderAddress" onchange="saveSettings()"><option value="female" selected>Женский род</option><option value="neutral">Нейтральный род</option></select></div>
+<div class="card" id="strictInfo" style="background:var(--bg)"></div>
+<div class="st" style="font-size:16px;margin-top:20px">📄 Информация</div>
+<div class="card" onclick="showPrivacy()" style="cursor:pointer"><div class="ct">🔒 Политика конфиденциальности</div><div class="cx">Как мы храним и используем твои данные</div></div>
+<div class="card"><div class="ct"> Femi Bloom</div><div class="cx" style="margin:0">Версия 0.7 Beta · облако и аккаунты</div></div>
+<div class="st" style="font-size:16px;margin-top:20px">⚙️ Данные</div>
+<button class="btn bs" onclick="exportData()">📤 Экспорт данных (JSON)</button>
+<button class="btn bd" onclick="resetProgress()">🗑️ Сбросить прогресс</button>
 </div>
-
-<!-- ТЕЛО -->
-<div class="content" id="body">
-    <div class="section-title">💆 Уход за телом</div>
-    <div class="card-text" style="margin-bottom:15px">Процедуры с рекомендуемой частотой. «Подробнее» — техника и советы.</div>
-    <div id="trackersList"></div>
-    <div class="card" style="margin-top:20px">
-        <div class="card-title">🍽️ Калькулятор калорий</div>
-        <div class="card-text">Рассчитай норму для женственной фигуры.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
-            <input type="number" id="calcAge" placeholder="Возраст">
-            <input type="number" id="calcHeight" placeholder="Рост, см">
-            <input type="number" id="calcWeight" placeholder="Вес, кг">
-        </div>
-        <select id="calcActivity" style="width:100%;margin-bottom:8px">
-            <option value="1.2">Минимальная активность</option>
-            <option value="1.375" selected>Лёгкая (1-3 трен/нед)</option>
-            <option value="1.55">Средняя (3-5 трен/нед)</option>
-            <option value="1.725">Высокая (6-7 трен/нед)</option>
-        </select>
-        <select id="calcGoal" style="width:100%;margin-bottom:12px">
-            <option value="-0.15">Похудение (−15%)</option>
-            <option value="0" selected>Поддержание</option>
-            <option value="0.1">Лёгкий набор (+10%)</option>
-        </select>
-        <button class="btn btn-pink btn-sm" style="width:100%" onclick="calcCalories()">Рассчитать</button>
-        <div id="calcResult"></div>
-    </div>
-</div>
-
-<!-- ГАРДЕРОБ -->
-<div class="content" id="wardrobe">
-    <div class="section-title">👗 Гардероб</div>
-    <div class="card-text">Отмечай купленное — в плане появятся новые задания под твой гардероб.</div>
-    <div class="ward-tabs" id="wardTabs"></div>
-    <div id="wardContent"></div>
-</div>
-
-<!-- ОПЕРАЦИИ -->
-<div class="content" id="operations">
-    <div class="section-title">💎 Операции</div>
-    <div class="card-text" style="margin-bottom:15px">Общий прогресс: <strong id="totalSaved">0 ₽</strong> из <strong id="totalCost">0 ₽</strong></div>
-    <div id="operationsList"></div>
-</div>
-
-<!-- ПРОФИЛЬ -->
-<div class="content" id="profile">
-    <div class="section-title">👤 Профиль</div>
-    <div class="stats-grid">
-        <div class="stat-card"><div class="stat-value" id="profilePercent">0.00%</div><div class="stat-label">прогресс</div></div>
-        <div class="stat-card"><div class="stat-value" id="profileStreak">0</div><div class="stat-label">дней подряд</div></div>
-    </div>
-    <a href="https://t.me/femibloom" target="_blank" class="tg-link">✈️ Сообщество t.me/femibloom</a>
-    <div class="card" onclick="showArchive()" style="cursor:pointer">
-        <div class="card-title">📖 Архив блокнота</div>
-        <div class="card-text">Все твои вечерние записи</div>
-    </div>
-
-    <div class="section-title" style="font-size:16px;margin-top:20px">👩 Личные данные</div>
-    <div class="setting-row"><span class="setting-label">Имя</span><input type="text" id="pName" onchange="saveProfile()"></div>
-    <div class="setting-row"><span class="setting-label">Возраст</span><input type="number" id="pAge" onchange="saveProfile()"></div>
-    <div class="setting-row"><span class="setting-label">Рост, см</span><input type="number" id="pHeight" onchange="saveProfile()"></div>
-    <div class="setting-row"><span class="setting-label">Вес, кг</span><input type="number" id="pWeight" onchange="saveProfile()"></div>
-    <div class="setting-row"><span class="setting-label">Талия, см</span><input type="number" id="pWaist" onchange="saveProfile()"></div>
-    <div class="setting-row"><span class="setting-label">Грудь, см</span><input type="number" id="pChest" onchange="saveProfile()"></div>
-    <div class="setting-row"><span class="setting-label">Бёдра, см</span><input type="number" id="pHips" onchange="saveProfile()"></div>
-    <div class="setting-row"><span class="setting-label">Работа / учёба</span><input type="text" id="pJob" onchange="saveProfile()"></div>
-    <div class="card" id="chastityRecCard" style="background:var(--bg)"></div>
-
-    <div class="section-title" style="font-size:16px;margin-top:20px">⏰ Режим и интенсивность</div>
-    <div class="setting-row"><span class="setting-label">Подъём</span><span class="setting-value">06:00</span></div>
-    <div class="setting-row"><span class="setting-label">Отбой</span><span class="setting-value">22:00</span></div>
-    <div class="setting-row"><span class="setting-label">Занятость</span>
-        <select id="working" onchange="saveSettings()"><option value="yes">Работаю</option><option value="no">Не работаю</option></select>
-    </div>
-    <div id="workDaysRow" class="setting-row" style="display:flex">
-        <span class="setting-label">Рабочие дни:</span>
-        <div id="workDaysBtns" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-    </div>
-    <div id="workHoursRows">
-        <div class="setting-row"><span class="setting-label">Работа с</span><input type="time" id="workStart" onchange="saveSettings()"></div>
-        <div class="setting-row"><span class="setting-label">Работа до</span><input type="time" id="workEnd" onchange="saveSettings()"></div>
-    </div>
-    <div class="setting-row"><span class="setting-label">Интенсивность</span>
-        <select id="strictness" onchange="saveSettings()"><option value="soft">🌱 Мягкий</option><option value="normal">🌸 Обычный</option><option value="strict">🔥 Строгий</option></select>
-    </div>
-    <div class="setting-row"><span class="setting-label">Обращение</span>
-        <select id="genderAddress" onchange="saveSettings()"><option value="female" selected>Женский род</option><option value="neutral">Нейтральный род</option></select>
-    </div>
-    <div class="card" id="strictInfo" style="background:var(--bg)"></div>
-
-    <div class="section-title" style="font-size:16px;margin-top:20px">📄 Информация</div>
-    <div class="card" onclick="showPrivacy()" style="cursor:pointer">
-        <div class="card-title">🔒 Политика конфиденциальности</div>
-        <div class="card-text">Как мы храним и используем твои данные</div>
-    </div>
-    <div class="card"><div class="card-title">🌸 Femi Bloom</div><div class="card-text" style="margin:0">Версия 0.6 Beta · демо-запуск</div></div>
-
-    <div class="section-title" style="font-size:16px;margin-top:20px">⚙️ Данные</div>
-    <button class="btn btn-sec" onclick="exportData()">📤 Экспорт данных</button>
-    <button class="btn btn-sec" onclick="document.getElementById('importFile').click()">📥 Импорт данных</button>
-    <input type="file" id="importFile" accept=".json" onchange="importData(event)">
-    <button class="btn btn-danger" onclick="resetProgress()">🗑️ Сбросить прогресс</button>
-</div>
-
 <div class="nav">
-    <button class="nav-item active" onclick="switchSection('home',this)"><span class="nav-icon">🏠</span>Главная</button>
-    <button class="nav-item" onclick="switchSection('tasks',this)"><span class="nav-icon">📋</span>Задания</button>
-    <button class="nav-item" onclick="switchSection('body',this)"><span class="nav-icon">💆</span>Тело</button>
-    <button class="nav-item" onclick="switchSection('wardrobe',this)"><span class="nav-icon">👗</span>Гардероб</button>
-    <button class="nav-item" onclick="switchSection('operations',this)"><span class="nav-icon">💎</span>Операции</button>
-    <button class="nav-item" onclick="switchSection('profile',this)"><span class="nav-icon">👤</span>Профиль</button>
+<button class="ni active" onclick="switchSection('home',this)"><span class="nic">🏠</span>Главная</button>
+<button class="ni" onclick="switchSection('tasks',this)"><span class="nic">📋</span>Задания</button>
+<button class="ni" onclick="switchSection('body',this)"><span class="nic"></span>Тело</button>
+<button class="ni" onclick="switchSection('wardrobe',this)"><span class="nic">👗</span>Гардероб</button>
+<button class="ni" onclick="switchSection('operations',this)"><span class="nic">💎</span>Операции</button>
+<button class="ni" onclick="switchSection('profile',this)"><span class="nic">👤</span>Профиль</button>
 </div>
-
-<div class="modal" id="modal">
-    <div class="modal-content">
-        <div class="modal-title" id="modalTitle"></div>
-        <div class="modal-text" id="modalText"></div>
-        <div id="modalExtra"></div>
-        <div class="modal-buttons" id="modalButtons"></div>
-    </div>
-</div>
+<div class="modal" id="modal"><div class="mc"><div class="mt" id="modalTitle"></div><div class="mx" id="modalText"></div><div id="modalExtra"></div><div class="mbtn" id="modalButtons"></div></div></div>
 <div class="toast" id="toast"></div>
-
 <script>
-const defaultData = {
-    percent: 0, streak: 0, lastActiveDate: null, tasksDone: 0,
-    completedToday: [], photoBefore: null, photoWeek: null,
-    journal: {}, mood: {}, water: { date: null, count: 0 },
-    calc: { age: '', height: '', weight: '', activity: '1.375', goal: '0' },
-    profile: { name: '', age: '', height: '', weight: '', waist: '', chest: '', hips: '', flaccid: '', erect: '', job: '' },
-    owned: {},
-    onboarded: false,
-    settings: { working: 'yes', workDays: [1,2,3,4,5], workStart: '09:00', workEnd: '18:00', strictness: 'normal', genderAddress: 'female' },
-    operations: [
-        { id: 1, name: 'Орхиэктомия', cost: 200000, saved: 0, status: 'not_started' },
-        { id: 2, name: 'Трахеальное бритьё', cost: 120000, saved: 0, status: 'not_started' },
-        { id: 3, name: 'Увеличение груди', cost: 300000, saved: 0, status: 'not_started' },
-        { id: 4, name: 'Феминизация голоса', cost: 200000, saved: 0, status: 'not_started' },
-        { id: 5, name: 'Феминизация лица', cost: 1000000, saved: 0, status: 'not_started' },
-        { id: 6, name: 'Вагинопластика', cost: 1200000, saved: 0, status: 'not_started' }
-    ],
-    trackers: {
-        shave: { name: '🪒 Бритьё', freq: 2, freqText: 'раз в 2 дня', lastDone: null, requires: 'soft',
-            shortDesc: 'Гладкая кожа без раздражения.',
-            how: '1. Тёплый душ 5-10 минут. 2. Гель для бритья. 3. Острой бритвой ПО росту волос. 4. Прохладная вода, промокни. 5. Пантенол или алоэ.',
-            tips: 'Меняй лезвие каждые 5-7 применений.' },
-        scrub: { name: '🧴 Скраб тела', freq: 3, freqText: 'раз в 3 дня', lastDone: null, requires: 'soft',
-            shortDesc: 'Гладкость и профилактика вросших волос.',
-            how: 'Распарь кожу, массируй скрабом снизу вверх 3-5 минут, смой, крем на влажную кожу.',
-            tips: 'Делай ДО бритья (за день).' },
-        mask: { name: '🎭 Маска для лица', freq: 7, freqText: 'раз в неделю', lastDone: null, requires: 'normal',
-            shortDesc: 'Сияющая ухоженная кожа.',
-            how: 'Очисти кожу, нанеси маску на 10-15 минут, смой, крем.',
-            tips: 'Делай вечером. Не передерживай.' },
-        moisturize: { name: '💧 Увлажнение кожи', freq: 1, freqText: 'ежедневно', lastDone: null, requires: 'normal',
-            shortDesc: 'Мягкость и сияние каждый день.',
-            how: 'Утром: тоник + крем + SPF. Вечером: лосьон на влажную кожу + ночной крем.',
-            tips: 'Пей 1.5-2 л воды.' },
-        nails: { name: '💅 Уход за ногтями', freq: 7, freqText: 'раз в неделю', lastDone: null, requires: 'normal',
-            shortDesc: 'Ухоженные руки.',
-            how: 'Распарь, форма пилочкой, отодвинь кутикулу, база + нюд + топ.',
-            tips: 'Не обрезай кутикулу без опыта.' },
-        hair: { name: '💇 Уход за волосами', freq: 3, freqText: 'раз в 3 дня', lastDone: null, requires: 'normal',
-            shortDesc: 'Здоровые блестящие волосы.',
-            how: 'Шампунь на корни, кондиционер на длину, смой прохладной водой, несмываемый уход на кончики.',
-            tips: 'Расчёсывай с кончиков.' },
-        voice: { name: '🎙️ Практика голоса', freq: 1, freqText: 'ежедневно', lastDone: null, requires: 'strict',
-            shortDesc: 'Мягкий высокий женственный голос.',
-            how: 'Расслабление → дыхание → мычание «мммм» → чтение вслух → запись на диктофон.',
-            tips: 'Боль в горле = СТОП.' },
-        psych: { name: '📚 Женская психология', freq: 1, freqText: 'ежедневно', lastDone: null, requires: 'strict',
-            shortDesc: 'Внутренняя трансформация.',
-            how: '15-20 минут чтения в день, записывай инсайты.',
-            tips: 'Темы: принятие себя, женственность, границы.' }
-    },
-    achievements: {
-        first_task: { name: 'Первый шаг', desc: 'Выполни первое задание', icon: '🌱', unlocked: false },
-        streak_7: { name: 'Неделя привычек', desc: '7 дней подряд', icon: '🔥', unlocked: false },
-        streak_30: { name: 'Месяц трансформации', desc: '30 дней подряд', icon: '💪', unlocked: false },
-        streak_100: { name: 'Сотня дней', desc: '100 дней подряд', icon: '💯', unlocked: false },
-        percent_25: { name: 'Привыкание', desc: 'Достигни 25%', icon: '🌸', unlocked: false },
-        percent_50: { name: 'Половина пути', desc: 'Достигни 50%', icon: '✨', unlocked: false },
-        percent_75: { name: 'Глубокая феминизация', desc: 'Достигни 75%', icon: '👑', unlocked: false },
-        photo_first: { name: 'Точка отсчёта', desc: 'Сделай фото "до"', icon: '📸', unlocked: false },
-        workout_10: { name: 'Спортсменка', desc: '10 тренировок', icon: '🏋️♀️', unlocked: false },
-        savings_first: { name: 'Первый взнос', desc: 'Начни копить на операцию', icon: '💰', unlocked: false }
-    },
-    stats: { workouts: 0 },
-    startDate: new Date().toISOString().split('T')[0]
-};
-
-let data = loadData();
-let photoMode = 'before';
-
-// ============ ГАРДЕРОБ (объединён с чек-листом) ============
-const WARD = {
-    hygiene: { name: '🪥 Гигиена', items: [
-        { id: 'toothbrush', icon: '🪥', name: 'Зубная щётка (мягкая)', how: 'Пользуйся 2 раза в день по 2 минуты: утром и вечером. Щётка под 45° к дёснам, выметающие движения. Меняй каждые 3 месяца.', usage: 'Здоровые зубы и свежее дыхание — база ухоженности.' },
-        { id: 'toothpaste', icon: '🦷', name: 'Зубная паста с фтором', how: 'Горошина на щётку, 2 раза в день вместе с чисткой.', usage: 'Защита от кариеса.' },
-        { id: 'floss', icon: '🧵', name: 'Зубная нить', how: '1 раз в день (вечером) ДО щётки: между всеми зубами, движение вверх-вниз.', usage: 'Чистые промежутки, здоровые дёсны.' },
-        { id: 'tongue', icon: '👅', name: 'Скребок для языка', how: 'Утром после чистки: 3-5 движений от корня к кончику.', usage: 'Свежее дыхание на весь день.' },
-        { id: 'mouthwash', icon: '💧', name: 'Ополаскиватель для рта', how: 'Полоскать 30 секунд после чистки, не глотать.', usage: 'Дополнительная защита и свежесть.' },
-        { id: 'intimgel', icon: '🧴', name: 'Гель для интимной гигиены', how: 'Ежедневно в душе, pH 4-5, без обычного мыла.', usage: 'Здоровая микрофлора, свежесть.' },
-        { id: 'deodorant', icon: '🌸', name: 'Дезодорант', how: 'Утром на чистую сухую кожу подмышек.', usage: 'Уверенность весь день.' },
-        { id: 'wipes', icon: '🧻', name: 'Влажные салфетки', how: 'Носи с собой, используй по необходимости.', usage: 'Свежесть в дороге.' },
-        { id: 'shave', icon: '🪒', name: 'Бритва женская', how: 'Бритьё раз в 2 дня: распарить кожу, гель, по росту волос, после — пантенол.', usage: 'Гладкая кожа.' },
-        { id: 'shavegel', icon: '🫧', name: 'Гель для бритья', how: 'Наноси на кожу перед бритвой, никогда не брей насухо.', usage: 'Без раздражения и порезов.' },
-        { id: 'panthenol', icon: '🧴', name: 'Пантенол после бритья', how: 'После бритья на сухую кожу тонким слоем.', usage: 'Снимает раздражение.' },
-        { id: 'scrub', icon: '🧴', name: 'Скраб для тела', how: 'Раз в 3 дня в душе, массаж снизу вверх 3-5 минут.', usage: 'Гладкость, профилактика вросших волос.' },
-        { id: 'bodylotion', icon: '💧', name: 'Лосьон для тела', how: 'Ежедневно на влажную кожу после душа.', usage: 'Мягкая шелковистая кожа.' }
-    ]},
-    lingerie: { name: '🩲 Бельё', items: [
-        { id: 'slips', icon: '🩲', name: 'Бесшовные трусики-слипы', how: 'Носи каждый день под любую одежду. Стирка ежедневно, деликатный режим.', usage: 'Незаметны, не натирают — база на каждый день.' },
-        { id: 'brazil', icon: '🍑', name: 'Трусики-бразилиана', how: 'Под облегающую одежду и для настроения. Стирка деликатная.', usage: 'Подчёркивают ягодицы, женственное ощущение.' },
-        { id: 'string', icon: '✨', name: 'Кружевные стринги', how: 'Под облегающие платья, не каждый день. Мягкое кружево без жёстких резинок.', usage: 'Незаметны под одеждой, особое настроение.' },
-        { id: 'highwaist', icon: '🌸', name: 'Высокие трусики', how: 'Под платья ретро-силуэта. Визуально сужают талию.', usage: 'Плоский живот, женственный силуэт.' },
-        { id: 'shorts', icon: '🩲', name: 'Трусики-шортики', how: 'На активные дни, спорт, под джинсы.', usage: 'Комфорт без врезания.' },
-        { id: 'bra_nude', icon: '👙', name: 'Бюстгальтер нюд (бесшовный)', how: 'Под светлую одежду. Пуш-ап для объёма.', usage: 'Незаметен, формирует силуэт.' },
-        { id: 'bra_black', icon: '🖤', name: 'Бюстгальтер чёрный', how: 'База под тёмную одежду.', usage: 'Классика на каждый день.' },
-        { id: 'bralette', icon: '🌷', name: 'Бралетт мягкий', how: 'Для дома и комфорта, без косточек.', usage: 'Нежное женственное ощущение.' },
-        { id: 'set', icon: '🎀', name: 'Комплект для особых случаев', how: 'Кружевной комплект: надевай под одежду для настроения или на особые случаи.', usage: 'Уверенность и женственность изнутри.' },
-        { id: 'corset', icon: '👑', name: 'Корсет / боди', how: 'Под платья, не более 4-6 часов в день. Формирует талию.', usage: 'Идеальный силуэт, осанка.' },
-        { id: 'pajamas', icon: '🌙', name: 'Пижамный комплект', how: 'Для сна: шёлк или мягкий хлопок, шортики + топ.', usage: 'Женственно даже во сне.' }
-    ]},
-    tights: { name: '🩳 Колготки', items: [
-        { id: 'black40', icon: '🖤', name: 'Чёрные матовые 40 ден', how: 'База на каждый день: под юбки, платья, в офис.', usage: 'Универсальные, скрывают неровности кожи.' },
-        { id: 'nude20', icon: '🤎', name: 'Телесные 20 ден', how: 'Под светлую одежду и летом. Подбирай точно под тон кожи.', usage: 'Эффект ухоженных ног.' },
-        { id: 'gray40', icon: '🩶', name: 'Серые 40 ден', how: 'Осенью с платьями, интереснее чёрного.', usage: 'Сочетаются с большинством цветов.' },
-        { id: 'black100', icon: '🖤', name: 'Плотные чёрные 100 ден', how: 'Зимой под юбки и платья.', usage: 'Тепло + силуэт.' },
-        { id: 'shine', icon: '✨', name: 'С лёгким блеском', how: 'На вечерние выходы.', usage: 'Сияние, ноги визуально длиннее.' },
-        { id: 'fishnet', icon: '🕸️', name: 'В сетку', how: 'Для смелых образов и свиданий.', usage: 'Дерзкий женственный акцент.' },
-        { id: 'pattern', icon: '🌸', name: 'С рисунком (горошек)', how: 'Игривый акцент под однотонную одежду.', usage: 'Настроение и кокетство.' }
-    ]},
-    clothes: { name: '👕 Одежда', items: [
-        { id: 'blouse', icon: '👚', name: 'Белая блузка', how: 'База: с юбками, брюками, джинсами. V-вырез визуально смягчает черты.', usage: 'Подходит ко всему.' },
-        { id: 'dress_black', icon: '👗', name: 'Маленькое чёрное платье', how: 'На выходы и свидания. Длина до колена.', usage: 'Элегантная классика.' },
-        { id: 'jeans', icon: '👖', name: 'Джинсы с высокой талией', how: 'На каждый день: подчёркивают талию, удлиняют ноги.', usage: 'Комфорт + силуэт.' },
-        { id: 'trench', icon: '🧥', name: 'Тренч / пальто', how: 'Весна-осень, пояс на талии обязателен.', usage: 'Элегантный силуэт.' },
-        { id: 'cardigan', icon: '🧶', name: 'Кардиган оверсайз', how: 'Многослойность и уют, пастельные тона.', usage: 'Мягкий женственный образ.' },
-        { id: 'skirt', icon: '👗', name: 'Юбка-миди', how: 'В офис и на встречи: плиссе или карандаш.', usage: 'Самая элегантная длина.' },
-        { id: 'boots', icon: '👢', name: 'Сапоги / ботильоны', how: 'Осень-зима, каблук 3-5 см для походки.', usage: 'Красивая осанка и шаг.' },
-        { id: 'bag', icon: '👜', name: 'Сумка-сэтчел', how: 'На каждый день, нейтральный цвет.', usage: 'Завершает образ.' }
-    ]},
-    cosmetics: { name: '💄 Косметика', items: [
-        { id: 'cleanser', icon: '🧼', name: 'Средство для умывания', how: 'Утром и вечером, по типу кожи.', usage: 'Первый шаг ухода.' },
-        { id: 'toner', icon: '💧', name: 'Тоник без спирта', how: 'После умывания, по массажным линиям.', usage: 'Восстанавливает pH.' },
-        { id: 'serum', icon: '💉', name: 'Сыворотка', how: 'Под крем: гиалуроновая утром, ретинол на ночь.', usage: 'Увлажнение и сияние.' },
-        { id: 'cream_day', icon: '🧴', name: 'Крем дневной + ночной', how: 'Утром дневной, вечером ночной, вбивающими движениями.', usage: 'Питание кожи.' },
-        { id: 'spf', icon: '☀️', name: 'SPF 30-50', how: 'Каждый день, даже зимой и дома у окна.', usage: 'Главная профилактика старения.' },
-        { id: 'balm', icon: '💋', name: 'Бальзам для губ', how: 'Всегда с собой, наноси по необходимости.', usage: 'Мягкие ухоженные губы.' },
-        { id: 'bbcream', icon: '🎨', name: 'BB-крем', how: 'Тонким слоем спонжем или пальцами, растушуй к шее.', usage: 'Ровный тон, лёгкий женственный вид.' },
-        { id: 'mascara', icon: '👁️', name: 'Тушь для ресниц', how: '1-2 слоя от корня зигзагом вверх.', usage: 'Открывает взгляд.' },
-        { id: 'lipstick', icon: '💄', name: 'Помада / тинт', how: 'Нюд или ягодный: от центра к уголкам.', usage: 'Завершающий штрих.' },
-        { id: 'blush', icon: '🌸', name: 'Румяна', how: 'На яблочки щёк, лёгкая улыбка при нанесении.', usage: 'Свежий отдохнувший вид.' },
-        { id: 'highlight', icon: '✨', name: 'Хайлайтер', how: 'Скулы, кончик носа, под бровью — тонкой кистью.', usage: 'Сияние женственных черт.' },
-        { id: 'polish_clear', icon: '💅', name: 'Прозрачный лак', how: 'На ухоженные ногти, 1-2 слоя.', usage: 'Руки выглядят ухоженно всегда.' },
-        { id: 'remover', icon: '🧴', name: 'Средство для снятия макияжа', how: 'Вечером до умывания: мицеллярная вода или масло.', usage: 'Чистая кожа без воспалений.' },
-        { id: 'perfume', icon: '🌺', name: 'Парфюм', how: '1-2 распыления на запястья, шею, за ушами. Не растирай!', usage: 'Невидимый штрих женственности.' }
-    ]},
-    intim: { name: '💋 Интим', items: [
-        { id: 'lubricant', icon: '🧴', name: 'Лубрикант на водной основе', how: 'Наноси на кожу и игрушки. Без глицерина и парабенов.', usage: 'Комфорт и безопасность.' },
-        { id: 'vib_small', icon: '💎', name: 'Небольшой вибратор', how: 'Начни с малых интенсивностей, всегда с лубрикантом. Мой после использования.', usage: 'Исследование своего тела и удовольствие.' },
-        { id: 'vib_ext', icon: '🌷', name: 'Вибратор наружной стимуляции', how: 'Компактный, мягкий силикон, начинай с минимального режима.', usage: 'Мягкое знакомство с собой.' },
-        { id: 'dildo_small', icon: '🌙', name: 'Дилдо малого размера', how: 'Силикон медицинского класса, широкое основание. Начинай с самого маленького, постепенно. Всегда с лубрикантом.', usage: 'Постепенное привыкание.' },
-        { id: 'chastity', icon: '🔒', name: 'Клетка верности', how: 'Подбирай по рекомендации в профиле: без пояса ~80% длины эрекции, с поясом ~70%. Гигиена ежедневно, носи комфортно, без боли. Вечером — душ и просушка.', usage: 'Контроль и дисциплина в трансформации.' },
-        { id: 'belt', icon: '🗝️', name: 'Пояс верности', how: 'Носи с клеткой для надёжной фиксации. Следи за кожей, делай перерывы на гигиену.', usage: 'Полный контроль.' },
-        { id: 'oil', icon: '🧴', name: 'Массажное масло', how: 'Для самомассажа и расслабляющих ритуалов.', usage: 'Забота о теле.' },
-        { id: 'bombs', icon: '🛁', name: 'Бомбочки для ванны', how: '1-2 раза в неделю: тёплая ванна 15-20 минут.', usage: 'Расслабление и ритуал красоты.' },
-        { id: 'sexbook', icon: '📖', name: 'Книга по женской сексуальности', how: 'Читай по 20 минут в день («Come as You Are» и подобные).', usage: 'Понимание и принятие своего тела.' }
-    ]},
-    optional: { name: '✨ Необязательно', items: [
-        { id: 'styler', icon: '💨', name: 'Фен-стайлер / выпрямитель', how: 'С термозащитой, укладки 2-3 раза в неделю.', usage: 'Женственные укладки по желанию.' },
-        { id: 'curling', icon: '🌀', name: 'Плойка для локонов', how: 'Мягкие волны на праздники.', usage: 'Романтичный образ.' },
-        { id: 'jewelry', icon: '💍', name: 'Минималистичные украшения', how: 'Тонкие цепочки, маленькие серьги, колечки.', usage: 'Детали женственности.' },
-        { id: 'scarf', icon: '🧣', name: 'Шёлковый платок', how: 'На шею, в волосы, на сумку.', usage: 'Элегантный акцент.' },
-        { id: 'sleepmask', icon: '😴', name: 'Шёлковая маска для сна', how: 'На ночь, защищает кожу и ресницы.', usage: 'Красота во сне.' },
-        { id: 'homewear', icon: '🏠', name: 'Красивая домашняя одежда', how: 'Халатик, домашнее платье вместо старых футболок.', usage: 'Женственность даже дома.' },
-        { id: 'candle', icon: '🕯️', name: 'Ароматические свечи', how: 'Для вечерних ритуалов и ванны.', usage: 'Атмосфера заботы о себе.' },
-        { id: 'photoshoot', icon: '📸', name: 'Фотосессия', how: 'Раз в несколько месяцев: фиксируй прогресс красиво.', usage: 'Уверенность и память о пути.' },
-        { id: 'dance', icon: '💃', name: 'Курсы танцев', how: 'Тверк, стрип-пластика, бачата — по желанию.', usage: 'Пластика, походка, уверенность.' },
-        { id: 'wig', icon: '💇‍♀️', name: 'Парик / накладные пряди', how: 'Для экспериментов с длиной и цветом без риска.', usage: 'Быстрая смена образа.' },
-        { id: 'epilator', icon: '⚡', name: 'Эпилятор', how: 'Для гладкости до 4 недель, используй после скраба.', usage: 'Альтернатива бритве.' },
-        { id: 'spaset', icon: '🧖♀️', name: 'Домашний SPA-набор', how: 'Маски, соли, масла — вечер SPA раз в неделю.', usage: 'Салон красоты дома.' }
-    ]},
-    outfits: { name: '🌸 Образы', items: [] }
-};
-
-// Задания, которые появляются при покупке
-const WARD_TASKS = [
-    { ids: ['bbcream','mascara','lipstick'], needs: 2, task: { id: 'w_makeup', time: '07:20', icon: '💄', title: 'Лёгкий макияж', percent: 0.003,
-        desc: 'BB-крем + тушь + тинт. Аккуратно и естественно.', details: ['Ровный тон', 'Тушь в 1-2 слоя', 'Тинт на губы'] } },
-    { ids: ['perfume'], task: { id: 'w_perfume', time: '07:50', icon: '🌺', title: 'Нанести парфюм', percent: 0.002,
-        desc: '1-2 распыления на запястья и шею.', details: ['Не растирать', 'Лёгкая дымка, не шлейф'] } },
-    { ids: ['black40','nude20','gray40','black100','shine','fishnet','pattern'], task: { id: 'w_tights', time: '19:30', icon: '🩳', title: 'Надеть колготки', percent: 0.003,
-        desc: 'Носи колготки 2-3 часа или весь день.', details: ['Натягивай медленно, без затяжек', 'Расправь складки'] } },
-    { ids: ['chastity'], task: { id: 'w_chastity', time: '07:00', icon: '🔒', title: 'Надеть клетку верности', percent: 0.004,
-        desc: 'Носи устройство в течение дня. Гигиена и безопасность — прежде всего.', details: ['Душ и насухо перед надеванием', 'Проверь посадку — без боли и онемения', 'Вечером сними, промой, дай коже отдохнуть'] } },
-    { ids: ['vib_small','vib_ext','dildo_small'], task: { id: 'w_explore', time: '21:00', icon: '💋', title: 'Исследование тела', percent: 0.003,
-        desc: '15 минут наедине с собой: игрушки + лубрикант.', details: ['Всегда с лубрикантом', 'Мой игрушки до и после', 'Прислушивайся к телу, без спешки'] } },
-    { ids: ['polish_clear'], task: { id: 'w_nails', time: '20:30', icon: '💅', title: 'Уход за ногтями', percent: 0.002,
-        desc: 'Форма, кутикула, прозрачное покрытие.', details: ['Пилочка в одну сторону', 'Масло на кутикулу'] } },
-    { ids: ['pajamas'], task: { id: 'w_pajamas', time: '21:50', icon: '🌙', title: 'Женская пижама', percent: 0.002,
-        desc: 'Спи в женственном комплекте.', details: [] } },
-    { ids: ['sexbook'], task: { id: 'w_read', time: '21:30', icon: '📚', title: 'Чтение', percent: 0.003,
-        desc: '20 минут чтения вместо телефона.', details: ['Запиши 1 инсайт'] } }
-];
-
-const OUTFITS = [
-    { name: '🌸 Весенний романтичный', season: 'spring', seasonText: 'Весна', items: ['Платье-миди в цветочек', 'Балетки / белые кеды', 'Телесные колготки 20 ден', 'Кардиган пастельный', 'Сумка через плечо', 'Минималистичные серьги'] },
-    { name: '🌸 Весенний офисный', season: 'spring', seasonText: 'Весна', items: ['Белая блузка с бантом', 'Юбка-карандаш', 'Чёрные колготки 40 ден', 'Лодочки 5 см', 'Пиджак прямого кроя', 'Сумка-сэтчел'] },
-    { name: '☀️ Летний пляжный', season: 'summer', seasonText: 'Лето', items: ['Льняное платье-рубашка', 'Сандалии', 'Соломенная сумка', 'Очки-авиаторы', 'Шляпа', 'SPF'] },
-    { name: '☀️ Летний городской', season: 'summer', seasonText: 'Лето', items: ['Топ + джинсы с высокой талией', 'Белые кеды', 'Кросс-боди сумка', 'Минималистичные украшения'] },
-    { name: '☀️ Летний вечерний', season: 'summer', seasonText: 'Лето', items: ['Шёлковое платье на бретелях', 'Босоножки на каблуке', 'Клатч', 'Длинные серьги', 'Лёгкий парфюм'] },
-    { name: '🍂 Осенний casual', season: 'autumn', seasonText: 'Осень', items: ['Свитер оверсайз молочный', 'Джинсы mom-fit', 'Ботинки челси', 'Бежевый тренч', 'Шарф-снуд'] },
-    { name: '🍂 Осенний элегантный', season: 'autumn', seasonText: 'Осень', items: ['Водолазка бордо', 'Юбка-миди плиссе', 'Ботфорты', 'Серые колготки 40 ден', 'Берет', 'Сумка-тоут'] },
-    { name: '❄️ Зимний уютный', season: 'winter', seasonText: 'Зима', items: ['Кашемировый свитер', 'Брюки палаццо', 'Высокие сапоги', 'Колготки 100 ден', 'Пуховик прямой', 'Шапка-бини + перчатки'] },
-    { name: '❄️ Зимний праздничный', season: 'winter', seasonText: 'Зима', items: ['Бархатное платье', 'Колготки с блеском', 'Лодочки', 'Клатч', 'Яркие серьги', 'Пальто'] },
-    { name: '✨ Свидание (универсально)', season: 'spring', seasonText: 'Универсально', items: ['Шёлковое бельё с кружевом', 'Платье с запахом', 'Колготки с блеском', 'Лодочки', 'Маленькая сумочка', 'Парфюм ваниль/жасмин'] }
-];
-
-// ============ УПРАЖНЕНИЯ ============
-const EX_DB = {
-    morning: [
-        { name: 'Лёгкий бег / быстрая ходьба', reps: '10 минут', time: 600,
-          technique: 'Корпус прямой с лёгким наклоном, плечи расслаблены, руки под 90°. Шаг частый, приземление на середину стопы. Дыхание: 2 шага вдох, 2 выдох. Темп разговорный.',
-          mistakes: 'Топание на пятку, зажатые плечи.', gives: 'Стройные ноги, женственная походка.', tips: 'Тяжело — иди быстрым шагом.' },
-        { name: 'Ягодичный мост', reps: '3×15', technique: 'Ляг, подними таз, сжимая ягодицы, задержись, опусти.', mistakes: 'Прогиб в пояснице.', gives: 'Округлые ягодицы.', tips: 'Дави пятками.' },
-        { name: 'Сумо-приседания', reps: '3×20', technique: 'Ноги шире плеч, носки наружу, спина прямая.', mistakes: 'Завал коленей.', gives: 'Тонус бёдер.', tips: 'Вес на пятках.' },
-        { name: 'Выпады', reps: '3×12 на ногу', technique: 'Шаг вперёд, оба колена 90°, толчок пяткой.', mistakes: 'Наклон вперёд.', gives: 'Ягодицы, баланс.', tips: 'Корпус вертикально.' },
-        { name: 'Вакуум живота', reps: '10×15 сек', technique: 'Выдохни всё, втяни живот под рёбра, задержись. Натощак.', mistakes: 'После еды.', gives: 'Узкая талия.', tips: 'Утром до еды.' },
-        { name: 'Планка', reps: '3×30 сек', technique: 'Упор на предплечья, тело в линию.', mistakes: 'Провисание поясницы.', gives: 'Кор, осанка.', tips: 'Дыши ровно.' }
-    ],
-    morningWork: [
-        { name: 'Ягодичный мост', reps: '3×15', technique: 'Подними таз, сжимая ягодицы.', mistakes: 'Прогиб.', gives: 'Форма ягодиц.', tips: 'Пятками.' },
-        { name: 'Сумо-приседания', reps: '3×15', technique: 'Носки наружу, спина прямая.', mistakes: 'Колени внутрь.', gives: 'Бёдра.', tips: 'Пятки.' },
-        { name: 'Вакуум живота', reps: '5×15 сек', technique: 'Втяни живот, задержись.', mistakes: 'После еды.', gives: 'Талия.', tips: 'Натощак.' },
-        { name: 'Планка', reps: '2×30 сек', technique: 'Тело в линию.', mistakes: 'Провисание.', gives: 'Кор.', tips: 'Дыши.' }
-    ],
-    evening: [
-        { name: 'Ягодичный мост на одной ноге', reps: '3×12 на ногу', technique: 'Одна нога вытянута, поднимай таз одной ягодицей.', mistakes: 'Перекос таза.', gives: 'Симметрия ягодиц.', tips: 'Таз ровно.' },
-        { name: 'Отведения ноги назад', reps: '3×20 на ногу', technique: 'На четвереньках, нога назад-вверх, пауза.', mistakes: 'Прогиб поясницы.', gives: 'Верх ягодиц.', tips: 'Медленно.' },
-        { name: 'Боковая планка', reps: '3×30 сек', technique: 'Упор на предплечье, тело в линию.', mistakes: 'Перекос.', gives: 'Бок талии.', tips: 'Макушкой вверх.' },
-        { name: 'Бабочка', reps: '2 минуты', technique: 'Стопы вместе, колени в стороны, дыши глубоко.', mistakes: 'Рывки.', gives: 'Гибкость, мягкая походка.', tips: 'Расслабляйся.' }
-    ]
-};
-
-const CARE_DB = {
-    morning: [
-        { name: '🦷 Чистка зубов', time: 120, how: 'Щётка под 45° к дёснам, выметающие движения, все поверхности, в конце — язык.', tips: 'Не дави, щётка мягкая.', gives: 'Улыбка и дыхание.' },
-        { name: '👅 Чистка языка', time: 30, how: 'Скребок от корня к кончику 3-5 раз.', tips: 'Без давления.', gives: 'Свежесть.' },
-        { name: '💦 Умывание', time: 60, how: 'Пенка, тёплая вода, по массажным линиям, промокни.', tips: 'Не горячая вода.', gives: 'Чистая кожа.' },
-        { name: '🌸 Тоник', time: 30, how: 'По массажным линиям.', tips: 'Без спирта.', gives: 'pH баланс.' },
-        { name: '🧴 Крем + SPF', time: 60, how: 'Горошина по точкам, вбивающими движениями.', tips: 'SPF каждый день.', gives: 'Увлажнение.' },
-        { name: '💇 Причёсывание', time: 90, how: 'С кончиков вверх, укладка.', tips: 'Не дёргай.', gives: 'Ухоженный вид.' }
-    ],
-    evening: [
-        { name: '🧼 Демакияж', time: 120, how: 'Мицеллярная вода/масло, затем пенка.', tips: 'Глаза не три.', gives: 'Чистые поры.' },
-        { name: '🦷 Зубы + нить', time: 120, how: 'Нить ДО щётки, все промежутки.', tips: 'Ежедневно.', gives: 'Здоровые зубы.' },
-        { name: '🚿 Контрастный душ', time: 180, how: '3 круга: 30 сек тёплая / 30 прохладная, снизу вверх.', tips: 'Не ледяная сразу.', gives: 'Тонус кожи.' },
-        { name: '🧴 Крем для тела', time: 120, how: 'На влажную кожу, снизу вверх.', tips: 'Массаж = профилактика целлюлита.', gives: 'Шелковистость.' },
-        { name: '🌙 Уход за лицом', time: 90, how: 'Тоник + ночной крем.', tips: 'За час до сна.', gives: 'Восстановление.' },
-        { name: '💆 Массаж лица', time: 120, how: 'По линиям: лоб→виски, нос→уши, подбородок→уши.', tips: 'Без растяжения.', gives: 'Овал, сияние.' }
-    ]
-};
-
-// ============ ПЛАН ДНЯ ============
-function isWorkToday() {
-    if (data.settings.working !== 'yes') return false;
-    return data.settings.workDays.includes(new Date().getDay());
-}
-function strictLevel() { return { soft: 1, normal: 2, strict: 3 }[data.settings.strictness] || 2; }
-function toMin(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
-
-function getWardTasks() {
-    const sl = strictLevel();
-    const out = [];
-    WARD_TASKS.forEach(wt => {
-        if ((wt.needs || 1) > sl) return;
-        if (wt.ids.some(id => data.owned[id])) out.push(wt.task);
-    });
-    return out;
-}
-
-function getDailyTasks() {
-    const p = data.percent;
-    const work = isWorkToday();
-    const sl = strictLevel();
-    let tasks;
-
-    if (work) {
-        tasks = [
-            { id: 't_wake', time: '06:00', icon: '🌅', title: 'Подъём и аффирмации', percent: 0.003, desc: 'Вода, аффирмации, улыбка в зеркало.', details: ['Стакан воды', '3 аффирмации вслух', 'Улыбка в зеркало'] },
-            { id: 't_careM', time: '06:15', icon: '🪥', title: 'Утренний уход', percent: 0.005, desc: 'Провались внутрь: зубы, умывание, крем — с таймерами.', care: 'morning' },
-            { id: 't_mwork', time: '06:45', icon: '💪', title: 'Утренняя тренировка', percent: 0.007, desc: '4 упражнения.', workout: 'morningWork' },
-            { id: 't_ready', time: '07:30', icon: '👗', title: 'Сборы', percent: 0.003, desc: 'Аккуратный женственный образ.', details: sl >= 2 ? ['Бельё', 'Лёгкий макияж', 'Причёска'] : ['Бельё', 'Причёска', 'Чистая одежда'] },
-            { id: 't_breakfast', time: '08:00', icon: '🍳', title: 'Завтрак', percent: 0.003, desc: 'Белок + углеводы, медленно.', details: ['Без телефона'] },
-            { id: 't_day', time: '12:00', icon: '☀️', title: 'Дневной контроль', percent: 0.003, desc: 'Осанка, походка, манеры.', details: ['Спина прямая', 'Мелкие шаги', 'Мягкая улыбка'] },
-            { id: 't_lunch', time: '13:00', icon: '🥗', title: 'Обед осознанно', percent: 0.003, desc: 'Правило тарелки.', details: ['½ овощи, ¼ белок, ¼ гарнир'] },
-            { id: 't_ework', time: '19:00', icon: '🏋️♀️', title: 'Вечерняя тренировка', percent: 0.007, desc: '4 упражнения.', workout: 'evening' },
-            { id: 't_wear', time: '20:00', icon: '👙', title: 'Бельё и такинг', percent: 0.004, desc: 'Женское бельё 1-2 часа.', details: ['Носить 1-2 часа'] },
-            { id: 't_careE', time: '20:45', icon: '🌙', title: 'Вечерний уход', percent: 0.005, desc: 'Очищение, душ, крем, массаж.', care: 'evening' },
-            ...(sl >= 3 ? [{ id: 't_voice', time: '21:15', icon: '🎙️', title: 'Практика голоса', percent: 0.005, desc: '15-20 минут.', voice: true }] : []),
-            { id: 't_mirror', time: '21:40', icon: '🪞', title: 'Зеркальная практика', percent: 0.002, desc: '2 минуты комплиментов себе.', timed: true, timeSec: 120, how: '5 комплиментов вслух, расслабь лицо.', tips: 'Эффект накопительный.', gives: 'Принятие себя.' },
-            { id: 't_report', time: '22:00', icon: '📝', title: 'Вечерний отчёт', percent: 0.002, desc: 'Блокнот, настроение.', report: true }
-        ];
-    } else {
-        tasks = [
-            { id: 't_wake', time: '06:00', icon: '🌅', title: 'Подъём и аффирмации', percent: 0.003, desc: 'Вода, аффирмации, свежий воздух.', details: ['Стакан воды', '3 аффирмации', 'Окно на 5 минут'] },
-            { id: 't_careM', time: '06:15', icon: '🪥', title: 'Утренний уход', percent: 0.005, desc: 'Зубы, умывание, крем — с таймерами.', care: 'morning' },
-            { id: 't_mwork', time: '07:00', icon: '💪', title: 'Тренировка + бег', percent: 0.007, desc: 'Бег 10 минут + 5 упражнений.', workout: 'morning' },
-            { id: 't_breakfast', time: '07:45', icon: '🍳', title: 'Завтрак', percent: 0.003, desc: 'Красиво сервируй, без телефона.', details: ['Белок + углеводы + жиры'] },
-            { id: 't_clean', time: '08:30', icon: '🧺', title: 'Уборка и уют', percent: 0.003, desc: '20 минут женственного ритуала.', details: ['Постель, посуда, пыль', 'Музыка, плавные движения'] },
-            ...(sl >= 2 ? [{ id: 't_beauty', time: '09:30', icon: '💄', title: 'Бьюти-час', percent: 0.003, desc: 'Макияж, ногти, уход.', details: ['Попрактикуй макияж', 'Маска/ногти по графику'] }] : []),
-            { id: 't_hobby', time: '10:30', icon: '🎨', title: 'Хобби и развитие', percent: 0.003, desc: '1 час творчества или учёбы.', details: ['Без соцсетей'] },
-            { id: 't_walk', time: '11:30', icon: '🚶‍♀️', title: 'Прогулка', percent: 0.004, desc: '30-60 минут практики походки.', details: ['Осанка, шаг от бедра', 'Не в телефон'] },
-            { id: 't_lunch', time: '13:00', icon: '🥗', title: 'Обед', percent: 0.003, desc: 'Правило тарелки.', details: ['½ овощи'] },
-            { id: 't_rest', time: '14:00', icon: '😴', title: 'Час отдыха', percent: 0.002, desc: '20-30 минут тишины.', details: ['Без телефона'] },
-            ...(sl >= 3 ? [{ id: 't_psych', time: '15:00', icon: '📖', title: 'Женская психология', percent: 0.005, desc: '30 минут чтения.', details: ['Принятие себя, женственность'] }] : []),
-            { id: 't_snack', time: '16:00', icon: '🍎', title: 'Перекус', percent: 0.002, desc: 'Фрукт, орехи, йогурт.', details: ['Без сахара'] },
-            { id: 't_ework', time: '17:00', icon: '🏋️‍♀️', title: 'Вечерняя тренировка', percent: 0.007, desc: '4 упражнения.', workout: 'evening' },
-            { id: 't_dinner', time: '18:30', icon: '🍽️', title: 'Лёгкий ужин', percent: 0.003, desc: 'Белок + овощи, за 3 часа до сна.', details: [] },
-            { id: 't_wear', time: '19:30', icon: '👙', title: 'Бельё и такинг', percent: 0.004, desc: 'Бельё 1-2 часа.', details: ['Носить 1-2 часа'] },
-            { id: 't_careE', time: '20:15', icon: '🌙', title: 'Вечерний уход', percent: 0.005, desc: 'Очищение, душ, крем, массаж.', care: 'evening' },
-            ...(sl >= 3 ? [{ id: 't_voice', time: '20:45', icon: '🎙️', title: 'Практика голоса', percent: 0.005, desc: '15-20 минут.', voice: true }] : []),
-            { id: 't_mirror', time: '21:15', icon: '🪞', title: 'Зеркальная практика', percent: 0.002, desc: '2 минуты комплиментов.', timed: true, timeSec: 120, how: '5 комплиментов вслух.', tips: 'Эффект накопительный.', gives: 'Принятие себя.' },
-            { id: 't_report', time: '22:00', icon: '📝', title: 'Вечерний отчёт', percent: 0.002, desc: 'Блокнот, настроение.', report: true }
-        ];
-    }
-
-    // Задания из гардероба
-    tasks = tasks.concat(getWardTasks());
-    tasks.sort((a, b) => toMin(a.time) - toMin(b.time));
-    return tasks;
-}
-
-// ============ ХРАНИЛИЩЕ ============
-function loadData() {
-    const saved = localStorage.getItem('femibloom_data');
-    return saved ? { ...defaultData, ...JSON.parse(saved) } : { ...defaultData };
-}
-function saveData() { localStorage.setItem('femibloom_data', JSON.stringify(data)); }
-function todayKey() { return new Date().toDateString(); }
-function formatDate(d) { return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); }
-function fmtTime(s) { return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
-
-// ============ РЕКОМЕНДАЦИЯ РАЗМЕРА ============
-function chastityRec(erectCm) {
-    const mm = erectCm * 10;
-    const noBelt = Math.round((mm * 0.8) / 5) * 5;
-    const withBelt = Math.round((mm * 0.7) / 5) * 5;
-    const size = erectCm < 11 ? 'S' : erectCm < 13.5 ? 'M' : erectCm < 16 ? 'L' : 'XL';
-    return { noBelt, withBelt, size };
-}
-function showChastityRec() {
-    const v = parseFloat(document.getElementById('ob_erect').value);
-    const box = document.getElementById('obRec');
-    if (!v || v < 5 || v > 25) { box.style.display = 'none'; return; }
-    const r = chastityRec(v);
-    box.style.display = 'block';
-    box.innerHTML = `📏 <strong>Рекомендация клетки:</strong> размер <strong>${r.size}</strong><br>Без пояса верности: ~<strong>${r.noBelt} мм</strong><br>С поясом верности: ~<strong>${r.withBelt} мм</strong><br><span style="font-size:12px;color:var(--soft)">Клетка должна быть чуть короче эрекции — так она выполняет свою функцию комфортно.</span>`;
-}
-
-// ============ ОНБОРДИНГ ============
-function showOnboard() { document.getElementById('onboard').style.display = 'block'; }
-function finishOnboard() {
-    const name = document.getElementById('ob_name').value.trim();
-    const age = document.getElementById('ob_age').value;
-    if (!name || !age) { showToast('Укажи имя и возраст'); return; }
-    data.profile = {
-        name, age,
-        height: document.getElementById('ob_height').value,
-        weight: document.getElementById('ob_weight').value,
-        waist: document.getElementById('ob_waist').value,
-        chest: document.getElementById('ob_chest').value,
-        hips: document.getElementById('ob_hips').value,
-        flaccid: document.getElementById('ob_flaccid').value,
-        erect: document.getElementById('ob_erect').value,
-        job: document.getElementById('ob_job').value.trim()
-    };
-    data.settings.workStart = document.getElementById('ob_wStart').value;
-    data.settings.workEnd = document.getElementById('ob_wEnd').value;
-    data.settings.strictness = document.getElementById('ob_strict').value;
-    data.onboarded = true;
-    saveData();
-    document.getElementById('onboard').style.display = 'none';
-    updateUI();
-    showToast(`Добро пожаловать, ${name}! 🌸`);
-}
-
-// ============ ТАЙМЕР ============
-let timerState = { int: null, remaining: 0 };
-function stopTimer() { if (timerState.int) { clearInterval(timerState.int); timerState.int = null; } }
-function startTimerUI(seconds, doneFn) {
-    stopTimer();
-    timerState.remaining = seconds;
-    const el = document.getElementById('timerDisplay');
-    if (el) el.textContent = fmtTime(timerState.remaining);
-    const btn = document.getElementById('timerStartBtn');
-    if (btn) btn.style.display = 'none';
-    timerState.int = setInterval(() => {
-        timerState.remaining--;
-        const el2 = document.getElementById('timerDisplay');
-        if (el2) el2.textContent = fmtTime(Math.max(0, timerState.remaining));
-        if (timerState.remaining <= 0) { stopTimer(); doneFn(); }
-    }, 1000);
-}
-
-function updateUI() {
-    if (!data.onboarded) { showOnboard(); return; }
-    const pct = data.percent.toFixed(2);
-    document.getElementById('percentText').textContent = pct + '%';
-    document.getElementById('profilePercent').textContent = pct + '%';
-    document.getElementById('progressFill').style.width = Math.min(data.percent, 100) + '%';
-
-    let level = 'Новичок';
-    if (data.percent >= 91) level = 'Финальная трансформация';
-    else if (data.percent >= 76) level = 'Глубокая феминизация';
-    else if (data.percent >= 51) level = 'Развитие';
-    else if (data.percent >= 26) level = 'Привыкание';
-    document.getElementById('levelBadge').textContent = level;
-
-    document.getElementById('streakValue').textContent = data.streak;
-    document.getElementById('profileStreak').textContent = data.streak;
-    document.getElementById('tasksDone').textContent = data.tasksDone;
-
-    const tips = ['Маленькие шаги каждый день ведут к большим переменам.', 'Регулярность важнее интенсивности.', 'Твоё тело меняется. Дай ему время.', 'Женственность — это и внутреннее состояние.', 'Каждый день ты ближе к себе настоящей.', 'Не сравнивай себя с другими.', 'Забота о себе — не эгоизм.'];
-    document.getElementById('dailyTip').textContent = tips[new Date().getDate() % tips.length];
-
-    // Профиль
-    document.getElementById('pName').value = data.profile.name;
-    document.getElementById('pAge').value = data.profile.age;
-    document.getElementById('pHeight').value = data.profile.height;
-    document.getElementById('pWeight').value = data.profile.weight;
-    document.getElementById('pWaist').value = data.profile.waist;
-    document.getElementById('pChest').value = data.profile.chest;
-    document.getElementById('pHips').value = data.profile.hips;
-    document.getElementById('pJob').value = data.profile.job;
-
-    const recCard = document.getElementById('chastityRecCard');
-    if (data.profile.erect) {
-        const r = chastityRec(parseFloat(data.profile.erect));
-        recCard.innerHTML = `<div class="card-title">🔒 Рекомендация клетки верности</div>
-            <div class="card-text" style="margin:0">Размер <strong>${r.size}</strong> · без пояса: ~<strong>${r.noBelt} мм</strong> · с поясом: ~<strong>${r.withBelt} мм</strong></div>`;
-    } else recCard.innerHTML = '';
-
-    document.getElementById('working').value = data.settings.working;
-    document.getElementById('workStart').value = data.settings.workStart;
-    document.getElementById('workEnd').value = data.settings.workEnd;
-    document.getElementById('strictness').value = data.settings.strictness;
-    document.getElementById('genderAddress').value = data.settings.genderAddress;
-    document.getElementById('workDaysRow').style.display = data.settings.working === 'yes' ? 'flex' : 'none';
-    document.getElementById('workHoursRows').style.display = data.settings.working === 'yes' ? 'block' : 'none';
-    renderWorkDays();
-
-    const sl = strictLevel();
-    document.getElementById('strictInfo').innerHTML = `
-        <div class="card-title">Интенсивность: ${sl === 1 ? '🌱 Мягкая' : sl === 2 ? '🌸 Обычная' : '🔥 Строгая'}</div>
-        <div class="card-text" style="margin:0">
-            ${sl >= 1 ? '✓ Бритьё тела и скрабы<br>✓ Базовые упражнения<br>' : ''}
-            ${sl >= 2 ? '✓ Макияж и уход за лицом<br>✓ Ногти, волосы, маски<br>✓ Бельё и колготки<br>' : ''}
-            ${sl >= 3 ? '✓ Практика голоса ежедневно<br>✓ Женская психология и книги<br>✓ Интенсивные тренировки' : ''}
-        </div>`;
-
-    document.getElementById('calcAge').value = data.calc.age || data.profile.age || '';
-    document.getElementById('calcHeight').value = data.calc.height || data.profile.height || '';
-    document.getElementById('calcWeight').value = data.calc.weight || data.profile.weight || '';
-    document.getElementById('calcActivity').value = data.calc.activity;
-    document.getElementById('calcGoal').value = data.calc.goal;
-    if (data.calc.result) document.getElementById('calcResult').innerHTML = data.calc.result;
-
-    checkAchievements();
-    renderWater(); renderPhotos(); renderTasks(); renderTrackers(); renderOperations(); renderWard();
-}
-
-// ============ ВОДА ============
-function renderWater() {
-    const today = new Date().toISOString().split('T')[0];
-    if (data.water.date !== today) data.water = { date: today, count: 0 };
-    const c = data.water.count;
-    document.getElementById('waterCard').innerHTML = `
-        <div class="water-row">
-            <div><div class="card-title">💧 Вода сегодня</div><div class="water-drops">${'💧'.repeat(Math.min(c,8))}${'·'.repeat(Math.max(0,8-c))}</div></div>
-            <div style="text-align:right"><div class="stat-value" style="font-size:20px">${c}/8</div>
-            <button class="btn btn-pink btn-sm" onclick="addWater()">+ стакан</button></div>
-        </div>`;
-}
-function addWater() {
-    if (data.water.count < 8) { data.water.count++; saveData(); renderWater(); if (data.water.count === 8) showToast('💧 Норма выполнена!'); }
-    else showToast('💧 Норма уже выполнена!');
-}
-
-// ============ ФОТО ============
-function renderPhotos() {
-    const grid = document.getElementById('photoGrid');
-    const status = document.getElementById('photoStatus');
-    const btn = document.getElementById('photoBtn');
-    grid.innerHTML = `
-        <div class="photo-item" onclick="viewPhoto('before')">${data.photoBefore ? `<img src="${data.photoBefore.data}"><div class="day-label">ДО · ${formatDate(data.photoBefore.date)}</div>` : '📷'}</div>
-        <div class="photo-item" onclick="viewPhoto('week')">${data.photoWeek ? `<img src="${data.photoWeek.data}"><div class="day-label">Неделя · ${formatDate(data.photoWeek.date)}</div>` : '📷'}</div>`;
-    if (!data.photoBefore) {
-        photoMode = 'before';
-        status.innerHTML = '<div class="photo-warning">📸 Сделай первое фото «ДО».</div>';
-        btn.textContent = '📷 Сделать фото «ДО»'; btn.style.display = 'block';
-    } else {
-        const base = data.photoWeek ? data.photoWeek.date : data.photoBefore.date;
-        const days = Math.floor((Date.now() - new Date(base)) / 86400000);
-        if (days >= 7) {
-            photoMode = 'week';
-            status.innerHTML = `<div class="photo-warning">⚠️ Прошло ${days} дней. Обнови недельное фото!</div>`;
-            btn.textContent = '📷 Обновить недельное фото'; btn.style.display = 'block';
-        } else {
-            photoMode = null;
-            status.innerHTML = `<div class="card-text" style="margin-top:10px;color:var(--green)">✓ Следующее фото через ${7 - days} дн.</div>`;
-            btn.style.display = 'none';
-        }
-    }
-}
-function takePhoto() { if (photoMode) document.getElementById('photoInput').click(); }
-function addPhoto(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const scale = Math.min(1, 480 / img.width);
-            canvas.width = img.width * scale; canvas.height = img.height * scale;
-            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-            const shot = { date: new Date().toISOString(), data: canvas.toDataURL('image/jpeg', 0.7) };
-            if (photoMode === 'before') data.photoBefore = shot; else data.photoWeek = shot;
-            saveData(); updateUI(); showToast('✓ Фото сохранено');
-        };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-    event.target.value = '';
-}
-function viewPhoto(mode) {
-    const ph = mode === 'before' ? data.photoBefore : data.photoWeek;
-    if (!ph) { showToast('Фото ещё не сделано'); return; }
-    document.getElementById('modalTitle').textContent = mode === 'before' ? '📸 Фото «ДО»' : '📸 Недельное фото';
-    document.getElementById('modalText').innerHTML = `<img src="${ph.data}" style="width:100%;border-radius:12px"><p style="margin-top:10px">Сделано: ${formatDate(ph.date)}</p>`;
-    document.getElementById('modalExtra').innerHTML = '';
-    document.getElementById('modalButtons').innerHTML = '<button class="btn btn-pink" onclick="closeModal()">Закрыть</button>';
-    document.getElementById('modal').classList.add('active');
-}
-function canAccess() {
-    if (!data.photoBefore) return { ok: false, msg: 'Сделай первое фото «ДО» на главной!' };
-    const base = data.photoWeek ? data.photoWeek.date : data.photoBefore.date;
-    const days = Math.floor((Date.now() - new Date(base)) / 86400000);
-    if (days >= 7) return { ok: false, msg: `Прошло ${days} дней — обнови недельное фото!` };
-    return { ok: true };
-}
-
-// ============ НАВИГАЦИЯ ============
-function switchSection(id, btn) {
-    if (id !== 'home' && id !== 'profile' && id !== 'wardrobe') {
-        const check = canAccess();
-        if (!check.ok) {
-            showToast('⚠️ ' + check.msg);
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('home').classList.add('active');
-            document.querySelector('.nav-item').classList.add('active');
-            return;
-        }
-    }
-    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-}
-
-// ============ ЗАДАНИЯ ============
-function listProgress(key, db) {
-    const list = db[key];
-    const done = list.filter((x, i) => data.completedToday.includes(`${key}_${i}`)).length;
-    return { done, total: list.length };
-}
-
-function renderTasks() {
-    if (data.lastActiveDate !== todayKey()) { data.completedToday = []; data.lastActiveDate = todayKey(); saveData(); }
-    document.getElementById('dayModeBadge').innerHTML = isWorkToday()
-        ? '<span class="mode-badge mode-work">💼 Рабочий день</span>'
-        : '<span class="mode-badge mode-free">🌸 Свободный день</span>';
-
-    const tasks = getDailyTasks();
-    const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
-    let nowMarked = false;
-
-    document.getElementById('tasksTimeline').innerHTML = tasks.map(t => {
-        let done = data.completedToday.includes(t.id);
-        let metaRight = '';
-        if (t.workout) {
-            const pr = listProgress(t.workout, EX_DB);
-            done = pr.done === pr.total;
-            metaRight = done ? '<span class="task-status">✓ Выполнено</span>' : `<span style="color:var(--pink);font-weight:600">${pr.done}/${pr.total}</span>`;
-        } else if (t.care) {
-            const pr = listProgress(t.care, CARE_DB);
-            done = pr.done === pr.total;
-            metaRight = done ? '<span class="task-status">✓ Выполнено</span>' : `<span style="color:var(--pink);font-weight:600">${pr.done}/${pr.total}</span>`;
-        } else {
-            metaRight = done ? '<span class="task-status">✓ Выполнено</span>' : '<span style="color:var(--pink);font-size:12px">Нажми →</span>';
-        }
-        let nowBadge = '';
-        if (!done && !nowMarked && toMin(t.time) <= nowMin) { nowMarked = true; nowBadge = '<span class="now-badge">⏰ сейчас</span>'; }
-        return `
-        <div class="timeline-item">
-            <div class="time-badge">${t.time}</div>
-            <div class="task-card ${done ? 'done' : ''} ${nowBadge ? 'now' : ''}" onclick="openTask('${t.id}')">
-                <div class="task-title">${t.icon} ${t.title}</div>
-                <div class="task-desc">${t.desc}</div>
-                <div class="task-meta"><span class="task-percent">+${t.percent.toFixed(3)}%</span>${nowBadge || metaRight}</div>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-function getTodayTask() {
-    const tasks = getDailyTasks();
-    const next = tasks.find(t => {
-        if (t.workout) return listProgress(t.workout, EX_DB).done < listProgress(t.workout, EX_DB).total;
-        if (t.care) return listProgress(t.care, CARE_DB).done < listProgress(t.care, CARE_DB).total;
-        return !data.completedToday.includes(t.id);
-    });
-    if (!next) { showToast('✨ Все задания выполнены!'); return; }
-    openTask(next.id);
-}
-
-function openTask(id) {
-    const t = getDailyTasks().find(x => x.id === id);
-    if (t.workout) { openWorkout(t); return; }
-    if (t.care) { openCare(t); return; }
-    if (t.voice) { openVoice(t); return; }
-    if (t.report) { openReport(t); return; }
-    if (t.timed) { openTimedTask(t); return; }
-    const done = data.completedToday.includes(t.id);
-    document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
-    document.getElementById('modalText').innerHTML = `
-        <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
-            <strong style="color:var(--pink)">${t.time}</strong> · <strong style="color:var(--pink)">+${t.percent.toFixed(3)}%</strong>
-        </div>
-        <p>${t.desc}</p>
-        <ul>${(t.details || []).map(d => `<li>${d}</li>`).join('')}</ul>`;
-    document.getElementById('modalExtra').innerHTML = '';
-    document.getElementById('modalButtons').innerHTML = done
-        ? '<button class="btn btn-green" onclick="closeModal()">✓ Уже выполнено</button>'
-        : `<button class="btn btn-sec" onclick="closeModal()">Выйти</button>
-           <button class="btn btn-pink" onclick="completeTask('${t.id}',${t.percent})">✓ Выполнено</button>`;
-    document.getElementById('modal').classList.add('active');
-}
-
-function openWorkout(t) {
-    const list = EX_DB[t.workout];
-    const pr = listProgress(t.workout, EX_DB);
-    document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
-    document.getElementById('modalText').innerHTML = `
-        <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
-            <strong style="color:var(--pink)">${t.time}</strong> · <strong style="color:var(--pink)">+${t.percent.toFixed(3)}%</strong> · ${pr.done}/${pr.total}
-        </div>
-        <p>«Подробнее» — техника. Все отмечены = засчитано.</p>`;
-    document.getElementById('modalExtra').innerHTML = list.map((ex, i) => {
-        const done = data.completedToday.includes(`${t.workout}_${i}`);
-        return `
-        <div class="ex-row">
-            <div class="ex-top"><div class="ex-name ${done ? 'done' : ''}">${done ? '✓' : '○'} ${ex.name}</div><div class="ex-reps">${ex.reps}</div></div>
-            <div class="ex-actions">
-                <button class="btn btn-sec btn-sm" onclick="openExercise('${t.workout}',${i})">Подробнее</button>
-                ${done ? '<button class="btn btn-green btn-sm" disabled>✓ Готово</button>' : `<button class="btn btn-pink btn-sm" onclick="completeExercise('${t.workout}',${i},'${t.id}',${t.percent})">Отметить</button>`}
-            </div>
-        </div>`;
-    }).join('');
-    document.getElementById('modalButtons').innerHTML = pr.done === pr.total
-        ? '<button class="btn btn-green" onclick="closeModal()">✓ Засчитано</button>'
-        : '<button class="btn btn-sec" onclick="closeModal()">Выйти</button>';
-    document.getElementById('modal').classList.add('active');
-}
-
-function openExercise(key, i) {
-    const ex = EX_DB[key][i];
-    const done = data.completedToday.includes(`${key}_${i}`);
-    const task = getDailyTasks().find(t => t.workout === key);
-    document.getElementById('modalTitle').textContent = `💪 ${ex.name}`;
-    document.getElementById('modalText').innerHTML = `
-        <p><strong>🔢 Объём:</strong> ${ex.reps}</p>
-        <p style="margin-top:10px"><strong>📝 Техника:</strong></p><p>${ex.technique}</p>
-        <p style="margin-top:10px"><strong>⚠️ Ошибки:</strong></p><p>${ex.mistakes}</p>
-        <p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${ex.gives}</p>
-        <p style="margin-top:10px"><strong>💡 Совет:</strong></p><p>${ex.tips}</p>`;
-    document.getElementById('modalExtra').innerHTML = ex.time && !done ? `
-        <div class="timer-display" id="timerDisplay">${fmtTime(ex.time)}</div>
-        <button class="btn btn-pink" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать</button>` : '';
-    if (ex.time && !done) window.startCurrentTimer = () => startTimerUI(ex.time, () => { completeExercise(key, i, task.id, task.percent); });
-    document.getElementById('modalButtons').innerHTML = done
-        ? `<button class="btn btn-green" onclick="openWorkout(getDailyTasks().find(x=>x.workout==='${key}'))">✓ Выполнено</button>`
-        : `<button class="btn btn-sec" onclick="openWorkout(getDailyTasks().find(x=>x.workout==='${key}'))">← Назад</button>
-           ${ex.time ? '' : `<button class="btn btn-pink" onclick="completeExercise('${key}',${i},'${task.id}',${task.percent})">✓ Отметить</button>`}`;
-    document.getElementById('modal').classList.add('active');
-}
-
-function completeExercise(key, i, taskId, percent) {
-    const exId = `${key}_${i}`;
-    if (!data.completedToday.includes(exId)) data.completedToday.push(exId);
-    const pr = listProgress(key, EX_DB);
-    if (pr.done === pr.total && !data.completedToday.includes(taskId)) {
-        data.stats.workouts++;
-        award(taskId, percent);
-        showToast('🎉 Тренировка засчитана!');
-    } else showToast(`✓ ${EX_DB[key][i].name} (${pr.done}/${pr.total})`);
-    saveData(); updateUI();
-    openWorkout(getDailyTasks().find(x => x.id === taskId));
-}
-
-function openCare(t) {
-    const list = CARE_DB[t.care];
-    const pr = listProgress(t.care, CARE_DB);
-    document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
-    document.getElementById('modalText').innerHTML = `
-        <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
-            <strong style="color:var(--pink)">${t.time}</strong> · <strong style="color:var(--pink)">+${t.percent.toFixed(3)}%</strong> · ${pr.done}/${pr.total}
-        </div>
-        <p>Каждый шаг — с техникой и таймером.</p>`;
-    document.getElementById('modalExtra').innerHTML = list.map((item, i) => {
-        const done = data.completedToday.includes(`${t.care}_${i}`);
-        return `
-        <div class="ex-row">
-            <div class="ex-top"><div class="ex-name ${done ? 'done' : ''}">${done ? '✓' : '○'} ${item.name}</div><div class="ex-reps">${fmtTime(item.time)}</div></div>
-            <div class="ex-actions">
-                <button class="btn btn-sec btn-sm" onclick="openCareItem('${t.care}',${i})">Подробнее</button>
-                ${done ? '<button class="btn btn-green btn-sm" disabled>✓ Готово</button>' : `<button class="btn btn-pink btn-sm" onclick="openCareItem('${t.care}',${i})">▶ Начать</button>`}
-            </div>
-        </div>`;
-    }).join('');
-    document.getElementById('modalButtons').innerHTML = pr.done === pr.total
-        ? '<button class="btn btn-green" onclick="closeModal()">✓ Уход засчитан</button>'
-        : '<button class="btn btn-sec" onclick="closeModal()">Выйти</button>';
-    document.getElementById('modal').classList.add('active');
-}
-
-function openCareItem(key, i) {
-    const item = CARE_DB[key][i];
-    const done = data.completedToday.includes(`${key}_${i}`);
-    const task = getDailyTasks().find(t => t.care === key);
-    document.getElementById('modalTitle').textContent = item.name;
-    document.getElementById('modalText').innerHTML = `
-        <p><strong>⏱ Время:</strong> ${fmtTime(item.time)}</p>
-        <p style="margin-top:10px"><strong>📝 Как делать:</strong></p><p>${item.how}</p>
-        <p style="margin-top:10px"><strong>💡 Советы:</strong></p><p>${item.tips}</p>
-        <p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${item.gives}</p>`;
-    document.getElementById('modalExtra').innerHTML = !done ? `
-        <div class="timer-display" id="timerDisplay">${fmtTime(item.time)}</div>
-        <button class="btn btn-pink" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать</button>` : '';
-    if (!done) window.startCurrentTimer = () => startTimerUI(item.time, () => { completeCareItem(key, i, task.id, task.percent); });
-    document.getElementById('modalButtons').innerHTML = `
-        <button class="btn btn-sec" onclick="openCare(getDailyTasks().find(x=>x.care==='${key}'))">← Назад</button>`;
-    document.getElementById('modal').classList.add('active');
-}
-
-function completeCareItem(key, i, taskId, percent) {
-    const id = `${key}_${i}`;
-    if (!data.completedToday.includes(id)) data.completedToday.push(id);
-    const pr = listProgress(key, CARE_DB);
-    if (pr.done === pr.total && !data.completedToday.includes(taskId)) { award(taskId, percent); showToast('Весь уход выполнен!'); }
-    else showToast(`✓ ${CARE_DB[key][i].name} (${pr.done}/${pr.total})`);
-    saveData(); updateUI();
-    openCare(getDailyTasks().find(x => x.id === taskId));
-}
-
-function openTimedTask(t) {
-    const done = data.completedToday.includes(t.id);
-    document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
-    document.getElementById('modalText').innerHTML = `
-        <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
-            <strong style="color:var(--pink)">${t.time}</strong> · <strong style="color:var(--pink)">+${t.percent.toFixed(3)}%</strong>
-        </div>
-        <p><strong>📝 Как делать:</strong></p><p>${t.how}</p>
-        <p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${t.gives}</p>`;
-    document.getElementById('modalExtra').innerHTML = !done ? `
-        <div class="timer-display" id="timerDisplay">${fmtTime(t.timeSec)}</div>
-        <button class="btn btn-pink" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать</button>` : '';
-    if (!done) window.startCurrentTimer = () => startTimerUI(t.timeSec, () => { completeTask(t.id, t.percent); });
-    document.getElementById('modalButtons').innerHTML = done
-        ? '<button class="btn btn-green" onclick="closeModal()">✓ Уже выполнено</button>'
-        : '<button class="btn btn-sec" onclick="closeModal()">Выйти</button>';
-    document.getElementById('modal').classList.add('active');
-}
-
-function openVoice(t) {
-    const done = data.completedToday.includes(t.id);
-    document.getElementById('modalTitle').textContent = `🎙️ ${t.title}`;
-    document.getElementById('modalText').innerHTML = `
-        <p><strong>План (15-20 мин):</strong></p>
-        <ul>
-            <li><strong>1. Расслабление (2 мин).</strong> Массаж шеи, зевки.</li>
-            <li><strong>2. Дыхание (3 мин).</strong> Диафрагма, выдох на «фффф».</li>
-            <li><strong>3. Мычание (5 мин).</strong> «мммм» высоко, вибрация в губах.</li>
-            <li><strong>4. Чтение (5-10 мин).</strong> Мягко, плавно.</li>
-            <li><strong>5. Запись (2 мин).</strong> Послушай прогресс.</li>
-        </ul>
-        <p><strong>⚠️</strong> Боль/хрипота = СТОП.</p>
-        <p><strong>🌸 Даёт:</strong> мягкий тембр, женственные интонации.</p>`;
-    document.getElementById('modalExtra').innerHTML = '';
-    document.getElementById('modalButtons').innerHTML = done
-        ? '<button class="btn btn-green" onclick="closeModal()">✓ Уже выполнено</button>'
-        : `<button class="btn btn-sec" onclick="closeModal()">Выйти</button>
-           <button class="btn btn-pink" onclick="completeTask('${t.id}',${t.percent})">✓ Выполнено</button>`;
-    document.getElementById('modal').classList.add('active');
-}
-
-function openReport(t) {
-    const done = data.completedToday.includes(t.id);
-    const key = new Date().toISOString().split('T')[0];
-    document.getElementById('modalTitle').textContent = `📝 ${t.title}`;
-    document.getElementById('modalText').innerHTML = `
-        <p><strong>Как ты себя чувствуешь?</strong></p>
-        <div class="mood-grid">
-            ${['😄','🙂','😐','😔','😢'].map(m => `<button class="mood-btn ${data.mood[key]===m?'selected':''}" onclick="setMood('${m}',this)">${m}</button>`).join('')}
-        </div>
-        <p>Запиши итоги дня.</p>`;
-    document.getElementById('modalExtra').innerHTML = `<textarea id="journalText" placeholder="Сегодня я...">${data.journal[key] || ''}</textarea>`;
-    document.getElementById('modalButtons').innerHTML = `
-        <button class="btn btn-sec" onclick="saveJournal()">💾 Сохранить</button>
-        ${done ? '<button class="btn btn-green" disabled>✓ Готово</button>' : `<button class="btn btn-pink" onclick="finishReport('${t.id}',${t.percent})">✓ Завершить день</button>`}`;
-    document.getElementById('modal').classList.add('active');
-}
-function setMood(emoji, el) {
-    const key = new Date().toISOString().split('T')[0];
-    data.mood[key] = emoji; saveData();
-    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-    el.classList.add('selected');
-}
-function saveJournal() {
-    const key = new Date().toISOString().split('T')[0];
-    data.journal[key] = document.getElementById('journalText').value;
-    saveData(); showToast('💾 Сохранено');
-}
-function finishReport(id, percent) {
-    saveJournal();
-    if (!data.completedToday.includes(id)) award(id, percent);
-    saveData(); updateUI(); closeModal();
-    showToast('🌙 День завершён!');
-}
-
-function award(taskId, percent) {
-    const mult = { soft: 0.8, normal: 1.0, strict: 1.2 }[data.settings.strictness];
-    const lvlMult = data.percent < 25 ? 1.0 : data.percent < 50 ? 1.1 : data.percent < 75 ? 1.2 : 1.3;
-    const final = percent * mult * lvlMult;
-    data.percent = Math.min(100, data.percent + final);
-    data.tasksDone++;
-    if (!data.completedToday.includes(taskId)) data.completedToday.push(taskId);
-    const today = todayKey();
-    const yesterday = new Date(Date.now() - 86400000).toDateString();
-    if (data.lastActiveDate === yesterday) data.streak++;
-    else if (data.lastActiveDate !== today) data.streak = 1;
-    data.lastActiveDate = today;
-    const bonuses = { 7: 0.1, 30: 0.5, 90: 1.5, 180: 3.0, 365: 7.0 };
-    for (const [days, bonus] of Object.entries(bonuses)) {
-        if (data.streak === parseInt(days)) {
-            data.percent = Math.min(100, data.percent + bonus);
-            setTimeout(() => showToast(`🔥 Серия ${days} дней: +${bonus}%!`), 1200);
-        }
-    }
-    showToast(`✨ +${final.toFixed(3)}% к прогрессу!`);
-}
-function completeTask(id, percent) {
-    award(id, percent);
-    saveData(); updateUI(); closeModal();
-}
-
-// ============ ТРЕКЕРЫ ============
-function renderTrackers() {
-    const sl = strictLevel();
-    const req = { soft: 1, normal: 2, strict: 3 };
-    const available = Object.entries(data.trackers).filter(([_, tr]) => req[tr.requires] <= sl);
-    const locked = Object.entries(data.trackers).filter(([_, tr]) => req[tr.requires] > sl);
-    let html = available.map(([key, tr]) => {
-        let info = 'Ещё не отмечено';
-        let canDo = true, daysLeft = 0;
-        if (tr.lastDone) {
-            const days = Math.floor((Date.now() - new Date(tr.lastDone)) / 86400000);
-            daysLeft = tr.freq - days;
-            if (daysLeft > 0) { info = `Последнее: ${formatDate(tr.lastDone)} · через ${daysLeft} дн.`; canDo = false; }
-            else info = `Последнее: ${formatDate(tr.lastDone)} · пора!`;
-        }
-        return `
-        <div class="tracker-card">
-            <div class="tracker-header"><div class="tracker-name">${tr.name}</div><div class="tracker-freq">${tr.freqText}</div></div>
-            <div class="tracker-desc">${tr.shortDesc}</div>
-            <div class="tracker-info">${info}</div>
-            <div style="display:flex;gap:8px">
-                <button class="btn btn-sec btn-sm" style="flex:1" onclick="openTracker('${key}')">Подробнее</button>
-                ${canDo ? `<button class="btn btn-pink btn-sm" style="flex:1" onclick="markTracker('${key}')">✓ Отметить</button>` : `<button class="btn btn-sec btn-sm" style="flex:1;opacity:.5" disabled>Рано (${daysLeft} дн.)</button>`}
-            </div>
-        </div>`;
-    }).join('');
-    if (locked.length) {
-        html += `<div class="card" style="background:#fff3e0;border:1px solid var(--orange)">
-            <div class="card-title">🔒 Заблокировано</div>
-            <div class="card-text">Повысь интенсивность в Профиле, чтобы открыть:</div>
-            ${locked.map(([_, tr]) => `<div style="margin-top:8px;font-size:13px"><strong>${tr.name}</strong> — «${tr.requires === 'normal' ? 'Обычный' : 'Строгий'}»</div>`).join('')}
-        </div>`;
-    }
-    document.getElementById('trackersList').innerHTML = html;
-}
-function openTracker(key) {
-    const tr = data.trackers[key];
-    document.getElementById('modalTitle').textContent = tr.name;
-    document.getElementById('modalText').innerHTML = `
-        <p><strong>📅 Частота:</strong> ${tr.freqText}</p>
-        <p style="margin-top:10px"><strong>📝 Как делать:</strong></p><p>${tr.how}</p>
-        <p style="margin-top:10px"><strong>💡 Советы:</strong></p><p>${tr.tips}</p>`;
-    document.getElementById('modalExtra').innerHTML = '';
-    document.getElementById('modalButtons').innerHTML = '<button class="btn btn-pink" onclick="closeModal()">Понятно</button>';
-    document.getElementById('modal').classList.add('active');
-}
-function markTracker(key) {
-    data.trackers[key].lastDone = new Date().toISOString();
-    saveData(); updateUI();
-    showToast(`✓ ${data.trackers[key].name} отмечено`);
-}
-
-// ============ КАЛЬКУЛЯТОР ============
-function calcCalories() {
-    const age = parseInt(document.getElementById('calcAge').value);
-    const h = parseInt(document.getElementById('calcHeight').value);
-    const w = parseInt(document.getElementById('calcWeight').value);
-    const act = parseFloat(document.getElementById('calcActivity').value);
-    const goal = parseFloat(document.getElementById('calcGoal').value);
-    if (!age || !h || !w) { showToast('Заполни все поля'); return; }
-    const bmr = 10 * w + 6.25 * h - 5 * age - 161;
-    const target = Math.round(bmr * act * (1 + goal));
-    const protein = Math.round(w * 1.6);
-    const fat = Math.round((target * 0.3) / 9);
-    const carbs = Math.round((target - protein * 4 - fat * 9) / 4);
-    const result = `<div class="calc-result"><strong>🌸 Норма: ${target} ккал/день</strong><br>Белки: <strong>${protein} г</strong> · Жиры: <strong>${fat} г</strong> · Углеводы: <strong>${carbs} г</strong></div>`;
-    data.calc = { age, height: h, weight: w, activity: String(act), goal: String(goal), result };
-    saveData();
-    document.getElementById('calcResult').innerHTML = result;
-    showToast('✓ Расчёт готов');
-}
-
-// ============ ГАРДЕРОБ ============
-let wardTab = 'hygiene';
-let wardItem = null;
-
-function switchWard(key) {
-    wardTab = key; wardItem = null;
-    renderWard();
-}
-function openWardItem(id) { wardItem = id; renderWard(); }
-function backWard() { wardItem = null; renderWard(); }
-function toggleOwned(id) {
-    const was = !!data.owned[id];
-    data.owned[id] = !was;
-    saveData();
-    if (!was) {
-        const wt = WARD_TASKS.find(w => w.ids.includes(id));
-        if (wt && (!wt.needs || wt.needs <= strictLevel())) showToast('🛒 Куплено! В плане появилось новое задание');
-        else showToast('🛒 Отмечено как купленное');
-    } else showToast('Отметка снята');
-    updateUI();
-}
-
-function renderWard() {
-    document.getElementById('wardTabs').innerHTML = Object.entries(WARD).map(([key, cat]) => `
-        <button class="ward-tab ${wardTab === key ? 'active' : ''}" onclick="switchWard('${key}')">${cat.name}</button>`).join('');
-
-    const c = document.getElementById('wardContent');
-
-    if (wardTab === 'outfits') {
-        c.innerHTML = `<div class="card-text">10 готовых образов под стили и сезоны.</div>` + OUTFITS.map(o => `
-            <div class="outfit-card">
-                <span class="outfit-season s-${o.season}">${o.seasonText}</span>
-                <div class="outfit-name">${o.name}</div>
-                <ul class="outfit-items">${o.items.map(i => `<li>${i}</li>`).join('')}</ul>
-            </div>`).join('');
-        return;
-    }
-
-    const cat = WARD[wardTab];
-
-    if (wardItem) {
-        const item = cat.items.find(i => i.id === wardItem);
-        if (!item) { wardItem = null; renderWard(); return; }
-        const owned = !!data.owned[item.id];
-        let extra = '';
-        if (item.id === 'chastity' && data.profile.erect) {
-            const r = chastityRec(parseFloat(data.profile.erect));
-            extra = `<div class="ward-usage"><strong>📏 Твоя рекомендация:</strong> размер ${r.size} · без пояса ~${r.noBelt} мм · с поясом ~${r.withBelt} мм</div>`;
-        }
-        c.innerHTML = `
-            <div class="ward-detail">
-                <div class="ward-detail-title">${item.icon} ${item.name} ${owned ? '<span class="ward-owned">✓ куплено</span>' : ''}</div>
-                <div class="ward-usage"><strong>📝 Как пользоваться:</strong> ${item.how}</div>
-                <div class="ward-usage"><strong>🌸 Зачем:</strong> ${item.usage}</div>
-                ${extra}
-                <button class="btn ${owned ? 'btn-green' : 'btn-pink'}" onclick="toggleOwned('${item.id}')">${owned ? '✓ Куплено — снять отметку' : '🛒 Отметить купленным'}</button>
-                <button class="btn btn-sec" style="margin-bottom:0" onclick="backWard()">← Назад</button>
-            </div>`;
-        return;
-    }
-
-    const ownedCount = cat.items.filter(i => data.owned[i.id]).length;
-    c.innerHTML = `<div class="card-text">Куплено: <strong style="color:var(--pink)">${ownedCount}/${cat.items.length}</strong></div>` +
-        cat.items.map(i => `
-        <div class="ward-item" onclick="openWardItem('${i.id}')">
-            <div class="ward-icon">${i.icon}</div>
-            <div class="ward-info">
-                <div class="ward-name">${i.name}</div>
-                <div class="ward-sub">${data.owned[i.id] ? 'В твоём гардеробе' : 'Подробнее →'}</div>
-            </div>
-            ${data.owned[i.id] ? '<span class="ward-owned">✓</span>' : ''}
-        </div>`).join('');
-}
-
-// ============ ОПЕРАЦИИ ============
-function renderOperations() {
-    let totalSaved = 0, totalCost = 0;
-    const labels = { not_started: 'Не начато', saving: 'Коплю', done: 'Сделано' };
-    document.getElementById('operationsList').innerHTML = data.operations.map(op => {
-        totalSaved += op.saved; totalCost += op.cost;
-        const pct = Math.min(100, (op.saved / op.cost) * 100);
-        return `
-        <div class="op-card">
-            <div class="op-header"><div class="op-name">${op.name}</div><div class="op-status ${op.status}">${labels[op.status]}</div></div>
-            <div class="op-cost">Стоимость: ${op.cost.toLocaleString('ru-RU')} ₽</div>
-            <div class="op-saved">Накоплено: ${op.saved.toLocaleString('ru-RU')} ₽ (${pct.toFixed(1)}%)</div>
-            <div class="progress-small"><div class="progress-small-fill" style="width:${pct}%"></div></div>
-            <div style="display:flex;gap:8px">
-                <button class="btn btn-pink btn-sm" style="flex:1" onclick="addSavings(${op.id})">+ Добавить</button>
-                <button class="btn btn-sec btn-sm" style="flex:1" onclick="changeStatus(${op.id})">Статус</button>
-            </div>
-        </div>`;
-    }).join('');
-    document.getElementById('totalSaved').textContent = totalSaved.toLocaleString('ru-RU') + ' ₽';
-    document.getElementById('totalCost').textContent = totalCost.toLocaleString('ru-RU') + ' ₽';
-}
-function addSavings(id) {
-    const op = data.operations.find(o => o.id === id);
-    document.getElementById('modalTitle').textContent = 'Добавить накопления';
-    document.getElementById('modalText').innerHTML = `<p>Сколько добавить к «${op.name}»?</p><p style="font-size:13px">Сейчас: ${op.saved.toLocaleString('ru-RU')} ₽</p>`;
-    document.getElementById('modalExtra').innerHTML = '<input type="number" id="savingsAmount" placeholder="Сумма в рублях" min="0">';
-    document.getElementById('modalButtons').innerHTML = `
-        <button class="btn btn-sec" onclick="closeModal()">Отмена</button>
-        <button class="btn btn-pink" onclick="saveSavings(${id})">Добавить</button>`;
-    document.getElementById('modal').classList.add('active');
-    setTimeout(() => document.getElementById('savingsAmount').focus(), 100);
-}
-function saveSavings(id) {
-    const amount = parseInt(document.getElementById('savingsAmount').value);
-    if (!amount || amount <= 0) { showToast('Введите сумму'); return; }
-    const op = data.operations.find(o => o.id === id);
-    op.saved += amount;
-    if (op.status === 'not_started') op.status = 'saving';
-    saveData(); updateUI(); closeModal();
-    showToast(`✓ +${amount.toLocaleString('ru-RU')} ₽`);
-}
-function changeStatus(id) {
-    const op = data.operations.find(o => o.id === id);
-    const s = ['not_started', 'saving', 'done'];
-    const l = ['Не начато', 'Коплю', 'Сделано'];
-    const i = s.indexOf(op.status);
-    op.status = s[(i + 1) % 3];
-    saveData(); updateUI();
-    showToast(`Статус: ${l[(i + 1) % 3]}`);
-}
-
-// ============ ДОСТИЖЕНИЯ ============
-function checkAchievements() {
-    const a = data.achievements;
-    const unlock = (key) => { if (!a[key].unlocked) { a[key].unlocked = true; setTimeout(() => showToast(`🏆 ${a[key].name}!`), 800); } };
-    if (data.tasksDone >= 1) unlock('first_task');
-    if (data.streak >= 7) unlock('streak_7');
-    if (data.streak >= 30) unlock('streak_30');
-    if (data.streak >= 100) unlock('streak_100');
-    if (data.percent >= 25) unlock('percent_25');
-    if (data.percent >= 50) unlock('percent_50');
-    if (data.percent >= 75) unlock('percent_75');
-    if (data.photoBefore) unlock('photo_first');
-    if (data.stats.workouts >= 10) unlock('workout_10');
-    if (data.operations.some(op => op.saved > 0)) unlock('savings_first');
-}
-function showAchievements() {
-    document.getElementById('modalTitle').textContent = '🏆 Достижения';
-    document.getElementById('modalText').innerHTML = Object.values(data.achievements).map(ach => `
-        <div class="achievement ${ach.unlocked ? '' : 'locked'}">
-            <div class="ach-icon">${ach.unlocked ? ach.icon : '🔒'}</div>
-            <div class="ach-info"><div class="ach-name">${ach.name}</div><div class="ach-desc">${ach.desc}</div>${ach.unlocked ? '<div class="ach-progress">✓ Получено</div>' : ''}</div>
-        </div>`).join('');
-    document.getElementById('modalExtra').innerHTML = '';
-    document.getElementById('modalButtons').innerHTML = '<button class="btn btn-pink" onclick="closeModal()">Закрыть</button>';
-    document.getElementById('modal').classList.add('active');
-}
-
-function showArchive() {
-    document.getElementById('modalTitle').textContent = '📖 Архив блокнота';
-    const entries = Object.entries(data.journal).sort((a, b) => b[0].localeCompare(a[0]));
-    document.getElementById('modalText').innerHTML = entries.length === 0 ? '<p>Записей пока нет.</p>'
-        : entries.map(([date, text]) => `<div class="archive-item"><div class="archive-date">${formatDate(date)} ${data.mood[date] || ''}</div><div class="archive-text">${text}</div></div>`).join('');
-    document.getElementById('modalExtra').innerHTML = '';
-    document.getElementById('modalButtons').innerHTML = '<button class="btn btn-pink" onclick="closeModal()">Закрыть</button>';
-    document.getElementById('modal').classList.add('active');
-}
-
-function renderWorkDays() {
-    const names = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-    document.getElementById('workDaysBtns').innerHTML = names.map((n, i) => `
-        <button class="day-btn ${data.settings.workDays.includes(i) ? 'active' : ''}" onclick="toggleWorkDay(${i})">${n}</button>`).join('');
-}
-function toggleWorkDay(i) {
-    const idx = data.settings.workDays.indexOf(i);
-    if (idx >= 0) data.settings.workDays.splice(idx, 1);
-    else data.settings.workDays.push(i);
-    saveData(); renderWorkDays();
-}
-function saveSettings() {
-    data.settings.working = document.getElementById('working').value;
-    data.settings.workStart = document.getElementById('workStart').value;
-    data.settings.workEnd = document.getElementById('workEnd').value;
-    data.settings.strictness = document.getElementById('strictness').value;
-    data.settings.genderAddress = document.getElementById('genderAddress').value;
-    saveData(); updateUI();
-    showToast('✓ Сохранено');
-}
-function saveProfile() {
-    data.profile.name = document.getElementById('pName').value;
-    data.profile.age = document.getElementById('pAge').value;
-    data.profile.height = document.getElementById('pHeight').value;
-    data.profile.weight = document.getElementById('pWeight').value;
-    data.profile.waist = document.getElementById('pWaist').value;
-    data.profile.chest = document.getElementById('pChest').value;
-    data.profile.hips = document.getElementById('pHips').value;
-    data.profile.job = document.getElementById('pJob').value;
-    saveData(); updateUI();
-    showToast('✓ Профиль обновлён');
-}
-
-function showPrivacy() {
-    document.getElementById('modalTitle').textContent = '🔒 Политика конфиденциальности';
-    document.getElementById('modalText').innerHTML = `
-    <div class="policy-text">
-        <h3>1. Данные</h3>
-        <p>Femi Bloom v0.6 Beta собирает только то, что ты вводишь: профиль (включая параметры тела), прогресс, фото (2 шт.), записи, покупки гардероба, накопления.</p>
-        <h3>2. Хранение</h3>
-        <p>Всё хранится <strong>локально на твоём устройстве</strong>. Никаких серверов.</p>
-        <h3>3. Права</h3>
-        <ul><li>Экспорт / импорт данных</li><li>Полный сброс</li><li>Изменение любых параметров</li></ul>
-        <h3>4. Конфиденциальность</h3>
-        <p>Фото и интимные параметры никогда не передаются и не публикуются.</p>
-        <h3>5. Сообщество</h3>
-        <p>t.me/femibloom — анонсы обновлений, подписка добровольна.</p>
-    </div>`;
-    document.getElementById('modalExtra').innerHTML = '';
-    document.getElementById('modalButtons').innerHTML = '<button class="btn btn-pink" onclick="closeModal()">Понятно</button>';
-    document.getElementById('modal').classList.add('active');
-}
-
-function exportData() {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `femibloom_${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    showToast('✓ Экспортировано');
-}
-function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try { data = { ...defaultData, ...JSON.parse(e.target.result) }; saveData(); updateUI(); showToast('✓ Импортировано'); }
-        catch { showToast('Ошибка импорта'); }
-    };
-    reader.readAsText(file);
-}
-function resetProgress() {
-    document.getElementById('modalTitle').textContent = '⚠️ Сброс';
-    document.getElementById('modalText').innerHTML = '<p>Сбросить ВЕСЬ прогресс?</p><p style="color:#c62828">Необратимо!</p>';
-    document.getElementById('modalExtra').innerHTML = '';
-    document.getElementById('modalButtons').innerHTML = `
-        <button class="btn btn-sec" onclick="closeModal()">Отмена</button>
-        <button class="btn btn-danger" onclick="confirmReset()">Сбросить</button>`;
-    document.getElementById('modal').classList.add('active');
-}
-function confirmReset() {
-    localStorage.removeItem('femibloom_data');
-    data = { ...defaultData };
-    saveData(); updateUI(); closeModal();
-    showToast('✓ Сброшено');
-}
-
-function closeModal() { stopTimer(); document.getElementById('modal').classList.remove('active'); }
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
-document.getElementById('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
-
-updateUI();
-</script>
-</body>
-</html>
+const firebaseConfig={apiKey:"AIzaSyAmBadio8uI1Dezp0lPL15pUWi4NKteNBU",authDomain:"femibloom-2ed24.firebaseapp.com",projectId:"femibloom-2ed24",storageBucket:"femibloom-2ed24.firebasestorage.app",messagingSenderId:"132840341256",appId:"1:132840341256:web:cf5978a3f2900dc0f7b6bd"};
+const ADMIN_TG_ID=8935768630;
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
+const D={p:0,streak:0,lad:null,td:0,ct:[],pbu:null,pwu:null,pbd:null,pwd:null,j:{},m:{},w:{d:null,c:0},calc:{a:'',h:'',w:'',ac:'1.375',g:'0'},prof:{n:'',a:'',h:'',w:'',wa:'',ch:'',hi:'',fl:'',er:'',j:''},own:{},ob:false,sets:{wk:'yes',wd:[1,2,3,4,5],ws:'09:00',we:'18:00',st:'normal',ga:'female'},ops:[{id:1,n:'Орхиэктомия',c:200000,s:0,st:'not_started'},{id:2,n:'Трахеальное бритьё',c:120000,s:0,st:'not_started'},{id:3,n:'Увеличение груди',c:300000,s:0,st:'not_started'},{id:4,n:'Феминизация голоса',c:200000,s:0,st:'not_started'},{id:5,n:'Феминизация лица',c:1000000,s:0,st:'not_started'},{id:6,n:'Вагинопластика',c:1200000,s:0,st:'not_started'}],tr:{sh:{n:'🪒 Бритьё',f:2,ft:'раз в 2 дня',ld:null,r:'soft',sd:'Гладкая кожа.',h:'1. Душ 5-10 мин. 2. Гель. 3. Бритвой ПО росту. 4. Прохладная вода. 5. Пантенол.',t:'Меняй лезвие каждые 5-7 применений.'},sc:{n:' Скраб',f:3,ft:'раз в 3 дня',ld:null,r:'soft',sd:'Гладкость.',h:'Распарь, массируй снизу вверх 3-5 мин, смой, крем.',t:'Делай ДО бритья.'},mk:{n:'🎭 Маска',f:7,ft:'раз в неделю',ld:null,r:'normal',sd:'Сияющая кожа.',h:'Очисти, нанеси на 10-15 мин, смой, крем.',t:'Делай вечером.'},mo:{n:'💧 Увлажнение',f:1,ft:'ежедневно',ld:null,r:'normal',sd:'Мягкость.',h:'Утром: тоник+крем+SPF. Вечером: лосьон+ночной крем.',t:'Пей 1.5-2 л воды.'},na:{n:'💅 Ногти',f:7,ft:'раз в неделю',ld:null,r:'normal',sd:'Ухоженные руки.',h:'Распарь, форма, кутикула, база+нюд+топ.',t:'Не обрезай кутикулу.'},ha:{n:' Волосы',f:3,ft:'раз в 3 дня',ld:null,r:'normal',sd:'Блестящие волосы.',h:'Шампунь на корни, кондиционер на длину, прохладная вода.',t:'Расчёсывай с кончиков.'},vo:{n:'🎙️ Голос',f:1,ft:'ежедневно',ld:null,r:'strict',sd:'Мягкий голос.',h:'Расслабление→дыхание→мычание→чтение→запись.',t:'Боль=СТОП.'},ps:{n:'📚 Психология',f:1,ft:'ежедневно',ld:null,r:'strict',sd:'Трансформация.',h:'15-20 мин чтения, инсайты.',t:'Принятие, женственность.'}},ach:{ft:{n:'Первый шаг',d:'Первое задание',i:'🌱',u:false},s7:{n:'Неделя',d:'7 дней',i:'🔥',u:false},s30:{n:'Месяц',d:'30 дней',i:'',u:false},s100:{n:'Сотня',d:'100 дней',i:'💯',u:false},p25:{n:'Привыкание',d:'25%',i:'🌸',u:false},p50:{n:'Половина',d:'50%',i:'✨',u:false},p75:{n:'Глубокая',d:'75%',i:'👑',u:false},ph:{n:'Фото',d:'Фото "до"',i:'📸',u:false},w10:{n:'Спортсменка',d:'10 тренировок',i:'🏋️‍♀️',u:false},sv:{n:'Первый взнос',d:'Начать копить',i:'💰',u:false}},stats:{wk:0},sd:new Date().toISOString().split('T')[0]};
+let data=JSON.parse(JSON.stringify(D));
+let cu=null,ctg=null,ctn='',ia=false,st2=null,pm='before';
+async function initApp(){try{document.getElementById('splashStatus').textContent='Авторизация...';try{Telegram.WebApp.ready();const u=Telegram.WebApp.initDataUnsafe?.user;if(u){ctg=u.id;ctn=u.first_name||'';if(ctg===ADMIN_TG_ID)ia=true;}}catch(e){}let cred;try{cred=await auth.signInAnonymously();}catch(e){document.getElementById('splashStatus').textContent='Ошибка авторизации';const s=localStorage.getItem('fb_data');if(s)data={...D,...JSON.parse(s)};hideSplash();updateUI();showToast('⚠️ Офлайн');return;}cu=cred.user;document.getElementById('splashStatus').textContent='Загрузка данных...';let ud=null;if(ctg){const q=await db.collection('users').where('tid','==',ctg).limit(1).get();if(!q.empty)ud=q.docs[0];}if(ud){const l=ud.data();data={...D,...l.data};data._did=ud.id;document.getElementById('splashStatus').textContent='Данные загружены ✨';}else{await db.collection('users').doc(cu.uid).set({tid:ctg,tn:ctn,ca:new Date().toISOString(),data:D});data._did=cu.uid;document.getElementById('splashStatus').textContent='Добро пожаловать!';}hideSplash();updateUI();}catch(e){console.error(e);document.getElementById('splashStatus').textContent='Ошибка: '+e.message;const s=localStorage.getItem('fb_data');if(s)data={...D,...JSON.parse(s)};setTimeout(()=>{hideSplash();updateUI();},1000);}}
+function hideSplash(){const s=document.getElementById('splash');if(s)s.style.display='none';}
+function scheduleSave(){if(st2)clearTimeout(st2);const cs=document.getElementById('cloudStatus');if(cs){cs.className='cs sy';cs.textContent='↻';}st2=setTimeout(saveCloud,800);}
+async function saveCloud(){if(!cu){localStorage.setItem('fb_data',JSON.stringify(data));return;}try{const ds={...data};delete ds._did;await db.collection('users').doc(data._did||cu.uid).update({data:ds,tn:ctn,ua:new Date().toISOString(),p:data.p,st:data.streak,ob:data.ob});const cs=document.getElementById('cloudStatus');if(cs){cs.className='cs ok';cs.textContent='✓';}}catch(e){console.error(e);localStorage.setItem('fb_data',JSON.stringify(data));const cs=document.getElementById('cloudStatus');if(cs){cs.className='cs';cs.textContent='!';}}}
+function isWT(){if(data.sets.wk!=='yes')return false;return data.sets.wd.includes(new Date().getDay());}
+function sl(){return{soft:1,normal:2,strict:3}[data.sets.st]||2;}
+function tm(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+function gWT(){const s=sl(),o=[];WTS.forEach(w=>{if((w.needs||1)>s)return;if(w.ids.some(i=>data.own[i]))o.push(w.task);});return o;}
+function gDT(){const p=data.p,w=isWT(),s=sl();let t;if(w){t=[{id:'tw',time:'06:00',icon:'🌅',title:'Подъём',p:.003,desc:'Вода, аффирмации, улыбка.',det:['Стакан воды','3 аффирмации','Улыбка']},{id:'tcM',time:'06:15',icon:'🪥',title:'Утренний уход',p:.005,desc:'Зубы, умывание, крем.',care:'morning'},{id:'tmw',time:'06:45',icon:'💪',title:'Тренировка',p:.007,desc:'4 упражнения.',workout:'morningWork'},{id:'tr',time:'07:30',icon:'👗',title:'Сборы',p:.003,desc:'Женственный образ.',det:s>=2?['Бельё','Макияж','Причёска']:['Бельё','Причёска','Одежда']},{id:'tb',time:'08:00',icon:'🍳',title:'Завтрак',p:.003,desc:'Белок+углеводы.',det:['Без телефона']},{id:'td',time:'12:00',icon:'☀️',title:'Дневной контроль',p:.003,desc:'Осанка, походка.',det:['Спина','Шаги','Улыбка']},{id:'tl',time:'13:00',icon:'',title:'Обед',p:.003,desc:'Правило тарелки.',det:['½ овощи']},{id:'tew',time:'19:00',icon:'🏋️‍♀️',title:'Вечерняя тренировка',p:.007,desc:'4 упражнения.',workout:'evening'},{id:'twe',time:'20:00',icon:'',title:'Бельё',p:.004,desc:'Бельё 1-2 часа.',det:['Носить 1-2 часа']},{id:'tcE',time:'20:45',icon:'🌙',title:'Вечерний уход',p:.005,desc:'Очищение, крем.',care:'evening'},...(s>=3?[{id:'tv',time:'21:15',icon:'🎙️',title:'Голос',p:.005,desc:'15-20 минут.',voice:true}]:[]),{id:'tmi',time:'21:40',icon:'🪞',title:'Зеркало',p:.002,desc:'2 мин комплиментов.',timed:true,ts:120,how:'5 комплиментов вслух.',tips:'Эффект накопительный.',gives:'Принятие себя.'},{id:'tre',time:'22:00',icon:'',title:'Отчёт',p:.002,desc:'Блокнот, настроение.',report:true}];}else{t=[{id:'tw',time:'06:00',icon:'🌅',title:'Подъём',p:.003,desc:'Вода, аффирмации.',det:['Вода','Аффирмации','Окно']},{id:'tcM',time:'06:15',icon:'🪥',title:'Утренний уход',p:.005,desc:'Зубы, умывание, крем.',care:'morning'},{id:'tmw',time:'07:00',icon:'💪',title:'Тренировка+бег',p:.007,desc:'Бег+5 упражнений.',workout:'morning'},{id:'tb',time:'07:45',icon:'🍳',title:'Завтрак',p:.003,desc:'Красиво сервируй.',det:['Белок+углеводы+жиры']},{id:'tcl',time:'08:30',icon:'🧺',title:'Уборка',p:.003,desc:'20 мин ритуала.',det:['Постель','Посуда','Музыка']},...(s>=2?[{id:'tbe',time:'09:30',icon:'💄',title:'Бьюти-час',p:.003,desc:'Макияж, ногти.',det:['Макияж','Маска/ногти']}]:[]),{id:'tho',time:'10:30',icon:'🎨',title:'Хобби',p:.003,desc:'1 час творчества.',det:['Без соцсетей']},{id:'twa',time:'11:30',icon:'🚶‍♀️',title:'Прогулка',p:.004,desc:'30-60 мин походки.',det:['Осанка','Не в телефон']},{id:'tl',time:'13:00',icon:'🥗',title:'Обед',p:.003,desc:'Правило тарелки.',det:['½ овощи']},{id:'tre',time:'14:00',icon:'',title:'Отдых',p:.002,desc:'20-30 мин тишины.',det:['Без телефона']},...(s>=3?[{id:'tps',time:'15:00',icon:'📖',title:'Психология',p:.005,desc:'30 мин чтения.',det:['Принятие себя']}]:[]),{id:'tsn',time:'16:00',icon:'🍎',title:'Перекус',p:.002,desc:'Фрукт, орехи.',det:['Без сахара']},{id:'tew',time:'17:00',icon:'🏋️‍♀️',title:'Вечерняя тренировка',p:.007,desc:'4 упражнения.',workout:'evening'},{id:'tdi',time:'18:30',icon:'🍽️',title:'Ужин',p:.003,desc:'Белок+овощи.',det:['За 3 часа до сна']},{id:'twe',time:'19:30',icon:'👙',title:'Бельё',p:.004,desc:'Бельё 1-2 часа.',det:['Носить 1-2 часа']},{id:'tcE',time:'20:15',icon:'',title:'Вечерний уход',p:.005,desc:'Очищение, крем.',care:'evening'},...(s>=3?[{id:'tv',time:'20:45',icon:'🎙️',title:'Голос',p:.005,desc:'15-20 минут.',voice:true}]:[]),{id:'tmi',time:'21:15',icon:'🪞',title:'Зеркало',p:.002,desc:'2 мин комплиментов.',timed:true,ts:120,how:'5 комплиментов.',tips:'Эффект накопительный.',gives:'Принятие себя.'},{id:'tre',time:'22:00',icon:'',title:'Отчёт',p:.002,desc:'Блокнот.',report:true}];}t=t.concat(gWT());t.sort((a,b)=>tm(a.time)-tm(b.time));return t;}
+function lP(k,db){const l=db[k];const d=l.filter((x,i)=>data.ct.includes(`${k}_${i}`)).length;return{d,t:l.length};}
+function rT(){if(data.lad!==todayKey()){data.ct=[];data.lad=todayKey();saveData();}document.getElementById('dayModeBadge').innerHTML=isWT()?'<span class="mb mw">💼 Рабочий день</span>':'<span class="mb mf">🌸 Свободный день</span>';const tasks=gDT();const nm=new Date().getHours()*60+new Date().getMinutes();let nm2=false;document.getElementById('tasksTimeline').innerHTML=tasks.map(t=>{let d=data.ct.includes(t.id);let mr='';if(t.workout){const pr=lP(t.workout,EX);d=pr.d===pr.t;mr=d?'<span class="ts">✓</span>':`<span style="color:var(--p);font-weight:600">${pr.d}/${pr.t}</span>`;}else if(t.care){const pr=lP(t.care,CA);d=pr.d===pr.t;mr=d?'<span class="ts">✓</span>':`<span style="color:var(--p);font-weight:600">${pr.d}/${pr.t}</span>`;}else{mr=d?'<span class="ts">✓</span>':'<span style="color:var(--p);font-size:12px">→</span>';}let nb='';if(!d&&!nm2&&tm(t.time)<=nm){nm2=true;nb='<span class="nb">⏰</span>';}return`<div class="ti"><div class="tb">${t.time}</div><div class="tc ${d?'done':''} ${nb?'now':''}" onclick="openTask('${t.id}')"><div class="tt">${t.icon} ${t.title}</div><div class="td">${t.desc}</div><div class="tm"><span class="tp">+${t.p.toFixed(3)}%</span>${nb||mr}</div></div></div>`;}).join('');}
+function gTT(){const tasks=gDT();const next=tasks.find(t=>{if(t.workout)return lP(t.workout,EX).d<lP(t.workout,EX).t;if(t.care)return lP(t.care,CA).d<lP(t.care,CA).t;return!data.ct.includes(t.id);});if(!next){showToast('✨ Все задания выполнены!');return;}openTask(next.id);}
+function openTask(id){const t=gDT().find(x=>x.id===id);if(t.workout){openWorkout(t);return;}if(t.care){openCare(t);return;}if(t.voice){openVoice(t);return;}if(t.report){openReport(t);return;}if(t.timed){openTimed(t);return;}const d=data.ct.includes(t.id);document.getElementById('modalTitle').textContent=`${t.icon} ${t.title}`;document.getElementById('modalText').innerHTML=`<div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center"><strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.p.toFixed(3)}%</strong></div><p>${t.desc}</p><ul>${(t.det||[]).map(d=>`<li>${d}</li>`).join('')}</ul>`;document.getElementById('modalExtra').innerHTML='';document.getElementById('modalButtons').innerHTML=d?'<button class="btn bg" onclick="closeModal()">✓ Выполнено</button>':`<button class="btn bs" onclick="closeModal()">Выйти</button><button class="btn bp" onclick="completeTask('${t.id}',${t.p})">✓ Выполнено</button>`;document.getElementById('modal').classList.add('active');}
+function openWorkout(t){const l=EX[t.workout];const pr=lP(t.workout,EX);document.getElementById('modalTitle').textContent=`${t.icon} ${t.title}`;document.getElementById('modalText').innerHTML=`<div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center"><strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.p.toFixed(3)}%</strong> · ${pr.d}/${pr.t}</div><p>«Подробнее» — техника. Все отмечены = засчитано.</p>`;document.getElementById('modalExtra').innerHTML=l.map((ex,i)=>{const d=data.ct.includes(`${t.workout}_${i}`);return`<div class="er"><div class="et"><div class="en ${d?'done':''}">${d?'✓':'○'} ${ex.n}</div><div class="ep">${ex.r}</div></div><div class="ea"><button class="btn bs bsm" onclick="openEx('${t.workout}',${i})">Подробнее</button>${d?'<button class="btn bg bsm" disabled>✓</button>':`<button class="btn bp bsm" onclick="completeEx('${t.workout}',${i},'${t.id}',${t.p})">Отметить</button>`}</div></div>`;}).join('');document.getElementById('modalButtons').innerHTML=pr.d===pr.t?'<button class="btn bg" onclick="closeModal()">✓ Засчитано</button>':'<button class="btn bs" onclick="closeModal()">Выйти</button>';document.getElementById('modal').classList.add('active');}
+function openEx(k,i){const ex=EX[k][i];const d=data.ct.includes(`${k}_${i}`);const task=gDT().find(t=>t.workout===k);document.getElementById('modalTitle').textContent=`💪 ${ex.n}`;document.getElementById('modalText').innerHTML=`<p><strong>🔢 Объём:</strong> ${ex.r}</p><p style="margin-top:10px"><strong>📝 Техника:</strong></p><p>${ex.te}</p><p style="margin-top:10px"><strong>⚠️ Ошибки:</strong></p><p>${ex.mi}</p><p style="margin-top:10px"><strong> Что даёт:</strong></p><p>${ex.g}</p><p style="margin-top:10px"><strong>💡 Совет:</strong></p><p>${ex.t}</p>`;document.getElementById('modalExtra').innerHTML=ex.time&&!d?`<div class="td2" id="timerDisplay">${fmtTime(ex.time)}</div><button class="btn bp" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать</button>`:'';if(ex.time&&!d)window.startCurrentTimer=()=>startTimerUI(ex.time,()=>{completeEx(k,i,task.id,task.p);});document.getElementById('modalButtons').innerHTML=d?`<button class="btn bg" onclick="openWorkout(gDT().find(x=>x.workout==='${k}'))">✓ Выполнено</button>`:`<button class="btn bs" onclick="openWorkout(gDT().find(x=>x.workout==='${k}'))">← Назад</button>${ex.time?'':`<button class="btn bp" onclick="completeEx('${k}',${i},'${task.id}',${task.p})">✓ Отметить</button>`}`;document.getElementById('modal').classList.add('active');}
+function completeEx(k,i,taskId,p){const eid=`${k}_${i}`;if(!data.ct.includes(eid))data.ct.push(eid);const pr=lP(k,EX);if(pr.d===pr.t&&!data.ct.includes(taskId)){data.stats.wk++;award(taskId,p);showToast('🎉 Тренировка засчитана!');}else showToast(`✓ ${EX[k][i].n} (${pr.d}/${pr.t})`);saveData();updateUI();openWorkout(gDT().find(x=>x.id===taskId));}
+function openCare(t){const l=CA[t.care];const pr=lP(t.care,CA);document.getElementById('modalTitle').textContent=`${t.icon} ${t.title}`;document.getElementById('modalText').innerHTML=`<div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center"><strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.p.toFixed(3)}%</strong> · ${pr.d}/${pr.t}</div><p>Каждый шаг — с техникой и таймером.</p>`;document.getElementById('modalExtra').innerHTML=l.map((item,i)=>{const d=data.ct.includes(`${t.care}_${i}`);return`<div class="er"><div class="et"><div class="en ${d?'done':''}">${d?'✓':'○'} ${item.n}</div><div class="ep">${fmtTime(item.time)}</div></div><div class="ea"><button class="btn bs bsm" onclick="openCareItem('${t.care}',${i})">Подробнее</button>${d?'<button class="btn bg bsm" disabled>✓</button>':`<button class="btn bp bsm" onclick="openCareItem('${t.care}',${i})">▶ Начать</button>`}</div></div>`;}).join('');document.getElementById('modalButtons').innerHTML=pr.d===pr.t?'<button class="btn bg" onclick="closeModal()">✓ Засчитано</button>':'<button class="btn bs" onclick="closeModal()">Выйти</button>';document.getElementById('modal').classList.add('active');}
+function openCareItem(k,i){const item=CA[k][i];const d=data.ct.includes(`${k}_${i}`);const task=gDT().find(t=>t.care===k);document.getElementById('modalTitle').textContent=item.n;document.getElementById('modalText').innerHTML=`<p><strong> Время:</strong> ${fmtTime(item.time)}</p><p style="margin-top:10px"><strong>📝 Как делать:</strong></p><p>${item.h}</p><p style="margin-top:10px"><strong>💡 Советы:</strong></p><p>${item.t}</p><p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${item.g}</p>`;document.getElementById('modalExtra').innerHTML=!d?`<div class="td2" id="timerDisplay">${fmtTime(item.time)}</div><button class="btn bp" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать</button>`:'';if(!d)window.startCurrentTimer=()=>startTimerUI(item.time,()=>{completeCareItem(k,i,task.id,task.p);});document.getElementById('modalButtons').innerHTML=`<button class="btn bs" onclick="openCare(gDT().find(x=>x.care==='${k}'))">← Назад</button>`;document.getElementById('modal').classList.add('active');}
+function completeCareItem(k,i,taskId,p){const id=`${k}_${i}`;if(!data.ct.includes(id))data.ct.push(id);const pr=lP(k,CA);if(pr.d===pr.t&&!data.ct.includes(taskId)){award(taskId,p);showToast('✓ Уход выполнен!');}else showToast(`✓ ${CA[k][i].n} (${pr.d}/${pr.t})`);saveData();updateUI();openCare(gDT().find(x=>x.id===taskId));}
+function openTimed(t){const d=data.ct.includes(t.id);document.getElementById('modalTitle').textContent=`${t.icon} ${t.title}`;document.getElementById('modalText').innerHTML=`<div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center"><strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.p.toFixed(3)}%</strong></div><p><strong>📝 Как делать:</strong></p><p>${t.how}</p><p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${t.gives}</p>`;document.getElementById('modalExtra').innerHTML=!d?`<div class="td2" id="timerDisplay">${fmtTime(t.ts)}</div><button class="btn bp" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать</button>`:'';if(!d)window.startCurrentTimer=()=>startTimerUI(t.ts,()=>{completeTask(t.id,t.p);});document.getElementById('modalButtons').innerHTML=d?'<button class="btn bg" onclick="closeModal()">✓ Выполнено</button>':'<button class="btn bs" onclick="closeModal()">Выйти</button>';document.getElementById('modal').classList.add('active');}
+function openVoice(t){const d=data.ct.includes(t.id);document.getElementById('modalTitle').textContent=`🎙️ ${t.title}`;document.getElementById('modalText').innerHTML=`<p><strong>План (15-20 мин):</strong></p><ul><li><strong>1. Расслабление (2 мин).</strong> Массаж шеи, зевки.</li><li><strong>2. Дыхание (3 мин).</strong> Диафрагма, выдох на «фффф».</li><li><strong>3. Мычание (5 мин).</strong> «мммм» высоко, вибрация в губах.</li><li><strong>4. Чтение (5-10 мин).</strong> Мягко, плавно.</li><li><strong>5. Запись (2 мин).</strong> Послушай прогресс.</li></ul><p><strong>⚠️</strong> Боль/хрипота = СТОП.</p><p><strong> Даёт:</strong> мягкий тембр, женственные интонации.</p>`;document.getElementById('modalExtra').innerHTML='';document.getElementById('modalButtons').innerHTML=d?'<button class="btn bg" onclick="closeModal()">✓ Выполнено</button>':`<button class="btn bs" onclick="closeModal()">Выйти</button><button class="btn bp" onclick="completeTask('${t.id}',${t.p})">✓ Выполнено</button>`;document.getElementById('modal').classList.add('active');}
+function openReport(t){const d=data.ct.includes(t.id);const key=new Date().toISOString().split('T')[0];document.getElementById('modalTitle').textContent=`📝 ${t.title}`;document.getElementById('modalText').innerHTML=`<p><strong>Как ты себя чувствуешь?</strong></p><div class="mg">${['😄','🙂','😐','😔','😢'].map(m=>`<button class="mdb ${data.m[key]===m?'sel':''}" onclick="setMood('${m}',this)">${m}</button>`).join('')}</div><p>Запиши итоги дня.</p>`;document.getElementById('modalExtra').innerHTML=`<textarea id="journalText" placeholder="Сегодня я...">${data.j[key]||''}</textarea>`;document.getElementById('modalButtons').innerHTML=`<button class="btn bs" onclick="saveJournal()">💾 Сохранить</button>${d?'<button class="btn bg" disabled>✓ Готово</button>':`<button class="btn bp" onclick="finishReport('${t.id}',${t.p})">✓ Завершить день</button>`}`;document.getElementById('modal').classList.add('active');}
+function setMood(e,el){const key=new Date().toISOString().split('T')[0];data.m[key]=e;saveData();document.querySelectorAll('.mdb').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+function saveJournal(){const key=new Date().toISOString().split('T')[0];data.j[key]=document.getElementById('journalText').value;saveData();showToast('💾 Сохранено');}
+function finishReport(id,p){saveJournal();if(!data.ct.includes(id))award(id,p);saveData();updateUI();closeModal();showToast('🌙 День завершён!');}
+function award(taskId,p){const mult={soft:.8,normal:1,strict:1.2}[data.sets.st];const lvl=data.p<25?1:data.p<50?1.1:data.p<75?1.2:1.3;const fin=p*mult*lvl;data.p=Math.min(100,data.p+fin);data.td++;if(!data.ct.includes(taskId))data.ct.push(taskId);const today=todayKey();const yest=new Date(Date.now()-86400000).toDateString();if(data.lad===yest)data.streak++;else if(data.lad!==today)data.streak=1;data.lad=today;const bon={7:.1,30:.5,90:1.5,180:3,365:7};for(const[d,b]of Object.entries(bon)){if(data.streak===parseInt(d)){data.p=Math.min(100,data.p+b);setTimeout(()=>showToast(`🔥 Серия ${d} дней: +${b}%!`),1200);}}showToast(`✨ +${fin.toFixed(3)}% к прогрессу!`);}
+function completeTask(id,p){award(id,p);saveData();updateUI();closeModal();}
+function rTr(){const s=sl();const req={soft:1,normal:2,strict:3};const av=Object.entries(data.tr).filter(([_,t])=>req[t.r]<=s);const lo=Object.entries(data.tr).filter(([_,t])=>req[t.r]>s);let h=av.map(([k,t])=>{let info='Ещё не отмечено';let cd=true,dl=0;if(t.ld){const days=Math.floor((Date.now()-new Date(t.ld))/86400000);dl=t.f-days;if(dl>0){info=`Последнее: ${formatDate(t.ld)} · через ${dl} дн.`;cd=false;}else info=`Последнее: ${formatDate(t.ld)} · пора!`;}return`<div class="tk"><div class="th"><div class="tn">${t.n}</div><div class="tf">${t.ft}</div></div><div class="tds">${t.sd}</div><div class="ti2">${info}</div><div style="display:flex;gap:8px"><button class="btn bs bsm" style="flex:1" onclick="openTracker('${k}')">Подробнее</button>${cd?`<button class="btn bp bsm" style="flex:1" onclick="markTracker('${k}')">✓ Отметить</button>`:`<button class="btn bs bsm" style="flex:1;opacity:.5" disabled>Рано (${dl} дн.)</button>`}</div></div>`;}).join('');if(lo.length)h+=`<div class="card" style="background:#fff3e0;border:1px solid var(--o)"><div class="ct">🔒 Заблокировано</div><div class="cx">Повысь интенсивность в Профиле:</div>${lo.map(([_,t])=>`<div style="margin-top:8px;font-size:13px"><strong>${t.n}</strong> — «${t.r==='normal'?'Обычный':'Строгий'}»</div>`).join('')}</div>`;document.getElementById('trackersList').innerHTML=h;}
+function openTracker(k){const t=data.tr[k];document.getElementById('modalTitle').textContent=t.n;document.getElementById('modalText').innerHTML=`<p><strong>📅 Частота:</strong> ${t.ft}</p><p style="margin-top:10px"><strong> Как делать:</strong></p><p>${t.h}</p><p style="margin-top:10px"><strong>💡 Советы:</strong></p><p>${t.t}</p>`;document.getElementById('modalExtra').innerHTML='';document.getElementById('modalButtons').innerHTML='<button class="btn bp" onclick="closeModal()">Понятно</button>';document.getElementById('modal').classList.add('active');}
+function markTracker(k){data.tr[k].ld=new Date().toISOString();saveData();updateUI();showToast(`✓ ${data.tr[k].n} отмечено`);}
+function calcCal(){const a=parseInt(document.getElementById('calcAge').value);const h=parseInt(document.getElementById('calcHeight').value);const w=parseInt(document.getElementById('calcWeight').value);const ac=parseFloat(document.getElementById('calcActivity').value);const g=parseFloat(document.getElementById('calcGoal').value);if(!a||!h||!w){showToast('Заполни все поля');return;}const bmr=10*w+6.25*h-5*a-161;const target=Math.round(bmr*ac*(1+g));const pr=Math.round(w*1.6);const fa=Math.round((target*.3)/9);const ca=Math.round((target-pr*4-fa*9)/4);const res=`<div class="cr"><strong>🌸 Норма: ${target} ккал/день</strong><br>Белки: <strong>${pr} г</strong> · Жиры: <strong>${fa} г</strong> · Углеводы: <strong>${ca} г</strong></div>`;data.calc={a,h,w,ac:String(ac),g:String(g),r:res};saveData();document.getElementById('calcResult').innerHTML=res;showToast('✓ Готово');}
+let wt='hygiene',wi=null;
+function sW(k){wt=k;wi=null;rW();}
+function oWI(id){wi=id;rW();}
+function bW(){wi=null;rW();}
+function tO(id){const was=!!data.own[id];data.own[id]=!was;saveData();if(!was){const w=WTS.find(w=>w.ids.includes(id));if(w&&(!w.needs||w.needs<=sl()))showToast('🛒 Куплено! Новое задание в плане');else showToast(' Отмечено');}else showToast('Отметка снята');updateUI();}
+function rW(){document.getElementById('wardTabs').innerHTML=Object.entries(W).map(([k,c])=>`<button class="wtab ${wt===k?'a':''}" onclick="sW('${k}')">${c.n}</button>`).join('');const c=document.getElementById('wardContent');if(wt==='outfits'){c.innerHTML=`<div class="cx">10 готовых образов.</div>`+OF.map(o=>`<div class="ofc"><span class="ofs s-${o.season}">${o.st}</span><div class="ofn">${o.n}</div><ul class="ofi">${o.items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`).join('');return;}const cat=W[wt];if(wi){const item=cat.items.find(i=>i.id===wi);if(!item){wi=null;rW();return;}const own=!!data.own[item.id];let extra='';if(item.id==='chastity'&&data.prof.er){const r=chRec(parseFloat(data.prof.er));extra=`<div class="wu"><strong>📏 Твоя рекомендация:</strong> размер ${r.s} · без пояса ~${r.nb} мм · с поясом ~${r.wb} мм</div>`;}c.innerHTML=`<div class="wd2"><div class="wdt">${item.icon} ${item.n} ${own?'<span class="wo">✓ куплено</span>':''}</div><div class="wu"><strong>📝 Как пользоваться:</strong> ${item.h}</div><div class="wu"><strong>🌸 Зачем:</strong> ${item.u}</div>${extra}<button class="btn ${own?'bg':'bp'}" onclick="tO('${item.id}')">${own?'✓ Куплено — снять':'🛒 Отметить купленным'}</button><button class="btn bs" style="margin-bottom:0" onclick="bW()">← Назад</button></div>`;return;}const oc=cat.items.filter(i=>data.own[i.id]).length;c.innerHTML=`<div class="cx">Куплено: <strong style="color:var(--p)">${oc}/${cat.items.length}</strong></div>`+cat.items.map(i=>`<div class="wi" onclick="oWI('${i.id}')"><div class="wic">${i.icon}</div><div class="wif"><div class="win">${i.n}</div><div class="wis">${data.own[i.id]?'В гардеробе':'Подробнее →'}</div></div>${data.own[i.id]?'<span class="wo">✓</span>':''}</div>`).join('');}
+function chRec(e){const mm=e*10;const nb=Math.round((mm*.8)/5)*5;const wb=Math.round((mm*.7)/5)*5;const s=e<11?'S':e<13.5?'M':e<16?'L':'XL';return{nb,wb,s};}
+function showChastityRec(){const v=parseFloat(document.getElementById('ob_erect').value);const b=document.getElementById('obRec');if(!v||v<5||v>25){b.style.display='none';return;}const r=chRec(v);b.style.display='block';b.innerHTML=`📏 <strong>Рекомендация клетки:</strong> размер <strong>${r.s}</strong><br>Без пояса: ~<strong>${r.nb} мм</strong><br>С поясом: ~<strong>${r.wb} мм</strong>`;}
+function finishOnboard(){const n=document.getElementById('ob_name').value.trim();const a=document.getElementById('ob_age').value;if(!n||!a){showToast('Укажи имя и возраст');return;}data.prof={n,a,h:document.getElementById('ob_height').value,w:document.getElementById('ob_weight').value,wa:document.getElementById('ob_waist').value,ch:document.getElementById('ob_chest').value,hi:document.getElementById('ob_hips').value,fl:document.getElementById('ob_flaccid').value,er:document.getElementById('ob_erect').value,j:document.getElementById('ob_job').value.trim()};data.sets.ws=document.getElementById('ob_wStart').value;data.sets.we=document.getElementById('ob_wEnd').value;data.sets.st=document.getElementById('ob_strict').value;data.ob=true;saveData();document.getElementById('onboard').style.display='none';updateUI();showToast(`Добро пожаловать, ${n}! 🌸`);}
+function showAdmin(){document.getElementById('modalTitle').textContent=' Админ-панель';document.getElementById('modalText').innerHTML='<p>Загрузка...</p>';document.getElementById('modalExtra').innerHTML='';document.getElementById('modalButtons').innerHTML='<button class="btn bs" onclick="closeModal()">Закрыть</button>';document.getElementById('modal').classList.add('active');db.collection('users').orderBy('ua','desc').limit(50).get().then(snap=>{let h='';snap.forEach(doc=>{const d=doc.data();const p=d.data?.p||0;const s=d.data?.streak||0;h+=`<div class="ar"><div class="ard">${d.tn||'Аноним'} · ${p.toFixed(2)}% · 🔥${s}</div><div class="art">Последняя активность: ${d.ua?formatDate(d.ua):'—'}</div></div>`;});document.getElementById('modalText').innerHTML=h||'<p>Пока нет пользователей.</p>';}).catch(e=>{document.getElementById('modalText').innerHTML='<p>Ошибка загрузки.</p>';});}
+function showArchive(){document.getElementById('modalTitle').textContent='📖 Архив';const e=Object.entries(data.j).sort((a,b)=>b[0].localeCompare(a[0]));document.getElementById('modalText').innerHTML=e.length===0?'<p>Записей нет.</p>':e.map(([d,t])=>`<div class="ar"><div class="ard">${formatDate(d)} ${data.m[d]||''}</div><div class="art">${t}</div></div>`).join('');document.getElementById('modalExtra').innerHTML='';document.getElementById('modalButtons').innerHTML='<button class="btn bp" onclick="closeModal()">Закрыть</button>';document.getElementById('modal').classList.add('active');}
+function showAchievements(){document.getElementById('modalTitle').textContent='🏆 Достижения';document.getElementById('modalText').innerHTML=Object.values(data.ach).map(a=>`<div class="ach ${a.u?'':'lk'}"><div class="ai">${a.u?a.i:'🔒'}</div><div><div class="an">${a.n}</div><div class="ad">${a.d}</div>${a.u?'<div style="font-size:11px;color:var(--p);font-weight:600;margin-top:4px">✓ Получено</div>':''}</div></div>`).join('');document.getElementById('modalExtra').innerHTML='';document.getElementById('modalButtons').innerHTML='<button class="btn bp" onclick="closeModal()">Закрыть</button>';document.getElementById('modal').classList.add('active');}
+function showPrivacy(){document.getElementById('modalTitle').textContent='🔒 Политика';document.getElementById('modalText').innerHTML=`<div class="pt"><h3>1. Данные</h3><p>Femi Bloom собирает только то, что ты вводишь: профиль, прогресс, фото, записи, покупки.</p><h3>2. Хранение</h3><p>Всё хранится локально и в облаке Firebase. Никому не передаётся.</p><h3>3. Права</h3><ul><li>Экспорт данных</li><li>Полный сброс</li><li>Изменение любых параметров</li></ul><h3>4. Сообщество</h3><p>t.me/femibloom — анонсы обновлений.</p></div>`;document.getElementById('modalExtra').innerHTML='';document.getElementById('modalButtons').innerHTML='<button class="btn bp" onclick="closeModal()">Понятно</button>';document.getElementById('modal').classList.add('active');}
+function exportData(){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`femibloom_${new Date().toISOString().split('T')[0]}.json`;a.click();showToast('✓ Экспортировано');}
+function resetProgress(){document.getElementById('modalTitle').textContent='⚠️ Сброс';document.getElementById('modalText').innerHTML='<p>Сбросить ВЕСЬ прогресс?</p><p style="color:#c62828">Необратимо!</p>';document.getElementById('modalExtra').innerHTML='';document.getElementById('modalButtons').innerHTML=`<button class="btn bs" onclick="closeModal()">Отмена</button><button class="btn bd" onclick="confirmReset()">Сбросить</button>`;document.getElementById('modal').classList.add('active');}
+function confirmReset(){localStorage.removeItem('fb_data');if(cu&&data._did){db.collection('users').doc(data._did).delete().catch(()=>{});}data=JSON.parse(JSON.stringify(D));saveData();updateUI();closeModal();showToast('✓ Сброшено');}
+function closeModal(){stopTimer();document.getElementById('modal').classList.remove('active');}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+document.getElementById('modal').addEventListener('click',(e)=>{if(e.target.id==='modal')closeModal();});
+function todayKey(){return new Date().toDateString();}
+function formatDate(d){return new Date(d).toLocaleDateString('ru-RU',{day:'numeric',month:'short'});}
+function fmtTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function saveData(){scheduleSave();}
+let timerState={int:null,rem:0};
+function stopTimer(){if(timerState.int){clearInterval(timerState.int);timerState.int=null;}}
+function startTimerUI(sec,done){stopTimer();timerState.rem=sec;const el=document.getElementById('timerDisplay');if(el)el.textContent=fmtTime(timerState.rem);const btn=document.getElementById('timerStartBtn');if(btn)btn.style.display='none';timerState.int=setInterval(()=>{timerState.rem--;const el2=document.getElementById('timerDisplay');if(el2)el2.textContent=fmtTime(Math.max(0,timerState.rem));if(timerState.rem<=0){stopTimer();done();}},1000);}
+function updateUI(){if(!data.ob){document.getElementById('onboard').style.display='block';return;}const pct=data.p.toFixed(2);document.getElementById('percentText').textContent=pct+'%';document.getElementById('profilePercent').textContent=pct+'%';document.getElementById('progressFill').style.width=Math.min(data.p,100)+'%';let lv='Новичок';if(data.p>=91)lv='Финальная';else if(data.p>=76)lv='Глубокая';else if(data.p>=51)lv='Развитие';else if(data.p>=26)lv='Привыкание';document.getElementById('levelBadge').textContent=lv;document.getElementById('streakValue').textContent=data.streak;document.getElementById('profileStreak').textContent=data.streak;document.getElementById('tasksDone').textContent=data.td;const tips=['Маленькие шаги каждый день.','Регулярность важнее интенсивности.','Твоё тело меняется. Дай ему время.','Женственность — это внутреннее.','Каждый день ты ближе к себе.','Не сравнивай себя с другими.','Забота о себе — не эгоизм.'];document.getElementById('dailyTip').textContent=tips[new Date().getDate()%tips.length];document.getElementById('pName').value=data.prof.n;document.getElementById('pAge').value=data.prof.a;document.getElementById('pHeight').value=data.prof.h;document.getElementById('pWeight').value=data.prof.w;document.getElementById('pWaist').value=data.prof.wa;document.getElementById('pChest').value=data.prof.ch;document.getElementById('pHips').value=data.prof.hi;document.getElementById('pJob').value=data.prof.j;const rc=document.getElementById('chastityRecCard');if(data.prof.er){const r=chRec(parseFloat(data.prof.er));rc.innerHTML=`<div class="ct">🔒 Рекомендация клетки</div><div class="cx" style="margin:0">Размер <strong>${r.s}</strong> · без пояса: ~<strong>${r.nb} мм</strong> · с поясом: ~<strong>${r.wb} мм</strong></div>`;}else rc.innerHTML='';document.getElementById('working').value=data.sets.wk;document.getElementById('workStart').value=data.sets.ws;document.getElementById('workEnd').value=data.sets.we;document.getElementById('strictness').value=data.sets.st;document.getElementById('genderAddress').value=data.sets.ga;document.getElementById('workDaysRow').style.display=data.sets.wk==='yes'?'flex':'none';document.getElementById('workHoursRows').style.display=data.sets.wk==='yes'?'block':'none';rWD();const s=sl();document.getElementById('strictInfo').innerHTML=`<div class="ct">Интенсивность: ${s===1?'🌱 Мягкая':s===2?'🌸 Обычная':'🔥 Строгая'}</div><div class="cx" style="margin:0">${s>=1?'✓ Бритьё и скрабы<br>✓ Базовые упражнения<br>':''}${s>=2?'✓ Макияж и уход<br>✓ Ногти, волосы<br>✓ Бельё и колготки<br>':''}${s>=3?'✓ Практика голоса<br>✓ Психология и книги<br>✓ Интенсивные тренировки':''}</div>`;document.getElementById('calcAge').value=data.calc.a||data.prof.a||'';document.getElementById('calcHeight').value=data.calc.h||data.prof.h||'';document.getElementById('calcWeight').value=data.calc.w||data.prof.w||'';document.getElementById('calcActivity').value=data.calc.ac;document.getElementById('calcGoal').value=data.calc.g;if(data.calc.r)document.getElementById('calcResult').innerHTML=data.calc.r;document.getElementById('cloudInfo').innerHTML=cu?'☁️ Подключено к облаку · ID: '+cu.uid.substring(0,8)+'...':'📱 Локально';if(ia)document.getElementById('adminCard').style.display='block';checkAch();rWater();rPhotos();rT();rTr();rOps();rW();}
+function rWD(){const n=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];document.getElementById('workDaysBtns').innerHTML=n.map((n,i)=>`<button class="db ${data.sets.wd.includes(i)?'a':''}" onclick="tWD(${i})">${n}</button>`).join('');}
+function tWD(i){const idx=data.sets.wd.indexOf(i);if(idx>=0)data.sets.wd.splice(idx,1);else data.sets.wd.push(i);saveData();rWD();}
+function saveSettings(){data.sets.wk=document.getElementById('working').value;data.sets.ws=document.getElementById('workStart').value;data.sets.we=document.getElementById('workEnd').value;data.sets.st=document.getElementById('strictness').value;data.sets.ga=document.getElementById('genderAddress').value;saveData();updateUI();showToast('✓ Сохранено');}
+function saveProfile(){data.prof.n=document.getElementById('pName').value;data.prof.a=document.getElementById('pAge').value;data.prof.h=document.getElementById('pHeight').value;data.prof.w=document.getElementById('pWeight').value;data.prof.wa=document.getElementById('pWaist').value;data.prof.ch=document.getElementById('pChest').value;data.prof.hi=document.getElementById('pHips').value;data.prof.j=document.getElementById('pJob').value;saveData();updateUI();showToast('✓ Профиль обновлён');}
+function rWater(){const today=new Date().toISOString().split('T')[0];if(data.w.d!==today)data.w={d:today,c:0};const c=data.w.c;document.getElementById('waterCard').innerHTML=`<div class="wr"><div><div class="ct">💧 Вода сегодня</div><div class="wd">${'💧'.repeat(Math.min(c,8))}${'·'.repeat(Math.max(0,8-c))}</div></div><div style="text-align:right"><div class="svl" style="font-size:20px">${c}/8</div><button class="btn bp bsm" onclick="addWater()">+ стакан</button></div></div>`;}
+function addWater(){if(data.w.c<8){data.w.c++;saveData();rWater();if(data.w.c===8)showToast('💧 Норма выполнена!');}else showToast('💧 Норма уже выполнена!');}
+function rPhotos(){const g=document.getElementById('photoGrid');const s=document.getElementById('photoStatus');const b=document.getElementById('photoBtn');g.innerHTML=`<div class="ph" onclick="viewPhoto('before')">${data.pbu?`<img src="${data.pbu}"><div class="dl">ДО · ${data.pbd?formatDate(data.pbd):''}</div>`:'📷'}</div><div class="ph" onclick="viewPhoto('week')">${data.pwu?`<img src="${data.pwu}"><div class="dl">Неделя · ${data.pwd?formatDate(data.pwd):''}</div>`:'📷'}</div>`;if(!data.pbu){pm='before';s.innerHTML='<div class="pw">📸 Сделай первое фото «ДО».</div>';b.textContent='📷 Сделать фото «ДО»';b.style.display='block';}else{const base=data.pwd||data.pbd;const days=Math.floor((Date.now()-new Date(base))/86400000);if(days>=7){pm='week';s.innerHTML=`<div class="pw">⚠️ Прошло ${days} дней. Обнови недельное фото!</div>`;b.textContent='📷 Обновить недельное фото';b.style.display='block';}else{pm=null;s.innerHTML=`<div class="cx" style="margin-top:10px;color:var(--g)">✓ Следующее фото через ${7-days} дн.</div>`;b.style.display='none';}}}
+function takePhoto(){if(pm)document.getElementById('photoInput').click();}
+function addPhoto(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=(e)=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');const scale=Math.min(1,480/img.width);canvas.width=img.width*scale;canvas.height=img.height*scale;canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const shot={date:new Date().toISOString(),data:canvas.toDataURL('image/jpeg',0.7)};if(pm==='before'){data.pbu=shot.data;data.pbd=shot.date;}else{data.pwu=shot.data;data.pwd=shot.date;}saveData();updateUI();showToast('✓ Фото сохранено');};img.src=e.target.result;};reader.readAsDataURL(file);event.target.value='';}
+function viewPhoto(mode){const ph=mode==='before'?data.pbu:data.pwu;const dt=mode==='before'?data.pbd:data.pwd;if(!ph){showToast('Фото не сделано');return;}document.getElementById('modalTitle').textContent=mode==='before'?'📸 Фото «ДО»':'📸 Недельное фото';document.getElementById('modalText').innerHTML=`<img src="${ph}" style="width:100%;border-radius:12px"><p style="margin-top:10px">Сделано: ${dt?formatDate(dt):''}</p>`;document.getElementById('modalExtra').innerHTML='';document.getElementById('modalButtons').innerHTML='<button class="btn bp" onclick="closeModal()">Закрыть</button>';document.getElementById('modal').classList.add('active');}
+function checkAch(){const a=data.ach;const u=(k)=>{if(!a[k].u){a[k].u=true;setTimeout(()=>showToast(`🏆 ${a[k].n}!`),800);}};if(data.td>=1)u('ft');if(data.streak>=7)u('s7');if(data.streak>=30)u('s30');if(data.streak>=100)u('s100');if(data.p>=25)u('p25');if(data.p>=50)u('p50');if(data.p>=75)u('p75');if(data.pbu)u('ph');if(data.stats.wk>=10)u('w10');if(data.ops.some(o=>o.s>0))u('sv');}
+function rOps(){let ts=0,tc=0;const lb={not_started:'Не начато',saving:'Коплю',done:'Сделано'};document.getElementById('operationsList').innerHTML=data.ops.map(o=>{ts+=o.s;tc+=o.c;const pct=Math.min(100,(o.s/o.c)*100);return`<div class="oc"><div class="oh"><div class="on">${o.n}</div><div class="os ${o.st}">${lb[o.st]}</div></div><div class="ox">Стоимость: ${o.c.toLocaleString('ru-RU')} ₽</div><div class="ov">Накоплено: ${o.s.toLocaleString('ru-RU')} ₽ (${pct.toFixed(1)}%)</div><div class="ps"><div class="psf" style="width:${pct}%"></div></div><div style="display:flex;gap:8px"><button class="btn bp bsm" style="flex:1" onclick="addSav(${o.id})">+ Добавить</button><button class="btn bs bsm" style="flex:1" onclick="chSt(${o.id})">Статус</button></div></div>`;}).join('');document.getElementById('totalSaved').textContent=ts.toLocaleString('ru-RU')+' ₽';document.getElementById('totalCost').textContent=tc.toLocaleString('ru-RU')+' ₽';}
+function addSav(id){const o=data.ops.find(o=>o.id===id);document.getElementById('modalTitle').textContent='Добавить накопления';document.getElementById('modalText').innerHTML=`<p>Сколько добавить к «${o.n}»?</p><p style="font-size:13px">Сейчас: ${o.s.toLocaleString('ru-RU')} ₽</p>`;document.getElementById('modalExtra').innerHTML='<input type="number" id="savingsAmount" placeholder="Сумма в рублях" min="0" style="width:100%;padding:12px;border:1px solid #eee;border-radius:10px;font-size:16px;font-family:inherit">';document.getElementById('modalButtons').innerHTML=`<button class="btn bs" onclick="closeModal()">Отмена</button><button class="btn bp" onclick="saveSav(${id})">Добавить</button>`;document.getElementById('modal').classList.add('active');setTimeout(()=>document.getElementById('savingsAmount').focus(),100);}
+function saveSav(id){const a=parseInt(document.getElementById('savingsAmount').value);if(!a||a<=0){showToast('Введите сумму');return;}const o=data.ops.find(o=>o.id===id);o.s+=a;if(o.st==='not_started')o.st='saving';saveData();updateUI();closeModal();showToast(`✓ +${a.toLocaleString('ru-RU')} ₽`);}
+function chSt(id){const o=data.ops.find(o=>o.id===id);const s=['not_started','saving','done'];const l=['Не начато','Коплю','Сделано'];const i=s.indexOf(o.st);o.st=s[(i+1)%3];saveData();updateUI();showToast(`Статус: ${l[(i+1)%3]}`);}
+function switchSection(id,btn){if(id!=='home'&&id!=='profile'&&id!=='wardrobe'){if(!data.pbu){showToast('️ Сделай первое фото «ДО»!');document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('home').classList.add('active');document.querySelector('.ni').classList.add('active');return;}const base=data.pwd||data.pbd;const days=Math.floor((Date.now()-new Date(base))/86400000);if(days>=7){showToast('⚠️ Обнови недельное фото!');document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('home').classList.add('active');document.querySelector('.ni').classList.add('active');return;}}document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');}
+const EX={morning:[{n:'Бег/ходьба',r:'10 мин',time:600,te:'Корпус прямой, плечи расслаблены, руки под 90°. Шаг частый, приземление на середину стопы. Дыхание: 2 шага вдох, 2 выдох.',mi:'Топание, зажатые плечи.',g:'Стройные ноги, походка.',t:'Тяжело — иди быстро.'},{n:'Ягодичный мост',r:'3×15',te:'Ляг, подними таз, сжимая ягодицы, задержись, опусти.',mi:'Прогиб.',g:'Округлые ягодицы.',t:'Дави пятками.'},{n:'Сумо-приседания',r:'3×20',te:'Ноги шире плеч, носки наружу, спина прямая.',mi:'Завал коленей.',g:'Тонус бёдер.',t:'Вес на пятках.'},{n:'Выпады',r:'3×12 на ногу',te:'Шаг вперёд, оба колена 90°, толчок пяткой.',mi:'Наклон.',g:'Ягодицы, баланс.',t:'Корпус вертикально.'},{n:'Вакуум',r:'10×15 сек',te:'Выдохни всё, втяни живот под рёбра, задержись. Натощак.',mi:'После еды.',g:'Узкая талия.',t:'Утром до еды.'},{n:'Планка',r:'3×30 сек',te:'Упор на предплечья, тело в линию.',mi:'Провисание.',g:'Кор, осанка.',t:'Дыши.'}],morningWork:[{n:'Ягодичный мост',r:'3×15',te:'Подними таз, сжимая ягодицы.',mi:'Прогиб.',g:'Форма.',t:'Пятками.'},{n:'Сумо-приседания',r:'3×15',te:'Носки наружу, спина прямая.',mi:'Колени.',g:'Бёдра.',t:'Пятки.'},{n:'Вакуум',r:'5×15 сек',te:'Втяни живот, задержись.',mi:'После еды.',g:'Талия.',t:'Натощак.'},{n:'Планка',r:'2×30 сек',te:'Тело в линию.',mi:'Провисание.',g:'Кор.',t:'Дыши.'}],evening:[{n:'Мост на одной ноге',r:'3×12 на ногу',te:'Одна нога вытянута, поднимай таз одной ягодицей.',mi:'Перекос.',g:'Симметрия.',t:'Таз ровно.'},{n:'Отведения ноги',r:'3×20 на ногу',te:'На четвереньках, нога назад-вверх, пауза.',mi:'Прогиб.',g:'Верх ягодиц.',t:'Медленно.'},{n:'Боковая планка',r:'3×30 сек',te:'Упор на предплечье, тело в линию.',mi:'Перекос.',g:'Бок талии.',t:'Макушкой вверх.'},{n:'Бабочка',r:'2 мин',te:'Стопы вместе, колени в стороны, дыши.',mi:'Рывки.',g:'Гибкость.',t:'Расслабляйся.'}]};
+const CA={morning:[{n:'🦷 Чистка зубов',time:120,h:'Щётка под 45°, выметающие движения, все поверхности, язык.',t:'Не дави, мягкая щётка.',g:'Улыбка и дыхание.'},{n:'👅 Язык',time:30,h:'Скребок от корня к кончику 3-5 раз.',t:'Без давления.',g:'Свежесть.'},{n:'💦 Умывание',time:60,h:'Пенка, тёплая вода, по массажным линиям, промокни.',t:'Не горячая.',g:'Чистая кожа.'},{n:'🌸 Тоник',time:30,h:'По массажным линиям.',t:'Без спирта.',g:'pH баланс.'},{n:'🧴 Крем+SPF',time:60,h:'Горошина по точкам, вбивающими движениями.',t:'SPF каждый день.',g:'Увлажнение.'},{n:'💇 Причёсывание',time:90,h:'С кончиков вверх, укладка.',t:'Не дёргай.',g:'Ухоженный вид.'}],evening:[{n:'🧼 Демакияж',time:120,h:'Мицеллярная вода/масло, затем пенка.',t:'Глаза не три.',g:'Чистые поры.'},{n:' Зубы+нить',time:120,h:'Нить ДО щётки, все промежутки.',t:'Ежедневно.',g:'Здоровые зубы.'},{n:' Контрастный душ',time:180,h:'3 круга: 30 сек тёплая/30 прохладная, снизу вверх.',t:'Не ледяная.',g:'Тонус кожи.'},{n:'🧴 Крем для тела',time:120,h:'На влажную кожу, снизу вверх.',t:'Массаж=профилактика.',g:'Шелковистость.'},{n:'🌙 Уход за лицом',time:90,h:'Тоник+ночной крем.',t:'За час до сна.',g:'Восстановление.'},{n:'💆 Массаж лица',time:120,h:'По линиям: лоб→виски, нос→уши, подбородок→уши.',t:'Без растяжения.',g:'Овал, сияние.'}]};
+const W={hygiene:{n:'🪥 Гигиена',items:[{id:'toothbrush',icon:'🪥',n:'Зубная щётка',h:'2 раза в день по 2 минуты. Щётка под 45°, выметающие движения. Меняй каждые 3 месяца.',u:'Здоровые зубы.'},{id:'toothpaste',icon:'🦷',n:'Зубная паста',h:'Горошина, 2 раза в день.',u:'Защита от кариеса.'},{id:'floss',icon:'🧵',n:'Зубная нить',h:'1 раз в день ДО щётки.',u:'Чистые промежутки.'},{id:'tongue',icon:'👅',n:'Скребок для языка',h:'Утром 3-5 движений.',u:'Свежее дыхание.'},{id:'mouthwash',icon:'💧',n:'Ополаскиватель',h:'30 секунд после чистки.',u:'Дополнительная защита.'},{id:'intimgel',icon:'🧴',n:'Интим-гель',h:'Ежедневно, pH 4-5.',u:'Здоровая микрофлора.'},{id:'deodorant',icon:'🌸',n:'Дезодорант',h:'Утром на сухую кожу.',u:'Уверенность.'},{id:'wipes',icon:'🧻',n:'Влажные салфетки',h:'Носи с собой.',u:'Свежесть.'},{id:'shave',icon:'🪒',n:'Бритва',h:'Раз в 2 дня: распарить, гель, по росту, пантенол.',u:'Гладкая кожа.'},{id:'shavegel',icon:'🫧',n:'Гель для бритья',h:'Перед бритвой, не насухо.',u:'Без раздражения.'},{id:'panthenol',icon:'🧴',n:'Пантенол',h:'После бритья.',u:'Снимает раздражение.'},{id:'scrub',icon:'🧴',n:'Скраб',h:'Раз в 3 дня, массаж снизу вверх.',u:'Гладкость.'},{id:'bodylotion',icon:'💧',n:'Лосьон',h:'Ежедневно на влажную кожу.',u:'Мягкость.'}]},lingerie:{n:'🩲 Бельё',items:[{id:'slips',icon:'',n:'Слипы',h:'Каждый день.',u:'База.'},{id:'brazil',icon:'🍑',n:'Бразилиана',h:'Под облегающее.',u:'Ягодицы.'},{id:'string',icon:'✨',n:'Стринги',h:'Не каждый день.',u:'Особое настроение.'},{id:'highwaist',icon:'🌸',n:'Высокие',h:'Под ретро-платья.',u:'Плоский живот.'},{id:'shorts',icon:'🩲',n:'Шортики',h:'На активные дни.',u:'Комфорт.'},{id:'bra_nude',icon:'👙',n:'Бюстгальтер нюд',h:'Под светлое.',u:'Незаметен.'},{id:'bra_black',icon:'🖤',n:'Бюстгальтер чёрный',h:'База.',u:'Классика.'},{id:'bralette',icon:'🌷',n:'Бралетт',h:'Для дома.',u:'Комфорт.'},{id:'set',icon:'🎀',n:'Комплект',h:'Для особых случаев.',u:'Уверенность.'},{id:'corset',icon:'👑',n:'Корсет',h:'Не более 4-6 часов.',u:'Силуэт.'},{id:'pajamas',icon:'🌙',n:'Пижама',h:'Для сна.',u:'Женственно.'}]},tights:{n:'🩳 Колготки',items:[{id:'black40',icon:'🖤',n:'Чёрные 40 ден',h:'База.',u:'Универсальные.'},{id:'nude20',icon:'🤎',n:'Телесные 20 ден',h:'Под светлое.',u:'Ухоженные ноги.'},{id:'gray40',icon:'🩶',n:'Серые 40 ден',h:'Осенью.',u:'Сочетаются.'},{id:'black100',icon:'',n:'Плотные 100 ден',h:'Зимой.',u:'Тепло.'},{id:'shine',icon:'✨',n:'С блеском',h:'На выходы.',u:'Сияние.'},{id:'fishnet',icon:'🕸️',n:'В сетку',h:'Для смелых образов.',u:'Дерзкий акцент.'},{id:'pattern',icon:'🌸',n:'С рисунком',h:'Игривый акцент.',u:'Настроение.'}]},clothes:{n:'👕 Одежда',items:[{id:'blouse',icon:'',n:'Белая блузка',h:'База.',u:'Ко всему.'},{id:'dress_black',icon:'👗',n:'Чёрное платье',h:'На выходы.',u:'Классика.'},{id:'jeans',icon:'👖',n:'Джинсы с высокой талией',h:'На каждый день.',u:'Силуэт.'},{id:'trench',icon:'🧥',n:'Тренч',h:'Весна-осень.',u:'Элегантность.'},{id:'cardigan',icon:'🧶',n:'Кардиган',h:'Многослойность.',u:'Уют.'},{id:'skirt',icon:'👗',n:'Юбка-миди',h:'В офис.',u:'Элегантная длина.'},{id:'boots',icon:'👢',n:'Сапоги',h:'Осень-зима.',u:'Осанка.'},{id:'bag',icon:'👜',n:'Сумка',h:'На каждый день.',u:'Завершает образ.'}]},cosmetics:{n:'💄 Косметика',items:[{id:'cleanser',icon:'🧼',n:'Умывание',h:'Утром и вечером.',u:'Первый шаг.'},{id:'toner',icon:'💧',n:'Тоник',h:'После умывания.',u:'pH баланс.'},{id:'serum',icon:'💉',n:'Сыворотка',h:'Под крем.',u:'Увлажнение.'},{id:'cream_day',icon:'🧴',n:'Крем',h:'Утром дневной, вечером ночной.',u:'Питание.'},{id:'spf',icon:'☀️',n:'SPF',h:'Каждый день.',u:'Профилактика старения.'},{id:'balm',icon:'💋',n:'Бальзам',h:'Всегда с собой.',u:'Мягкие губы.'},{id:'bbcream',icon:'🎨',n:'BB-крем',h:'Тонким слоем.',u:'Ровный тон.'},{id:'mascara',icon:'👁️',n:'Тушь',h:'1-2 слоя.',u:'Взгляд.'},{id:'lipstick',icon:'💄',n:'Помада',h:'Нюд или ягодный.',u:'Штрих.'},{id:'blush',icon:'🌸',n:'Румяна',h:'На яблочки щёк.',u:'Свежесть.'},{id:'highlight',icon:'✨',n:'Хайлайтер',h:'Скулы, нос.',u:'Сияние.'},{id:'polish_clear',icon:'💅',n:'Прозрачный лак',h:'1-2 слоя.',u:'Ухоженность.'},{id:'remover',icon:'',n:'Снятие макияжа',h:'Вечером.',u:'Чистая кожа.'},{id:'perfume',icon:'',n:'Парфюм',h:'1-2 распыления.',u:'Женственность.'}]},intim:{n:'💋 Интим',items:[{id:'lubricant',icon:'🧴',n:'Лубрикант',h:'На водной основе.',u:'Комфорт.'},{id:'vib_small',icon:'💎',n:'Вибратор',h:'С малых интенсивностей.',u:'Исследование.'},{id:'vib_ext',icon:'',n:'Наружный вибратор',h:'Мягкий силикон.',u:'Знакомство.'},{id:'dildo_small',icon:'🌙',n:'Дилдо',h:'Малый размер, с лубрикантом.',u:'Привыкание.'},{id:'chastity',icon:'🔒',n:'Клетка',h:'По рекомендации. Гигиена ежедневно.',u:'Контроль.'},{id:'belt',icon:'🗝️',n:'Пояс',h:'С клеткой.',u:'Полный контроль.'},{id:'oil',icon:'🧴',n:'Масло',h:'Для массажа.',u:'Забота.'},{id:'bombs',icon:'🛁',n:'Бомбочки',h:'1-2 раза в неделю.',u:'Расслабление.'},{id:'sexbook',icon:'',n:'Книга',h:'20 мин в день.',u:'Принятие.'}]},optional:{n:'✨ Необязательно',items:[{id:'styler',icon:'',n:'Фен',h:'С термозащитой.',u:'Укладки.'},{id:'curling',icon:'🌀',n:'Плойка',h:'Мягкие волны.',u:'Романтика.'},{id:'jewelry',icon:'💍',n:'Украшения',h:'Минималистичные.',u:'Детали.'},{id:'scarf',icon:'🧣',n:'Платок',h:'На шею/волосы.',u:'Акцент.'},{id:'sleepmask',icon:'😴',n:'Маска для сна',h:'На ночь.',u:'Красота.'},{id:'homewear',icon:'🏠',n:'Домашняя одежда',h:'Халатик.',u:'Женственность дома.'},{id:'candle',icon:'🕯️',n:'Свечи',h:'Для ритуалов.',u:'Атмосфера.'},{id:'photoshoot',icon:'📸',n:'Фотосессия',h:'Раз в несколько месяцев.',u:'Память.'},{id:'dance',icon:'💃',n:'Танцы',h:'Тверк, бачата.',u:'Пластика.'},{id:'wig',icon:'💇‍♀️',n:'Парик',h:'Для экспериментов.',u:'Смена образа.'},{id:'epilator',icon:'⚡',n:'Эпилятор',h:'До 4 недель.',u:'Альтернатива.'},{id:'spaset',icon:'🧖‍♀️',n:'SPA-набор',h:'Раз в неделю.',u:'Салон дома.'}]},outfits:{n:'🌸 Образы',items:[]}};
+const WTS=[{ids:['bbcream','mascara','lipstick'],needs:2,task:{id:'w_makeup',time:'07:20',icon:'💄',title:'Макияж',p:.003,desc:'BB+тушь+тинт.',det:['Тон','Тушь','Тинт']}},{ids:['perfume'],task:{id:'w_perfume',time:'07:50',icon:'🌺',title:'Парфюм',p:.002,desc:'1-2 распыления.',det:['Не растирать']}},{ids:['black40','nude20','gray40','black100','shine','fishnet','pattern'],task:{id:'w_tights',time:'19:30',icon:'',title:'Колготки',p:.003,desc:'2-3 часа.',det:['Медленно натягивай']}},{ids:['chastity'],task:{id:'w_chastity',time:'07:00',icon:'🔒',title:'Клетка',p:.004,desc:'В течение дня.',det:['Душ перед','Без боли','Вечером сними']}},{ids:['vib_small','vib_ext','dildo_small'],task:{id:'w_explore',time:'21:00',icon:'',title:'Исследование',p:.003,desc:'15 минут.',det:['С лубрикантом','Мой игрушки']}},{ids:['polish_clear'],task:{id:'w_nails',time:'20:30',icon:'💅',title:'Ногти',p:.002,desc:'Форма, кутикула.',det:['Пилочка в одну сторону']}},{ids:['pajamas'],task:{id:'w_pajamas',time:'21:50',icon:'🌙',title:'Пижама',p:.002,desc:'Спи в женственном.',det:[]}},{ids:['sexbook'],task:{id:'w_read',time:'21:30',icon:'📚',title:'Чтение',p:.003,desc:'20 минут.',det:['1 инсайт']}}];
+const OF=[{n:'🌸 Весенний романтичный',season:'spring',st:'Весна',items:['Платье-миди','Балетки','Телесные колготки','Кардиган','Сумка','Серьги']},{n:'🌸 Весенний офисный',season:'spring',st:'Весна',items:['Блузка','Юбка-карандаш','Чёрные колготки','Лодочки','Пиджак','Сумка']},{n:'☀️ Летний пляжный',season:'summer',st:'Лето',items:['Льняное платье','Сандалии','Соломенная сумка','Очки','Шляпа','SPF']},{n:'☀️ Летний городской',season:'summer',st:'Лето',items:['Топ+джинсы','Кеды','Кросс-боди','Украшения']},{n:'☀️ Летний вечерний',season:'summer',st:'Лето',items:['Шёлковое платье','Босоножки','Клатч','Серьги','Парфюм']},{n:'🍂 Осенний casual',season:'autumn',st:'Осень',items:['Свитер','Джинсы','Ботинки','Тренч','Шарф']},{n:' Осенний элегантный',season:'autumn',st:'Осень',items:['Водолазка','Юбка-плиссе','Ботфорты','Серые колготки','Берет','Сумка']},{n:'❄️ Зимний уютный',season:'winter',st:'Зима',items:['Кашемировый свитер','Брюки','Сапоги','Колготки 100 ден','Пуховик','Шапка']},{n:'❄️ Зимний праздничный',season:'winter',st:'Зима',items:['Бархатное платье','Колготки с блеском','Лодочки','Клатч','Серьги','Пальто']},{n:'✨ Свидание',season:'spring',st:'Универсально',items:['Шёлковое бельё','Платье с запахом','Колготки с блеском','Лодочки','Сумочка','Парфюм']}];
+initApp();
+</script></body></html>
