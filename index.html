@@ -2792,13 +2792,17 @@ function updateUI() {
   checkAchievements();
   renderActiveSection();
 }
-
+  
 // ===== ЗАПУСК =====
 document.getElementById('modal').addEventListener('click', (e) => {
   if (e.target.id === 'modal') closeModal();
 });
 
-  function showPaywall() {
+// ==========================================
+// ФУНКЦИИ ДЛЯ ОПЛАТЫ ПОДПИСКИ
+// ==========================================
+
+function showPaywall() {
   document.getElementById('modalTitle').textContent = '⭐ Оформление подписки';
   document.getElementById('modalText').innerHTML = `
     <p style="margin-bottom:15px">Выбери тариф:</p>
@@ -2821,7 +2825,7 @@ document.getElementById('modal').addEventListener('click', (e) => {
       </div>
     </div>
     <div style="background:var(--bg);padding:15px;border-radius:12px;margin-top:15px">
-      <div style="font-size:14px;font-weight:600;margin-bottom:8px"> Как оплатить:</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px">📋 Как оплатить:</div>
       <ol style="font-size:13px;color:var(--s);padding-left:20px;line-height:1.6">
         <li>Выбери тариф выше</li>
         <li>Нажми "Оплатить"</li>
@@ -2852,8 +2856,10 @@ function buySubscription() {
   const tg = window.Telegram.WebApp;
   const payload = JSON.stringify({ plan: selectedPayPlan.months });
   
-  // Создаём инвойс
-  fetch(`https://api.telegram.org/botYOUR_BOT_TOKEN/createInvoiceLink`, {
+  // ⚠️ ВАЖНО: ЗАМЕНИ ТЕКСТ В КАВЫЧКАХ НИЖЕ НА СВОЙ РЕАЛЬНЫЙ ТОКЕН ИЗ @BotFather
+  const botToken = "8861128466:AAE33119EvdgVWo4ClAZnrKz5CM--b11bcU"; 
+  
+  fetch(`https://api.telegram.org/bot${botToken}/createInvoiceLink`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -2873,10 +2879,16 @@ function buySubscription() {
         }
         closeModal();
       });
+    } else {
+      showToast('Ошибка создания оплаты. Проверь токен бота.');
     }
+  })
+  .catch(err => {
+    console.error(err);
+    showToast('Ошибка сети');
   });
 }
-  
+
 initApp();
 </script>
 </body>
