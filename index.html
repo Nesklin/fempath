@@ -9,17 +9,25 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 :root {
   --p: #ff6b9d; --pl: #ffa8c5; --bg: #fff5f7; --bg2: #ffe8f0;
   --t: #333; --s: #777; --g: #4caf50; --o: #ff9800; --b: #2196f3;
   --shadow: 0 2px 12px rgba(255,107,157,0.12);
+  --card-bg: #fff; --input-bg: var(--bg);
+}
+body.dark {
+  --bg: #1a1a2e; --bg2: #16213e; --t: #e0e0e0; --s: #a0a0a0;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  --card-bg: #0f3460; --input-bg: #1a1a2e;
 }
 body {
   font-family: 'Inter', sans-serif;
   background: linear-gradient(135deg, var(--bg), var(--bg2));
   color: var(--t); min-height: 100vh; padding-bottom: 90px; font-size: 15px;
+  transition: background 0.3s, color 0.3s;
 }
 
 /* Загрузочный экран */
@@ -66,22 +74,22 @@ body {
 
 /* Кнопки */
 .btn {
-  width: 100%; background: #fff; color: var(--p); border: none;
+  width: 100%; background: var(--card-bg); color: var(--p); border: none;
   padding: 16px; border-radius: 15px; font-size: 16px; font-weight: 600;
   cursor: pointer; font-family: inherit; margin-bottom: 12px;
   box-shadow: var(--shadow); transition: transform 0.15s;
 }
 .btn:active { transform: scale(0.98); }
 .bp { background: linear-gradient(135deg, var(--p), var(--pl)); color: #fff; }
-.bs { background: #fff; color: var(--t); border: 1px solid #eee; }
+.bs { background: var(--card-bg); color: var(--t); border: 1px solid var(--s); }
 .bsm { padding: 8px 12px; font-size: 13px; border-radius: 10px; width: auto; display: inline-block; margin: 0; }
 .bd { background: #ffebee; color: #c62828; }
 .bg { background: #e8f5e9; color: var(--g); }
 .bb { background: #e3f2fd; color: var(--b); }
 
-/* Секции профиля (кнопки-карточки) */
+/* Секции профиля */
 .sec-btn {
-  background: #fff; border-radius: 15px; padding: 16px;
+  background: var(--card-bg); border-radius: 15px; padding: 16px;
   margin-bottom: 10px; display: flex; align-items: center; gap: 14px;
   cursor: pointer; box-shadow: var(--shadow); transition: transform 0.15s;
   border: none; width: 100%; text-align: left; font-family: inherit;
@@ -95,7 +103,7 @@ body {
 
 /* Карточки */
 .card {
-  background: #fff; border-radius: 15px; padding: 18px;
+  background: var(--card-bg); border-radius: 15px; padding: 18px;
   margin-bottom: 12px; box-shadow: var(--shadow);
 }
 .ct { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
@@ -103,7 +111,7 @@ body {
 
 /* Статы */
 .sg { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-.sc { background: #fff; border-radius: 12px; padding: 14px; text-align: center; box-shadow: var(--shadow); }
+.sc { background: var(--card-bg); border-radius: 12px; padding: 14px; text-align: center; box-shadow: var(--shadow); }
 .svl { font-size: 22px; font-weight: 700; color: var(--p); }
 .slb { font-size: 12px; color: var(--s); }
 
@@ -116,10 +124,10 @@ body {
 .ti:last-child::before { display: none; }
 .tb { background: var(--p); color: #fff; padding: 6px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; min-width: 52px; text-align: center; margin-right: 12px; z-index: 1; }
 .tc {
-  flex: 1; background: #fff; border-radius: 12px; padding: 14px;
+  flex: 1; background: var(--card-bg); border-radius: 12px; padding: 14px;
   box-shadow: var(--shadow); cursor: pointer; border: 2px solid transparent;
 }
-.tc.done { opacity: 0.6; background: #f9f9f9; }
+.tc.done { opacity: 0.6; background: var(--input-bg); }
 .tc.done .tt { text-decoration: line-through; }
 .tc.now { border-color: var(--p); }
 .tt { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
@@ -130,7 +138,7 @@ body {
 .nb { background: var(--p); color: #fff; padding: 2px 8px; border-radius: 8px; font-size: 11px; }
 
 /* Упражнения и уход */
-.er { background: var(--bg); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.er { background: var(--input-bg); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
 .et { display: flex; justify-content: space-between; margin-bottom: 6px; }
 .en { font-size: 14px; font-weight: 600; }
 .en.done { color: var(--g); text-decoration: line-through; }
@@ -155,11 +163,11 @@ body {
 .goal-maintain { background: #e8f5e9; color: #388e3c; }
 .goal-gain { background: #fff3e0; color: #f57c00; }
 .calc-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-.calc-macro { background: #fff; border-radius: 10px; padding: 10px; text-align: center; }
+.calc-macro { background: var(--card-bg); border-radius: 10px; padding: 10px; text-align: center; }
 .calc-macro-val { font-size: 18px; font-weight: 700; color: var(--p); }
 .calc-macro-lab { font-size: 11px; color: var(--s); }
 .meal-card {
-  background: #fff; border-radius: 12px; padding: 14px;
+  background: var(--card-bg); border-radius: 12px; padding: 14px;
   margin-bottom: 10px; border-left: 4px solid var(--p);
 }
 .meal-time { font-size: 12px; color: var(--s); margin-bottom: 4px; }
@@ -171,13 +179,13 @@ body {
 /* Гардероб */
 .wt { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
 .wtab {
-  background: #fff; border: 1px solid #eee; padding: 8px 14px;
+  background: var(--card-bg); border: 1px solid var(--s); padding: 8px 14px;
   border-radius: 20px; font-size: 12px; white-space: nowrap;
   cursor: pointer; font-family: inherit; font-weight: 500;
 }
 .wtab.a { background: var(--p); color: #fff; border-color: var(--p); }
 .wi {
-  background: #fff; border-radius: 15px; padding: 14px 16px;
+  background: var(--card-bg); border-radius: 15px; padding: 14px 16px;
   margin-bottom: 10px; cursor: pointer; display: flex; gap: 12px; align-items: center;
   box-shadow: var(--shadow);
 }
@@ -186,13 +194,13 @@ body {
 .win { font-size: 14px; font-weight: 600; }
 .wis { font-size: 12px; color: var(--s); }
 .wo { background: #e8f5e9; color: #388e3c; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 8px; }
-.wd2 { background: #fff; border-radius: 15px; padding: 20px; }
+.wd2 { background: var(--card-bg); border-radius: 15px; padding: 20px; }
 .wdt { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
-.wu { background: var(--bg); padding: 12px; border-radius: 10px; font-size: 13px; margin-bottom: 10px; line-height: 1.5; }
+.wu { background: var(--input-bg); padding: 12px; border-radius: 10px; font-size: 13px; margin-bottom: 10px; line-height: 1.5; }
 .wu strong { color: var(--p); }
 
 /* Операции */
-.oc { background: #fff; border-radius: 15px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.oc { background: var(--card-bg); border-radius: 15px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
 .oh { display: flex; justify-content: space-between; margin-bottom: 10px; }
 .on { font-size: 15px; font-weight: 600; flex: 1; }
 .os { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: #f0f0f0; color: var(--s); }
@@ -205,24 +213,24 @@ body {
 
 /* Настройки */
 .sr {
-  background: #fff; border-radius: 12px; padding: 14px 16px;
+  background: var(--card-bg); border-radius: 12px; padding: 14px 16px;
   margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
   box-shadow: var(--shadow); flex-wrap: wrap; gap: 8px;
 }
 .sl { font-size: 14px; font-weight: 500; }
 .sv { font-size: 14px; color: var(--p); font-weight: 600; }
-input, select { border: 1px solid #eee; padding: 8px 10px; border-radius: 8px; font-family: inherit; font-size: 14px; background: var(--bg); }
+input, select { border: 1px solid var(--s); padding: 8px 10px; border-radius: 8px; font-family: inherit; font-size: 14px; background: var(--input-bg); color: var(--t); }
 input[type=number], input[type=text] { max-width: 140px; width: 100%; }
 input[type=time], select { max-width: 150px; width: auto; }
 
 /* Дни недели */
-.db { padding: 8px 10px; border-radius: 10px; border: 1px solid #eee; background: #fff; font-size: 12px; cursor: pointer; }
+.db { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--s); background: var(--card-bg); font-size: 12px; cursor: pointer; color: var(--t); }
 .db.a { background: var(--p); color: #fff; border-color: var(--p); }
 
 /* Фото */
 .pg { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
 .ph {
-  aspect-ratio: 3/4; background: var(--bg); border-radius: 12px;
+  aspect-ratio: 3/4; background: var(--input-bg); border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
   font-size: 32px; color: var(--s); overflow: hidden;
   position: relative; border: 2px dashed var(--pl); cursor: pointer;
@@ -237,7 +245,7 @@ input[type=time], select { max-width: 150px; width: auto; }
 
 /* Навигация */
 .nav {
-  position: fixed; bottom: 0; left: 0; right: 0; background: #fff;
+  position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg);
   display: flex; justify-content: space-around; padding: 8px 0 10px;
   z-index: 100; border-top-left-radius: 20px; border-top-right-radius: 20px;
   box-shadow: 0 -2px 15px rgba(0,0,0,0.05);
@@ -258,7 +266,7 @@ input[type=time], select { max-width: 150px; width: auto; }
 }
 .modal.active { display: flex; }
 .mc {
-  background: #fff; border-radius: 20px; padding: 24px;
+  background: var(--card-bg); border-radius: 20px; padding: 24px;
   max-width: 420px; width: 100%; max-height: 85vh; overflow-y: auto;
 }
 .mt { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
@@ -270,14 +278,14 @@ input[type=time], select { max-width: 150px; width: auto; }
 .mbtn .btn { margin: 0; flex: 1; }
 textarea {
   width: 100%; min-height: 120px; padding: 12px;
-  border: 1px solid #eee; border-radius: 12px;
-  font-family: inherit; font-size: 14px; background: var(--bg);
+  border: 1px solid var(--s); border-radius: 12px;
+  font-family: inherit; font-size: 14px; background: var(--input-bg); color: var(--t);
 }
 
 /* Тост */
 .toast {
   position: fixed; top: 100px; left: 50%; transform: translateX(-50%);
-  background: #fff; padding: 12px 20px; border-radius: 12px;
+  background: var(--card-bg); padding: 12px 20px; border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 2000;
   opacity: 0; transition: opacity 0.3s; font-size: 14px; font-weight: 500;
   border-left: 4px solid var(--p); max-width: 90%; text-align: center;
@@ -291,19 +299,19 @@ textarea {
 input[type=file] { display: none; }
 
 /* Достижения */
-.ach { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; gap: 12px; align-items: center; box-shadow: var(--shadow); }
+.ach { background: var(--card-bg); border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; gap: 12px; align-items: center; box-shadow: var(--shadow); }
 .ach.lk { opacity: 0.5; }
 .ai { font-size: 32px; }
 .an { font-size: 14px; font-weight: 600; }
 .ad { font-size: 12px; color: var(--s); }
 
 /* Настроение */
-.mdb { background: var(--bg); border: 2px solid transparent; padding: 12px; border-radius: 12px; font-size: 24px; cursor: pointer; }
-.mdb.sel { border-color: var(--p); background: #fff; }
+.mdb { background: var(--input-bg); border: 2px solid transparent; padding: 12px; border-radius: 12px; font-size: 24px; cursor: pointer; }
+.mdb.sel { border-color: var(--p); background: var(--card-bg); }
 .mg { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 12px 0; }
 
 /* Архив */
-.ar { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+.ar { background: var(--input-bg); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
 .ard { font-size: 12px; color: var(--p); font-weight: 600; margin-bottom: 6px; }
 .art { font-size: 13px; line-height: 1.5; }
 
@@ -313,13 +321,13 @@ input[type=file] { display: none; }
   background: linear-gradient(135deg, var(--p), var(--pl));
   z-index: 5000; padding: 20px; overflow-y: auto;
 }
-.obc { background: #fff; border-radius: 20px; padding: 24px; max-width: 420px; margin: 20px auto; }
+.obc { background: var(--card-bg); border-radius: 20px; padding: 24px; max-width: 420px; margin: 20px auto; }
 .obt { font-size: 22px; font-weight: 700; color: var(--p); text-align: center; }
 .obs { font-size: 13px; color: var(--s); text-align: center; margin: 6px 0 20px; }
 .obf { margin-bottom: 12px; }
 .obf label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; }
 .obf input, .obf select { width: 100%; max-width: 100%; }
-.rb { background: var(--bg); border-radius: 12px; padding: 12px; font-size: 13px; line-height: 1.5; margin-bottom: 12px; display: none; }
+.rb { background: var(--input-bg); border-radius: 12px; padding: 12px; font-size: 13px; line-height: 1.5; margin-bottom: 12px; display: none; }
 
 /* Ссылки */
 .tgl {
@@ -329,12 +337,12 @@ input[type=file] { display: none; }
   text-decoration: none; font-weight: 600; margin-bottom: 15px;
 }
 
-.au { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 8px; font-size: 13px; }
+.au { background: var(--input-bg); border-radius: 10px; padding: 12px; margin-bottom: 8px; font-size: 13px; }
 .au-n { font-weight: 600; }
 .au-m { color: var(--s); font-size: 11px; margin-top: 4px; }
 
 /* Образы */
-.ofc { background: #fff; border-radius: 15px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.ofc { background: var(--card-bg); border-radius: 15px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
 .ofn { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
 .ofs { display: inline-block; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; margin-bottom: 8px; }
 .s-sp { background: #e8f5e9; color: #2e7d32; }
@@ -342,15 +350,72 @@ input[type=file] { display: none; }
 .s-au { background: #efebe9; color: #6d4c41; }
 .s-wi { background: #e3f2fd; color: #1565c0; }
 .ofi { font-size: 13px; line-height: 1.6; padding-left: 18px; }
+
+/* НОВЫЕ СТИЛИ для v0.95 */
+.affirmation-box {
+  background: linear-gradient(135deg, var(--p), var(--pl));
+  color: #fff; border-radius: 15px; padding: 20px;
+  text-align: center; font-size: 16px; font-style: italic;
+  margin-bottom: 15px; box-shadow: var(--shadow);
+}
+.affirmation-btn {
+  background: rgba(255,255,255,0.2); border: none; color: #fff;
+  padding: 8px 16px; border-radius: 20px; font-size: 12px;
+  cursor: pointer; margin-top: 10px;
+}
+.chart-box { position: relative; height: 250px; margin: 20px 0; }
+.measurement-item {
+  background: var(--card-bg); border-radius: 12px; padding: 14px;
+  margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+  box-shadow: var(--shadow);
+}
+.measurement-val { font-size: 18px; font-weight: 700; color: var(--p); }
+.med-item {
+  background: var(--card-bg); border-radius: 12px; padding: 14px;
+  margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+  box-shadow: var(--shadow);
+}
+.med-check {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--p); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.med-check.done { background: var(--p); color: #fff; }
+.goal-item {
+  background: var(--card-bg); border-radius: 12px; padding: 14px;
+  margin-bottom: 10px; box-shadow: var(--shadow);
+}
+.goal-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.goal-progress { background: var(--input-bg); border-radius: 10px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+.goal-progress-fill { background: var(--p); height: 100%; border-radius: 10px; transition: width 0.4s; }
+.goal-actions { display: flex; gap: 8px; }
+.shopping-item {
+  background: var(--card-bg); border-radius: 12px; padding: 14px;
+  margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+  box-shadow: var(--shadow);
+}
+.shopping-check {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--p); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.shopping-check.done { background: var(--p); color: #fff; }
+.template-btn {
+  background: var(--input-bg); border: 1px solid var(--s);
+  padding: 10px 14px; border-radius: 10px; font-size: 13px;
+  cursor: pointer; margin-bottom: 8px; width: 100%; text-align: left;
+  font-family: inherit; color: var(--t);
+}
+.template-btn:active { transform: scale(0.98); }
 </style>
 </head>
 <body>
 
 <!-- ЗАГРУЗОЧНЫЙ ЭКРАН -->
 <div class="splash" id="splash">
-  <div class="splash-logo"></div>
+  <div class="splash-logo">🌸</div>
   <div class="splash-title">Femi Bloom</div>
-  <div class="splash-sub">v0.9 Beta</div>
+  <div class="splash-sub">v0.95 Beta</div>
   <div class="spn"></div>
   <div class="splash-sub" id="splashStatus">Подключение...</div>
 </div>
@@ -358,7 +423,7 @@ input[type=file] { display: none; }
 <!-- ОНБОРДИНГ -->
 <div class="ob" id="onboard" style="display:none">
   <div class="obc">
-    <div class="obt">🌸 Femi Bloom</div>
+    <div class="obt"> Femi Bloom</div>
     <div class="obs">Аккаунт создан ☁️ Заполни профиль</div>
     <div class="obf"><label>Имя</label><input type="text" id="ob_name"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -386,7 +451,7 @@ input[type=file] { display: none; }
     <div class="obf"><label>Интенсивность</label>
       <select id="ob_strict">
         <option value="soft">🌱 Мягкий</option>
-        <option value="normal" selected>🌸 Обычный</option>
+        <option value="normal" selected> Обычный</option>
         <option value="strict">🔥 Строгий</option>
       </select>
     </div>
@@ -398,8 +463,8 @@ input[type=file] { display: none; }
 <div class="header">
   <div class="ht">
     <div>
-      <span class="logo">🌸 Femi Bloom<span class="ver">v0.9</span></span>
-      <span class="cs" id="cloudStatus">️</span>
+      <span class="logo">🌸 Femi Bloom<span class="ver">v0.95</span></span>
+      <span class="cs" id="cloudStatus">☁️</span>
     </div>
     <div class="lb" id="levelBadge">Новичок</div>
   </div>
@@ -410,15 +475,22 @@ input[type=file] { display: none; }
 <!-- ГЛАВНАЯ -->
 <div class="content active" id="home">
   <a href="https://t.me/femibloom" target="_blank" class="tgl">✈️ Сообщество в Telegram</a>
+  
+  <!-- Аффирмация дня -->
+  <div class="affirmation-box" id="affirmationBox">
+    <div id="affirmationText">Загрузка...</div>
+    <button class="affirmation-btn" onclick="newAffirmation()">✨ Новая аффирмация</button>
+  </div>
+
   <button class="btn bp" onclick="getTodayTask()">🌸 Задание на сегодня</button>
   <div class="sg">
     <div class="sc"><div class="svl" id="streakValue">0</div><div class="slb">дней подряд 🔥</div></div>
     <div class="sc"><div class="svl" id="tasksDone">0</div><div class="slb">заданий выполнено</div></div>
   </div>
-  <div class="card"><div class="ct">💡 Совет дня</div><div class="cx" id="dailyTip"></div></div>
+  <div class="card"><div class="ct"> Совет дня</div><div class="cx" id="dailyTip"></div></div>
   <div class="card" id="waterCard"></div>
   <div class="card">
-    <div class="ct"> Фото прогресса</div>
+    <div class="ct">📸 Фото прогресса</div>
     <div class="cx">«До» — навсегда, недельное — раз в 7 дней. Хранится в облаке 🔒</div>
     <div class="pg" id="photoGrid"></div>
     <div id="photoStatus"></div>
@@ -440,14 +512,14 @@ input[type=file] { display: none; }
 
 <!-- КАЛЬКУЛЯТОР -->
 <div class="content" id="calculator">
-  <div class="st"> Калькулятор калорий</div>
+  <div class="st">🧮 Калькулятор калорий</div>
   
   <div class="card">
     <div class="ct">👤 Твои параметры</div>
     <div class="cx" id="calcParamsDisplay">Загрузка...</div>
     <div style="display:flex;gap:8px;margin-top:12px">
       <button class="btn bp bsm" style="flex:1;margin:0" onclick="openCalcParams()">✏️ Изменить</button>
-      <button class="btn bs bsm" style="flex:1;margin:0" onclick="openCalcGoals()"> Цели</button>
+      <button class="btn bs bsm" style="flex:1;margin:0" onclick="openCalcGoals()">🎯 Цели</button>
     </div>
   </div>
 
@@ -484,6 +556,92 @@ input[type=file] { display: none; }
   </div>
 </div>
 
+<!-- НОВЫЙ РАЗДЕЛ: ЗАМЕРЫ -->
+<div class="content" id="measurements">
+  <div class="st">📏 Замеры тела</div>
+  <div class="card">
+    <div class="ct">Добавить новый замер</div>
+    <div class="cx">Записывай параметры раз в 2 недели для отслеживания прогресса</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+      <input type="number" id="m_waist" placeholder="Талия, см">
+      <input type="number" id="m_hips" placeholder="Бёдра, см">
+      <input type="number" id="m_chest" placeholder="Грудь, см">
+      <input type="number" id="m_weight" placeholder="Вес, кг">
+    </div>
+    <button class="btn bp bsm" style="width:100%;margin-top:12px" onclick="addMeasurement()">💾 Сохранить замер</button>
+  </div>
+  
+  <div class="st2">📊 График изменений</div>
+  <div class="card">
+    <div class="chart-box"><canvas id="measurementsChart"></canvas></div>
+  </div>
+  
+  <div class="st2"> История замеров</div>
+  <div id="measurementsList"></div>
+</div>
+
+<!-- НОВЫЙ РАЗДЕЛ: ЛЕКАРСТВА -->
+<div class="content" id="meds">
+  <div class="st">💊 Трекер лекарств</div>
+  <div class="card">
+    <div class="ct">Добавить лекарство/БАД</div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <input type="text" id="med_name" placeholder="Название" style="flex:1">
+      <input type="time" id="med_time" value="09:00" style="width:100px">
+    </div>
+    <button class="btn bp bsm" style="width:100%;margin-top:12px" onclick="addMed()">➕ Добавить</button>
+  </div>
+  
+  <div class="st2">📋 Сегодня</div>
+  <div id="medsList"></div>
+</div>
+
+<!-- НОВЫЙ РАЗДЕЛ: ЦЕЛИ -->
+<div class="content" id="goals">
+  <div class="st">🎯 Цели</div>
+  <div class="card">
+    <div class="ct">Добавить цель</div>
+    <input type="text" id="goal_title" placeholder="Например: Купить 3 предмета белья" style="width:100%;margin-top:12px">
+    <input type="number" id="goal_target" placeholder="Количество (например: 3)" style="width:100%;margin-top:8px">
+    <button class="btn bp bsm" style="width:100%;margin-top:12px" onclick="addGoal()"> Добавить цель</button>
+  </div>
+  
+  <div class="st2">📊 Активные цели</div>
+  <div id="goalsList"></div>
+</div>
+
+<!-- НОВЫЙ РАЗДЕЛ: НАСТРОЕНИЕ -->
+<div class="content" id="mood">
+  <div class="st">😊 Статистика настроения</div>
+  <div class="card">
+    <div class="ct">Как ты себя чувствуешь сегодня?</div>
+    <div class="mg" style="margin-top:15px">
+      ${['😄','🙂','😐','😔','😢'].map(m => `<button class="mdb" onclick="logMood('${m}')">${m}</button>`).join('')}
+    </div>
+  </div>
+  
+  <div class="st2">📊 График за последние 30 дней</div>
+  <div class="card">
+    <div class="chart-box"><canvas id="moodChart"></canvas></div>
+  </div>
+  
+  <div class="st2">📋 История</div>
+  <div id="moodHistory"></div>
+</div>
+
+<!-- НОВЫЙ РАЗДЕЛ: ПОКУПКИ -->
+<div class="content" id="shopping">
+  <div class="st">🛒 Список покупок</div>
+  <div class="card">
+    <div class="ct">Добавить товар</div>
+    <input type="text" id="shop_item" placeholder="Например: Бюстгальтер нюд" style="width:100%;margin-top:12px">
+    <button class="btn bp bsm" style="width:100%;margin-top:12px" onclick="addShoppingItem()">🛒 Добавить</button>
+  </div>
+  
+  <div class="st2">📋 Список</div>
+  <div id="shoppingList"></div>
+</div>
+
 <!-- ГАРДЕРОБ -->
 <div class="content" id="wardrobe">
   <div class="st">👗 Гардероб</div>
@@ -506,7 +664,7 @@ input[type=file] { display: none; }
     <div class="sc"><div class="svl" id="profilePercent">0.00%</div><div class="slb">прогресс</div></div>
     <div class="sc"><div class="svl" id="profileStreak">0</div><div class="slb">дней подряд</div></div>
   </div>
-  <a href="https://t.me/femibloom" target="_blank" class="tgl">️ Сообщество t.me/femibloom</a>
+  <a href="https://t.me/femibloom" target="_blank" class="tgl">✈️ Сообщество t.me/femibloom</a>
   
   <div class="card">
     <div class="ct">☁️ Облачное хранилище</div>
@@ -539,7 +697,7 @@ input[type=file] { display: none; }
   </button>
 
   <button class="sec-btn" onclick="openSection('schedule')">
-    <div class="sec-icon">⏰</div>
+    <div class="sec-icon"></div>
     <div class="sec-info">
       <div class="sec-title">Режим дня</div>
       <div class="sec-desc">Подъём, отбой, работа</div>
@@ -565,10 +723,19 @@ input[type=file] { display: none; }
     <div class="sec-arrow">›</div>
   </button>
 
-  <div class="st2">📊 Данные</div>
+  <button class="sec-btn" onclick="toggleTheme()">
+    <div class="sec-icon" id="themeIcon">🌙</div>
+    <div class="sec-info">
+      <div class="sec-title">Тёмная тема</div>
+      <div class="sec-desc" id="themeDesc">Включить тёмный режим</div>
+    </div>
+    <div class="sec-arrow">›</div>
+  </button>
+
+  <div class="st2"> Данные</div>
 
   <button class="sec-btn" onclick="showArchive()">
-    <div class="sec-icon"></div>
+    <div class="sec-icon">📖</div>
     <div class="sec-info">
       <div class="sec-title">Архив блокнота</div>
       <div class="sec-desc">Все твои вечерние записи</div>
@@ -598,7 +765,7 @@ input[type=file] { display: none; }
 
   <div class="card" style="margin-top:15px">
     <div class="ct"> Femi Bloom</div>
-    <div class="cx" style="margin:0">Версия 0.9 Beta · калькулятор + умные задания</div>
+    <div class="cx" style="margin:0">Версия 0.95 Beta · 7 новых функций</div>
   </div>
 
   <button class="btn bd" onclick="resetProgress()" style="margin-top:15px">🗑️ Сбросить прогресс</button>
@@ -608,9 +775,9 @@ input[type=file] { display: none; }
 <div class="nav">
   <button class="ni active" onclick="switchSection('home',this)"><span class="nic">🏠</span>Главная</button>
   <button class="ni" onclick="switchSection('tasks',this)"><span class="nic">📋</span>Задания</button>
-  <button class="ni" onclick="switchSection('calculator',this)"><span class="nic">🧮</span>Ккал</button>
-  <button class="ni" onclick="switchSection('wardrobe',this)"><span class="nic">👗</span>Гардероб</button>
-  <button class="ni" onclick="switchSection('operations',this)"><span class="nic">💎</span>Операции</button>
+  <button class="ni" onclick="switchSection('calculator',this)"><span class="nic"></span>Ккал</button>
+  <button class="ni" onclick="switchSection('wardrobe',this)"><span class="nic"></span>Гардероб</button>
+  <button class="ni" onclick="switchSection('operations',this)"><span class="nic"></span>Операции</button>
   <button class="ni" onclick="switchSection('profile',this)"><span class="nic">👤</span>Профиль</button>
 </div>
 
@@ -639,6 +806,42 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// ===== АФФИРМАЦИИ =====
+const AFFIRMATIONS = [
+  "Я красивая такая, какая я есть 🌸",
+  "Каждый день я становлюсь ближе к себе настоящей ✨",
+  "Моя женственность — это моя сила 💪",
+  "Я заслуживаю любви и заботы 💕",
+  "Моё тело меняется, и я принимаю этот путь ",
+  "Я горжусь каждым маленьким шагом 🌱",
+  "Я достойна всего самого лучшего 👑",
+  "Моя уникальность — моё преимущество 💎",
+  "Я отпускаю страх и принимаю себя 🕊️",
+  "Каждое утро — новая возможность стать собой 🌅",
+  "Я излучаю женственность и уверенность 🌺",
+  "Мой путь уникален, и я иду по нему с гордостью 🛤️",
+  "Я люблю себя всё сильнее с каждым днём 💗",
+  "Мои мечты имеют право на реализацию ",
+  "Я в безопасности, я любима, я достаточна ",
+  "Моя трансформация — это акт любви к себе 💝",
+  "Я позволяю себе быть уязвимой и сильной одновременно 🌷",
+  "Каждая клетка моего тела знает, кто я 🧬",
+  "Я выбираю радость и принятие 🌈",
+  "Моя история вдохновляет других 📖"
+];
+
+// ===== ШАБЛОНЫ ДНЕВНИКА =====
+const JOURNAL_TEMPLATES = [
+  "Сегодня я чувствую себя...",
+  "Мне понравилось сегодня...",
+  "Завтра я хочу...",
+  "Я горжусь собой за...",
+  "Сегодня я узнала о себе...",
+  "Моя главная мысль дня...",
+  "За что я благодарна сегодня...",
+  "Что меня вдохновило сегодня..."
+];
+
 // ===== ДАННЫЕ ПО УМОЛЧАНИЮ =====
 const DEFAULT_DATA = {
   percent: 0, streak: 0, lastActiveDate: null, tasksDone: 0,
@@ -648,6 +851,13 @@ const DEFAULT_DATA = {
   calc: { age: '', height: '', weight: '', activity: '1.375', goal: '0', result: '' },
   profile: { name: '', age: '', height: '', weight: '', waist: '', chest: '', hips: '', flaccid: '', erect: '', job: '' },
   owned: {}, onboarded: false,
+  theme: 'light',
+  measurements: [],
+  meds: [],
+  medsToday: {},
+  goals: [],
+  shopping: [],
+  moodLog: {},
   settings: { working: 'yes', workDays: [1,2,3,4,5], workStart: '09:00', workEnd: '18:00', strictness: 'normal', genderAddress: 'female' },
   operations: [
     { id: 1, name: 'Орхиэктомия', cost: 200000, saved: 0, status: 'not_started' },
@@ -660,48 +870,48 @@ const DEFAULT_DATA = {
   trackers: {
     shave: { name: '🪒 Бритьё', freq: 2, freqText: 'раз в 2 дня', lastDone: null, requires: 'soft',
       shortDesc: 'Гладкая кожа без раздражения.',
-      how: '1. Прими тёплый душ 5-10 минут — кожа распарится, волосы станут мягче.\n2. Нанеси гель или пену для бритья (не мыло — оно сушит).\n3. Брей ОСТРОЙ бритвой ПО направлению роста волос, короткими движениями, без сильного нажима. Часто промывай лезвие.\n4. Смой прохладной водой, промокни (не три!) полотенцем.\n5. Нанеси увлажняющий лосьон с пантенолом или алоэ.',
-      tips: 'Меняй лезвие каждые 5-7 применений. Не брей сухую кожу — будет раздражение. При раздражении — пантенол и свободная одежда на день.' },
-    scrub: { name: '🧴 Скраб тела', freq: 3, freqText: 'раз в 3 дня', lastDone: null, requires: 'soft',
+      how: '1. Прими тёплый душ 5-10 минут — кожа распарится, волосы станут мягче.\n2. Нанеси гель или пену для бритья (не мыло — оно сушит).\n3. Брей ОСТРОЙ бритвой ПО направлению роста волос, короткими движениями, без сильного нажима.\n4. Смой прохладной водой, промокни (не три!) полотенцем.\n5. Нанеси увлажняющий лосьон с пантенолом или алоэ.',
+      tips: 'Меняй лезвие каждые 5-7 применений. Не брей сухую кожу. При раздражении — пантенол и свободная одежда.' },
+    scrub: { name: ' Скраб тела', freq: 3, freqText: 'раз в 3 дня', lastDone: null, requires: 'soft',
       shortDesc: 'Гладкость и профилактика вросших волос.',
-      how: '1. Прими душ, распарь кожу 5 минут.\n2. Нанеси скраб на влажную кожу.\n3. Массируй круговыми движениями СНИЗУ ВВЕРХ (от стоп к бёдрам, от кистей к плечам) 3-5 минут. Особое внимание — колени, локти, ягодицы.\n4. Смой тёплой водой.\n5. После — увлажняющий крем или масло на влажную кожу.',
-      tips: 'НЕ скрабируй повреждённую или раздражённую кожу. Делай скраб ДО бритья (за день), а не после — так меньше раздражения. Не дави сильно — скраб работает за счёт частиц, а не силы.' },
+      how: '1. Прими душ, распарь кожу 5 минут.\n2. Нанеси скраб на влажную кожу.\n3. Массируй круговыми движениями СНИЗУ ВВЕРХ 3-5 минут.\n4. Смой тёплой водой.\n5. После — увлажняющий крем на влажную кожу.',
+      tips: 'НЕ скрабируй повреждённую кожу. Делай скраб ДО бритья (за день).' },
     mask: { name: '🎭 Маска для лица', freq: 7, freqText: 'раз в неделю', lastDone: null, requires: 'normal',
       shortDesc: 'Сияющая ухоженная кожа.',
-      how: '1. Очисти кожу (умывание + тоник).\n2. Нанеси маску по типу кожи: сухая — увлажняющая с гиалуроновой кислотой, жирная — с глиной, нормальная — универсальная увлажняющая.\n3. Держи 10-15 минут (не больше!).\n4. Смой тёплой водой или сними ватным диском.\n5. Нанеси крем.',
-      tips: 'Делай вечером, после всех процедур. Не передерживай маску — может быть обратный эффект. Тканевые маски удобнее, глиняные — глубже очищают.' },
-    moisturize: { name: ' Увлажнение кожи', freq: 1, freqText: 'ежедневно', lastDone: null, requires: 'normal',
+      how: '1. Очисти кожу (умывание + тоник).\n2. Нанеси маску по типу кожи на 10-15 минут.\n3. Смой тёплой водой.\n4. Нанеси крем.',
+      tips: 'Делай вечером. Не передерживай маску.' },
+    moisturize: { name: '💧 Увлажнение кожи', freq: 1, freqText: 'ежедневно', lastDone: null, requires: 'normal',
       shortDesc: 'Мягкость и сияние каждый день.',
-      how: 'УТРОМ: После умывания — тоник, сыворотка (по желанию), увлажняющий крем, SPF если выходишь на солнце.\nВЕЧЕРОМ: После душа нанеси лосьон или масло для тела НА ВЛАЖНУЮ кожу (так лучше впитывается). Перед сном — ночной крем для лица.',
-      tips: 'Регулярность важнее дороговизны крема. Пей достаточно воды (1.5-2 литра в день) — кожа увлажняется изнутри. Зимой используй более плотные кремы, летом — лёгкие гели.' },
+      how: 'УТРОМ: тоник + крем + SPF.\nВЕЧЕРОМ: лосьон на влажную кожу после душа + ночной крем.',
+      tips: 'Регулярность важнее дороговизны. Пей 1.5-2 л воды.' },
     nails: { name: '💅 Уход за ногтями', freq: 7, freqText: 'раз в неделю', lastDone: null, requires: 'normal',
-      shortDesc: 'Ухоженные руки — деталь женственности.',
-      how: '1. Распарь руки в тёплой воде 5 минут.\n2. Придай форму пилочкой (овал или мягкий квадрат — женственно). Движения в одну сторону, не пили туда-сюда.\n3. Отодвинь кутикулу апельсиновой палочкой (после масла/ремувера).\n4. Отполируй ногтевую пластину бафом.\n5. Нанеси базу, цвет (нюд/френч/пастель), топ.',
-      tips: 'НЕ обрезай кутикулу без опыта — используй ремувер. Если нет времени на лак — просто аккуратная форма и прозрачное покрытие выглядят ухоженно. Масло для кутикулы на ночь — ногти будут крепче.' },
-    hair: { name: '💇 Уход за волосами', freq: 3, freqText: 'раз в 3 дня', lastDone: null, requires: 'normal',
+      shortDesc: 'Ухоженные руки.',
+      how: '1. Распарь руки 5 минут.\n2. Форма пилочкой (овал или мягкий квадрат).\n3. Отодвинь кутикулу после ремувера.\n4. Отполируй бафом.\n5. База + цвет + топ.',
+      tips: 'НЕ обрезай кутикулу без опыта. Масло на ночь — ногти крепче.' },
+    hair: { name: ' Уход за волосами', freq: 3, freqText: 'раз в 3 дня', lastDone: null, requires: 'normal',
       shortDesc: 'Здоровые блестящие волосы.',
-      how: '1. Мой волосы по мере загрязнения (не каждый день — сушит).\n2. Шампунь только на корни, кондиционер/маска — на длину (3-5 минут).\n3. Смой прохладной водой — закроет чешуйки, волосы будут блестеть.\n4. Промокни полотенцем (не три!).\n5. Нанеси несмываемый уход (масло/спрей) на влажные кончики.\n6. Суши естественным путём или с термозащитой.',
-      tips: 'Расчёсывай аккуратно, начиная с кончиков, поднимаясь вверх. Не спи с мокрыми волосами — ломаются. Раз в неделю — питательная маска на 20-30 минут. Массаж кожи головы 5 минут в день — улучшает рост.' },
+      how: '1. Шампунь только на корни.\n2. Кондиционер/маска на длину 3-5 мин.\n3. Смой прохладной водой.\n4. Промокни полотенцем.\n5. Несмываемый уход на кончики.',
+      tips: 'Расчёсывай с кончиков. Массаж головы 5 мин в день.' },
     voice: { name: '🎙️ Практика голоса', freq: 1, freqText: 'ежедневно', lastDone: null, requires: 'strict',
       shortDesc: 'Мягкий высокий женственный голос.',
-      how: '1. Расслабление шеи и плеч (2 мин) — помассируй, позевай, пожуй.\n2. Диафрагмальное дыхание (3 мин) — дыши животом, длинный выдох на «фффф».\n3. Мычание «мммм» на комфортной высокой ноте (5 мин) — вибрация должна ощущаться в губах и лице, а НЕ в груди.\n4. Чтение вслух (5-10 мин) — мягко, с плавными интонациями, чуть выше обычного тона.\n5. Запись на диктофон (2 мин) — послушай прогресс.',
-      tips: 'Если болит горло или голос хрипит — СТОП. Регулярность важнее длительности. Лучше 10 минут каждый день, чем час раз в неделю.' },
+      how: '1. Расслабление шеи и плеч (2 мин).\n2. Диафрагмальное дыхание (3 мин).\n3. Мычание «мммм» на высокой ноте (5 мин).\n4. Чтение вслух (5-10 мин).\n5. Запись на диктофон (2 мин).',
+      tips: 'Боль в горле = СТОП. Регулярность важнее длительности.' },
     psych: { name: '📚 Женская психология', freq: 1, freqText: 'ежедневно', lastDone: null, requires: 'strict',
-      shortDesc: 'Внутренняя трансформация и принятие себя.',
-      how: 'Читай 15-20 минут в день книги о женственности, психологии, self-love. Записывай 1 инсайт в блокнот. Применяй одну мысль в течение дня.',
-      tips: 'Хорошие темы: принятие тела, эмоциональный интеллект, женская энергия, границы. Хорошие книги: «Come as You Are» Эмили Нагоски, «Дар несовершенства» Брене Браун.' }
+      shortDesc: 'Внутренняя трансформация.',
+      how: 'Читай 15-20 минут в день. Записывай 1 инсайт в блокнот. Применяй одну мысль в течение дня.',
+      tips: 'Темы: принятие себя, женственность, границы. Книги: «Come as You Are», «Дар несовершенства».' }
   },
   achievements: {
-    first_task: { name: 'Первый шаг', desc: 'Выполни первое задание', icon: '🌱', unlocked: false },
-    streak_7: { name: 'Неделя привычек', desc: '7 дней подряд', icon: '🔥', unlocked: false },
-    streak_30: { name: 'Месяц трансформации', desc: '30 дней подряд', icon: '💪', unlocked: false },
-    streak_100: { name: 'Сотня дней', desc: '100 дней подряд', icon: '💯', unlocked: false },
-    percent_25: { name: 'Привыкание', desc: 'Достигни 25%', icon: '🌸', unlocked: false },
-    percent_50: { name: 'Половина пути', desc: 'Достигни 50%', icon: '✨', unlocked: false },
-    percent_75: { name: 'Глубокая феминизация', desc: 'Достигни 75%', icon: '👑', unlocked: false },
-    photo_first: { name: 'Точка отсчёта', desc: 'Сделай фото "до"', icon: '📸', unlocked: false },
+    first_task: { name: 'Первый шаг', desc: 'Первое задание', icon: '🌱', unlocked: false },
+    streak_7: { name: 'Неделя', desc: '7 дней подряд', icon: '🔥', unlocked: false },
+    streak_30: { name: 'Месяц', desc: '30 дней подряд', icon: '💪', unlocked: false },
+    streak_100: { name: 'Сотня', desc: '100 дней подряд', icon: '', unlocked: false },
+    percent_25: { name: 'Привыкание', desc: '25%', icon: '🌸', unlocked: false },
+    percent_50: { name: 'Половина', desc: '50%', icon: '✨', unlocked: false },
+    percent_75: { name: 'Глубокая', desc: '75%', icon: '👑', unlocked: false },
+    photo_first: { name: 'Фото', desc: 'Фото "до"', icon: '📸', unlocked: false },
     workout_10: { name: 'Спортсменка', desc: '10 тренировок', icon: '🏋️‍♀️', unlocked: false },
-    savings_first: { name: 'Первый взнос', desc: 'Начни копить на операцию', icon: '💰', unlocked: false }
+    savings_first: { name: 'Первый взнос', desc: 'Начать копить', icon: '💰', unlocked: false }
   },
   stats: { workouts: 0 },
   startDate: new Date().toISOString().split('T')[0]
@@ -718,9 +928,12 @@ let currentSection = 'home';
 let wardTab = 'hygiene';
 let wardItem = null;
 let timerState = { interval: null, remaining: 0 };
+let measurementsChart = null;
+let moodChart = null;
 
 // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
 function todayKey() { return new Date().toDateString(); }
+function dateKey() { return new Date().toISOString().split('T')[0]; }
 function formatDate(d) { return new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); }
 function fmtTime(s) { return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
 function toMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
@@ -740,6 +953,38 @@ function closeModal() {
 }
 
 function saveData() { scheduleSave(); }
+
+// ===== ТЕМА =====
+function applyTheme() {
+  if (data.theme === 'dark') {
+    document.body.classList.add('dark');
+    document.getElementById('themeIcon').textContent = '☀️';
+    document.getElementById('themeDesc').textContent = 'Выключить тёмный режим';
+  } else {
+    document.body.classList.remove('dark');
+    document.getElementById('themeIcon').textContent = '';
+    document.getElementById('themeDesc').textContent = 'Включить тёмный режим';
+  }
+}
+
+function toggleTheme() {
+  data.theme = data.theme === 'dark' ? 'light' : 'dark';
+  saveData();
+  applyTheme();
+  showToast(data.theme === 'dark' ? '🌙 Тёмная тема включена' : '☀️ Светлая тема включена');
+}
+
+// ===== АФФИРМАЦИИ =====
+function newAffirmation() {
+  const idx = Math.floor(Math.random() * AFFIRMATIONS.length);
+  document.getElementById('affirmationText').textContent = AFFIRMATIONS[idx];
+}
+
+function loadAffirmation() {
+  const today = dateKey();
+  const idx = today.split('-').reduce((a,b) => a + parseInt(b), 0) % AFFIRMATIONS.length;
+  document.getElementById('affirmationText').textContent = AFFIRMATIONS[idx];
+}
 
 // ===== FIREBASE АВТОРИЗАЦИЯ =====
 async function initApp() {
@@ -787,13 +1032,14 @@ async function initApp() {
     }
 
     hideSplash();
+    applyTheme();
     updateUI();
   } catch (e) {
     console.error(e);
     document.getElementById('splashStatus').textContent = 'Ошибка: ' + e.message;
     const s = localStorage.getItem('fb_data');
     if (s) data = { ...DEFAULT_DATA, ...JSON.parse(s) };
-    setTimeout(() => { hideSplash(); updateUI(); }, 1000);
+    setTimeout(() => { hideSplash(); applyTheme(); updateUI(); }, 1000);
   }
 }
 
@@ -831,7 +1077,7 @@ async function saveCloud() {
 
 // ===== НАВИГАЦИЯ =====
 function switchSection(id, btn) {
-  if (id !== 'home' && id !== 'profile' && id !== 'wardrobe' && id !== 'calculator') {
+  if (id !== 'home' && id !== 'profile' && id !== 'wardrobe' && id !== 'calculator' && id !== 'measurements' && id !== 'meds' && id !== 'goals' && id !== 'mood' && id !== 'shopping') {
     if (!data.photoBeforeUrl) {
       showToast('⚠️ Сделай первое фото «ДО»!');
       document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
@@ -856,15 +1102,20 @@ function switchSection(id, btn) {
   document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   currentSection = id;
   renderActiveSection();
 }
 
 function renderActiveSection() {
-  if (currentSection === 'home') { renderPhotos(); renderWater(); }
+  if (currentSection === 'home') { renderPhotos(); renderWater(); loadAffirmation(); }
   else if (currentSection === 'tasks') renderTasks();
   else if (currentSection === 'calculator') renderCalculator();
+  else if (currentSection === 'measurements') renderMeasurements();
+  else if (currentSection === 'meds') renderMeds();
+  else if (currentSection === 'goals') renderGoals();
+  else if (currentSection === 'mood') renderMood();
+  else if (currentSection === 'shopping') renderShopping();
   else if (currentSection === 'wardrobe') renderWardrobe();
   else if (currentSection === 'operations') renderOperations();
   else if (currentSection === 'profile') renderProfile();
@@ -937,119 +1188,67 @@ function startTimerUI(seconds, doneFn) {
 const EX_DB = {
   morning: [
     { name: 'Лёгкий бег / быстрая ходьба', reps: '10 минут', time: 600,
-      technique: 'Корпус прямой с лёгким наклоном вперёд, плечи расслаблены, руки согнуты под 90°. Шаг частый и мягкий, приземление на середину стопы. Дыхание ритмично: 2 шага — вдох, 2 шага — выдох. Темп «разговорный» — чтобы можно было говорить без одышки.',
-      mistakes: 'Топание на пятку, зажатые плечи, взгляд в пол, слишком быстрый старт.',
-      gives: 'Стройные ноги, выносливость, лёгкая женственная походка и свежий цвет лица.',
-      tips: 'Если тяжело бежать — иди быстрым шагом. Кроссовки с амортизацией. Улыбайся — лицо расслабляется.' },
+      technique: 'Корпус прямой с лёгким наклоном вперёд, плечи расслаблены, руки согнуты под 90°. Шаг частый и мягкий, приземление на середину стопы. Дыхание: 2 шага вдох, 2 выдох.',
+      mistakes: 'Топание на пятку, зажатые плечи, взгляд в пол.',
+      gives: 'Стройные ноги, выносливость, лёгкая женственная походка.',
+      tips: 'Если тяжело — иди быстрым шагом.' },
     { name: 'Ягодичный мост', reps: '3×15',
-      technique: 'Ляг на спину, ноги согнуты, стопы на ширине плеч. На выдохе подними таз вверх, максимально сжимая ягодицы в верхней точке. Задержись на 1-2 секунды, медленно опустись.',
-      mistakes: 'Прогиб в пояснице, слишком быстрый темп, упор носками вместо пяток.',
-      gives: 'Округлые подтянутые ягодицы — основа женственного силуэта.',
-      tips: 'Дави пятками в пол. В верхней точке тело — прямая линия от колен до плеч.' },
+      technique: 'Ляг на спину, ноги согнуты. На выдохе подними таз, максимально сжимая ягодицы. Задержись 1-2 сек, опусти.',
+      mistakes: 'Прогиб в пояснице, быстрый темп.',
+      gives: 'Округлые подтянутые ягодицы.',
+      tips: 'Дави пятками. Тело — прямая линия от колен до плеч.' },
     { name: 'Сумо-приседания', reps: '3×20',
-      technique: 'Ноги шире плеч, носки развёрнуты наружу. Приседай, отводя таз назад, колени смотрят в сторону носков. Бёдра до параллели с полом, спина прямая.',
-      mistakes: 'Завал коленей внутрь, круглая спина, отрыв пяток.',
-      gives: 'Внутренняя поверхность бёдер в тонусе, форма ягодиц, женственная линия ног.',
-      tips: 'Вес на пятках, грудь раскрыта, взгляд вперёд.' },
+      technique: 'Ноги шире плеч, носки наружу. Приседай, отводя таз назад. Бёдра до параллели, спина прямая.',
+      mistakes: 'Завал коленей внутрь, круглая спина.',
+      gives: 'Внутренняя поверхность бёдер, форма ягодиц.',
+      tips: 'Вес на пятках, грудь раскрыта.' },
     { name: 'Выпады', reps: '3×12 на ногу',
-      technique: 'Шагни вперёд, опустись, пока оба колена не согнутся под 90°. Переднее колено над пяткой. Оттолкнись пяткой и вернись.',
-      mistakes: 'Наклон корпуса вперёд, колено выходит за носок, узкая постановка ног.',
-      gives: 'Ягодицы и бёдра, плюс баланс и плавность движений для походки.',
-      tips: 'Корпус держи вертикально, как струна.' },
+      technique: 'Шагни вперёд, оба колена под 90°. Переднее колено над пяткой. Оттолкнись пяткой.',
+      mistakes: 'Наклон вперёд, колено за носок.',
+      gives: 'Ягодицы, бёдра, баланс для походки.',
+      tips: 'Корпус вертикально.' },
     { name: 'Вакуум живота', reps: '10×15 сек',
-      technique: 'Стоя или лёжа. Выдохни ВЕСЬ воздух, втяни живот под рёбра. Задержись на 10-15 секунд, дыши носом спокойно. Делай строго натощак.',
-      mistakes: 'Задержка дыхания, выполнение после еды, нерегулярность.',
-      gives: 'Узкая талия, плоский живот, контроль над мышцами кора.',
-      tips: 'Утром до еды — идеально. Каждый день по 10 повторений.' },
+      technique: 'Выдохни всё, втяни живот под рёбра. Задержись 10-15 сек. Натощак.',
+      mistakes: 'Задержка дыхания, после еды.',
+      gives: 'Узкая талия, плоский живот.',
+      tips: 'Утром до еды — идеально.' },
     { name: 'Планка', reps: '3×30 сек',
-      technique: 'Упор на предплечья, локти под плечами. Тело — прямая линия. Напряги пресс, ягодицы и бёдра. Дыши ровно.',
-      mistakes: 'Провисание поясницы, подъём таза, задержка дыхания.',
-      gives: 'Сильный кор, плоский живот, красивая осанка.',
-      tips: 'Лучше 20 секунд идеально, чем минута с провисшей поясницей.' }
+      technique: 'Упор на предплечья, тело в линию. Пресс, ягодицы, бёдра напряжены.',
+      mistakes: 'Провисание поясницы, подъём таза.',
+      gives: 'Сильный кор, плоский живот, осанка.',
+      tips: 'Лучше 20 сек идеально, чем минута плохо.' }
   ],
   morningWork: [
-    { name: 'Ягодичный мост', reps: '3×15',
-      technique: 'Ляг на спину, ноги согнуты. Подними таз, сжимая ягодицы. Задержись, опусти.',
-      mistakes: 'Прогиб в пояснице.', gives: 'Форма ягодиц.', tips: 'Дави пятками.' },
-    { name: 'Сумо-приседания', reps: '3×15',
-      technique: 'Ноги шире плеч, носки наружу. Приседай с прямой спиной.',
-      mistakes: 'Завал коленей.', gives: 'Тонус бёдер.', tips: 'Вес на пятках.' },
-    { name: 'Вакуум живота', reps: '5×15 сек',
-      technique: 'Выдохни, втяни живот под рёбра, задержись. Натощак.',
-      mistakes: 'После еды.', gives: 'Узкая талия.', tips: 'До завтрака.' },
-    { name: 'Планка', reps: '2×30 сек',
-      technique: 'Упор на предплечья, тело в линию.',
-      mistakes: 'Провисание поясницы.', gives: 'Кор и осанка.', tips: 'Дыши ровно.' }
+    { name: 'Ягодичный мост', reps: '3×15', technique: 'Подними таз, сжимая ягодицы.', mistakes: 'Прогиб.', gives: 'Форма ягодиц.', tips: 'Дави пятками.' },
+    { name: 'Сумо-приседания', reps: '3×15', technique: 'Носки наружу, спина прямая.', mistakes: 'Колени внутрь.', gives: 'Тонус бёдер.', tips: 'Вес на пятках.' },
+    { name: 'Вакуум', reps: '5×15 сек', technique: 'Втяни живот, задержись. Натощак.', mistakes: 'После еды.', gives: 'Талия.', tips: 'До завтрака.' },
+    { name: 'Планка', reps: '2×30 сек', technique: 'Тело в линию.', mistakes: 'Провисание.', gives: 'Кор.', tips: 'Дыши.' }
   ],
   evening: [
-    { name: 'Ягодичный мост на одной ноге', reps: '3×12 на ногу',
-      technique: 'Как мост, но одна нога вытянута. Поднимай таз силой одной ягодицы, не заваливай таз.',
-      mistakes: 'Перекос таза, рывки.', gives: 'Симметричная форма ягодиц.', tips: 'Держи таз ровно.' },
-    { name: 'Отведения ноги назад', reps: '3×20 на ногу',
-      technique: 'На четвереньках отводи согнутую ногу назад-вверх, сжимая ягодицу. Пауза 1 сек.',
-      mistakes: 'Прогиб поясницы, рывки.', gives: 'Верх ягодиц, lifted-эффект.', tips: 'Медленно и подконтрольно.' },
-    { name: 'Боковая планка', reps: '3×30 сек на сторону',
-      technique: 'Упор на предплечье, тело в линию. Не провисай бедром.',
-      mistakes: 'Перекос корпуса.', gives: 'Подтянутый бок талии.', tips: 'Тянись макушкой вверх.' },
-    { name: 'Бабочка (растяжка)', reps: '2 минуты',
-      technique: 'Сидя, стопы вместе, колени в стороны. На выдохе расслабляйся глубже.',
-      mistakes: 'Круглая спина, рывки.', gives: 'Гибкость бёдер, мягкая походка.', tips: 'Растяжка — про дыхание.' }
+    { name: 'Мост на одной ноге', reps: '3×12 на ногу', technique: 'Одна нога вытянута, поднимай таз одной ягодицей.', mistakes: 'Перекос таза.', gives: 'Симметрия ягодиц.', tips: 'Таз ровно.' },
+    { name: 'Отведения ноги назад', reps: '3×20 на ногу', technique: 'На четвереньках, нога назад-вверх, пауза 1 сек.', mistakes: 'Прогиб поясницы.', gives: 'Верх ягодиц.', tips: 'Медленно.' },
+    { name: 'Боковая планка', reps: '3×30 сек', technique: 'Упор на предплечье, тело в линию.', mistakes: 'Перекос.', gives: 'Бок талии.', tips: 'Макушкой вверх.' },
+    { name: 'Бабочка', reps: '2 мин', technique: 'Стопы вместе, колени в стороны, дыши глубоко.', mistakes: 'Рывки.', gives: 'Гибкость, мягкая походка.', tips: 'Расслабляйся.' }
   ]
 };
 
 // ===== УХОД =====
 const CARE_DB = {
   morning: [
-    { name: '🦷 Чистка зубов', time: 120,
-      how: 'Щётка под 45° к дёснам. Выметающие движения: от дёсен к краю зуба. Все поверхности: внешняя, внутренняя, жевательная. В конце — почисти язык.',
-      tips: 'Не дави сильно. Щётка — мягкая или средняя, меняй каждые 3 месяца.',
-      gives: 'Красивая улыбка и свежее дыхание — часть ухоженности.' },
-    { name: '👅 Чистка языка', time: 30,
-      how: 'Скребок или обратная сторона щётки: мягко проведи от корня языка к кончику 3-5 раз.',
-      tips: 'Без сильного давления, не до рвотного рефлекса.',
-      gives: 'Свежее дыхание на весь день.' },
-    { name: '💦 Умывание', time: 60,
-      how: 'Пенка/гель по типу кожи. Тёплая (НЕ горячая) вода. Массируй по линиям: лоб → виски, нос → уши, подбородок → уши. Промокни полотенцем.',
-      tips: 'Горячая вода сушит и провоцирует жирность. Полотенце для лица — отдельное.',
-      gives: 'Чистая сияющая кожа.' },
-    { name: '🌸 Тоник', time: 30,
-      how: 'Нанеси тоник ватным диском или ладонями по массажным линиям, лёгкими движениями.',
-      tips: 'Без спирта в составе.',
-      gives: 'Восстанавливает pH, готовит кожу к крему.' },
-    { name: '🧴 Крем + SPF', time: 60,
-      how: 'Горошина крема: точка на лоб, щёки, нос, подбородок. Распредели лёгкими вбивающими движениями. Если выходишь днём — SPF сверху или в составе.',
-      tips: 'SPF — главная профилактика старения, даже зимой.',
-      gives: 'Увлажнение и молодость кожи.' },
-    { name: '💇 Причёсывание', time: 90,
-      how: 'Расчёсывай с кончиков, поднимаясь вверх. Затем укладка: лёгкая волна, хвост или аккуратные прямые.',
-      tips: 'Не дёргай колтуны — разбери пальцами или гребнем.',
-      gives: 'Ухоженный вид на весь день.' }
+    { name: '🦷 Чистка зубов', time: 120, how: 'Щётка под 45° к дёснам. Выметающие движения от дёсен к краю. Все поверхности + язык.', tips: 'Не дави. Мягкая щётка.', gives: 'Улыбка и дыхание.' },
+    { name: '👅 Язык', time: 30, how: 'Скребок от корня к кончику 3-5 раз.', tips: 'Без давления.', gives: 'Свежесть.' },
+    { name: '💦 Умывание', time: 60, how: 'Пенка, тёплая вода, по массажным линиям, промокни.', tips: 'Не горячая.', gives: 'Чистая кожа.' },
+    { name: '🌸 Тоник', time: 30, how: 'По массажным линиям.', tips: 'Без спирта.', gives: 'pH баланс.' },
+    { name: '🧴 Крем+SPF', time: 60, how: 'Горошина по точкам, вбивающими движениями.', tips: 'SPF каждый день.', gives: 'Увлажнение.' },
+    { name: '💇 Причёсывание', time: 90, how: 'С кончиков вверх, укладка.', tips: 'Не дёргай.', gives: 'Ухоженный вид.' }
   ],
   evening: [
-    { name: '🧼 Демакияж и очищение', time: 120,
-      how: 'Если был макияж/SPF: мицеллярная вода или гидрофильное масло, затем пенка. Глаза не три — приложи диск на 10 секунд и мягко сними.',
-      tips: 'Двойное очищение вечером = чистые поры.',
-      gives: 'Кожа дышит и восстанавливается ночью.' },
-    { name: '🦷 Зубы + нить', time: 120,
-      how: 'Чистка как утром + зубная нить между всеми зубами: нить вдоль зуба, движение вверх-вниз.',
-      tips: 'Нить ДО щётки — так фтор из пасты попадёт между зубами.',
-      gives: 'Здоровые зубы и десны.' },
-    { name: '🚿 Контрастный душ', time: 180,
-      how: 'В конце душа: 30 сек тёплая вода, 30 сек прохладная, 3 круга. Направляй снизу вверх (ноги → бёдра → ягодицы). Закончи прохладной.',
-      tips: 'Не ледяная вода сразу — приучай постепенно. Не при проблемах с сердцем.',
-      gives: 'Тонус кожи, упругость, лёгкость в ногах.' },
-    { name: '🧴 Крем для тела', time: 120,
-      how: 'На ВЛАЖНУЮ кожу после душа: массируй снизу вверх. Особое внимание: ноги, ягодицы, живот, декольте, руки.',
-      tips: 'Массажные движения — ещё и профилактика целлюлита.',
-      gives: 'Шелковистая ухоженная кожа.' },
-    { name: '🌙 Вечерний уход за лицом', time: 90,
-      how: 'Тоник + ночной крем (или актив по плану: ретинол/кислоты по схеме). Лёгкие вбивающие движения.',
-      tips: 'Ночной крем за 30-60 минут до сна, не на подушку.',
-      gives: 'Кожа восстанавливается именно ночью.' },
-    { name: '💆 Массаж лица', time: 120,
-      how: 'Подушечками пальцев по линиям: центр лба → виски, крылья носа → уши, подбородок → уши. 10 лёгких движений на зону. Закончи лёгким постукиванием.',
-      tips: 'Только по массажным линиям, без растяжения кожи. Можно с маслом.',
-      gives: 'Чёткий овал, сияние, меньше отёков по утрам.' }
+    { name: '🧼 Демакияж', time: 120, how: 'Мицеллярная вода/масло, затем пенка. Глаза не три.', tips: 'Двойное очищение.', gives: 'Чистые поры.' },
+    { name: '🦷 Зубы+нить', time: 120, how: 'Нить ДО щётки, все промежутки.', tips: 'Ежедневно.', gives: 'Здоровые зубы.' },
+    { name: '🚿 Контрастный душ', time: 180, how: '3 круга: 30 сек тёплая/30 прохладная, снизу вверх.', tips: 'Не ледяная.', gives: 'Тонус кожи.' },
+    { name: ' Крем для тела', time: 120, how: 'На влажную кожу, снизу вверх.', tips: 'Массаж = профилактика.', gives: 'Шелковистость.' },
+    { name: '🌙 Уход за лицом', time: 90, how: 'Тоник+ночной крем.', tips: 'За час до сна.', gives: 'Восстановление.' },
+    { name: '💆 Массаж лица', time: 120, how: 'По линиям: лоб→виски, нос→уши, подбородок→уши.', tips: 'Без растяжения.', gives: 'Овал, сияние.' }
   ]
 };
 
@@ -1058,10 +1257,8 @@ function getDailyTasks() {
   const p = data.percent;
   const work = isWorkToday();
   const sl = strictLevel();
-  const today = new Date();
   let tasks = [];
 
-  // Функция для проверки, пора ли делать трекер
   function isTrackerDue(key) {
     const t = data.trackers[key];
     if (!t.lastDone) return true;
@@ -1073,131 +1270,82 @@ function getDailyTasks() {
     tasks = [
       { id: 't_wake', time: '06:00', icon: '🌅', title: 'Подъём и аффирмации', percent: 0.003,
         desc: 'Начни день с заботы о себе.',
-        details: ['Выпей стакан тёплой воды натощак — это запускает метаболизм и очищает организм.', 'Произнеси 3 аффирмации вслух перед зеркалом: «Я красивая», «Я женственная», «Я на правильном пути».', 'Улыбнись себе — это задаёт позитивный тон на весь день.'] },
+        details: ['Выпей стакан тёплой воды натощак — запускает метаболизм.', '3 аффирмации вслух: «Я красивая», «Я женственная», «Я на правильном пути».', 'Улыбнись себе — задаёт позитивный тон.'] },
       { id: 't_careM', time: '06:15', icon: '🪥', title: 'Утренний уход', percent: 0.005,
-        desc: 'Ритуал красоты с таймерами для каждого шага.',
-        care: 'morning' },
+        desc: 'Ритуал красоты с таймерами.', care: 'morning' },
       { id: 't_mwork', time: '06:45', icon: '💪', title: 'Утренняя тренировка', percent: 0.007,
-        desc: '4 упражнения для женственного силуэта перед рабочим днём.',
-        workout: 'morningWork' },
+        desc: '4 упражнения перед рабочим днём.', workout: 'morningWork' },
       { id: 't_ready', time: '07:30', icon: '👗', title: 'Сборы', percent: 0.003,
-        desc: 'Создай аккуратный женственный образ.',
-        details: sl >= 2 ? ['Надень женское бельё — это задаёт настроение на весь день.', 'Сделай лёгкий макияж: BB-крем, тушь, тинт для губ.', 'Аккуратно уложи волосы — даже простой хвост выглядит ухоженно.', 'Проверь осанку в зеркале: плечи назад, подбородок параллельно полу.'] : ['Надень женское бельё — это твоя тайная уверенность.', 'Аккуратно причеши волосы.', 'Выбери чистую выглаженную одежду.', 'Проверь осанку в зеркале.'] },
+        desc: 'Аккуратный женственный образ.',
+        details: sl >= 2 ? ['Женское бельё', 'Лёгкий макияж', 'Причёска'] : ['Бельё', 'Причёска', 'Одежда'] },
       { id: 't_breakfast', time: '08:00', icon: '🍳', title: 'Завтрак', percent: 0.003,
-        desc: 'Правильное начало дня для энергии и женственной фигуры.',
-        details: ['Белок + сложные углеводы + полезные жиры (яйца, творог, овсянка с орехами).', 'Ешь медленно, маленькими кусочками — это улучшает пищеварение.', 'Без телефона и экрана — наслаждайся едой осознанно.'] },
+        desc: 'Правильное начало дня.', details: ['Белок+углеводы+жиры', 'Ешь медленно', 'Без телефона'] },
       { id: 't_day', time: '12:00', icon: '☀️', title: 'Дневной контроль', percent: 0.003,
-        desc: 'Следи за осанкой, походкой и манерами в течение дня.',
-        details: ['Спина прямая, плечи расправлены — представь, что тебя тянут за макушку вверх.', 'Мелкие плавные шаги — двигайся от бедра, а не от колена.', 'Мягкие жесты без резкости — представь, что твои руки движутся в воде.', 'Помни, что надето под одеждой — это придаёт уверенность.', 'Контролируй мимику — мягкая улыбка, расслабленный лоб.'] },
-      { id: 't_lunch', time: '13:00', icon: '🥗', title: 'Обед осознанно', percent: 0.003,
-        desc: 'Правило тарелки для женственной фигуры.',
-        details: ['Половина тарелки — овощи (свежие или приготовленные).', 'Четверть — белок (рыба, курица, тофу, яйца).', 'Четверть — сложные углеводы (гречка, рис, киноа).', 'Жуй медленно, встань с лёгким чувством голода — не переедай.'] },
+        desc: 'Осанка, походка, манеры.', details: ['Спина прямая', 'Мелкие шаги', 'Мягкая улыбка'] },
+      { id: 't_lunch', time: '13:00', icon: '🥗', title: 'Обед', percent: 0.003,
+        desc: 'Правило тарелки.', details: ['½ овощи, ¼ белок, ¼ гарнир'] },
       { id: 't_ework', time: '19:00', icon: '🏋️‍♀️', title: 'Вечерняя тренировка', percent: 0.007,
-        desc: '4 упражнения: ягодицы, талия, гибкость.',
-        workout: 'evening' },
+        desc: '4 упражнения.', workout: 'evening' },
       { id: 't_wear', time: '20:00', icon: '👙', title: 'Бельё и такинг', percent: 0.004,
-        desc: p >= 50 ? 'Колготки + бельё 1-2 часа, практика такинга.' : 'Ношение женского белья 1-2 часа дома.',
-        details: p >= 50 ? ['Надень колготки и бельё.', 'Практика такинга 1-2 часа.', 'Следи за осанкой и движениями.'] : ['Надень женское бельё.', 'Носи 1-2 часа.', 'Прислушайся к ощущениям — это нормально.'] },
+        desc: p >= 50 ? 'Колготки+бельё 1-2 часа, такинг.' : 'Бельё 1-2 часа.', details: ['Носить 1-2 часа'] },
       { id: 't_careE', time: '20:45', icon: '🌙', title: 'Вечерний уход', percent: 0.005,
-        desc: 'Ритуал красоты перед сном с таймерами.',
-        care: 'evening' },
-      ...(sl >= 3 ? [{ id: 't_voice', time: '21:15', icon: '🎙️', title: 'Практика голоса', percent: 0.005,
-        desc: '15-20 минут тренировки мягкого женственного голоса.',
-        voice: true }] : []),
-      { id: 't_mirror', time: '21:40', icon: '🪞', title: 'Зеркальная практика', percent: 0.002,
-        desc: '2 минуты комплиментов себе перед зеркалом.',
-        timed: true, timeSec: 120,
-        how: 'Встань перед зеркалом. Посмотри себе в глаза, улыбнись. Скажи вслух 5 комплиментов себе. Следи за осанкой и мимикой — расслабь лоб и челюсть.',
-        tips: 'Первые разы непривычно — это нормально. Продолжай, эффект накопительный.',
-        gives: 'Принятие себя, сияющий взгляд, расслабленное женственное лицо.' },
-      { id: 't_report', time: '22:00', icon: '📝', title: 'Вечерний отчёт', percent: 0.002,
-        desc: 'Подведи итоги дня и ложись до 22:00.',
-        report: true }
+        desc: 'Ритуал красоты перед сном.', care: 'evening' },
+      ...(sl >= 3 ? [{ id: 't_voice', time: '21:15', icon: '️', title: 'Практика голоса', percent: 0.005, desc: '15-20 минут.', voice: true }] : []),
+      { id: 't_mirror', time: '21:40', icon: '', title: 'Зеркальная практика', percent: 0.002,
+        desc: '2 минуты комплиментов.', timed: true, timeSec: 120,
+        how: '5 комплиментов вслух, расслабь лицо.', tips: 'Эффект накопительный.', gives: 'Принятие себя.' },
+      { id: 't_report', time: '22:00', icon: '', title: 'Вечерний отчёт', percent: 0.002,
+        desc: 'Блокнот, настроение.', report: true }
     ];
   } else {
     tasks = [
       { id: 't_wake', time: '06:00', icon: '🌅', title: 'Подъём и аффирмации', percent: 0.003,
-        desc: 'Начни день с заботы о себе.',
-        details: ['Выпей стакан тёплой воды натощак.', '3 аффирмации вслух: «Я красивая», «Я женственная», «Я на правильном пути».', 'Улыбнись себе в зеркало.', 'Открой окно — 5 минут свежего воздуха бодрят лучше кофе.'] },
-      { id: 't_careM', time: '06:15', icon: '🪥', title: 'Утренний уход', percent: 0.005,
-        desc: 'Ритуал красоты с таймерами.',
-        care: 'morning' },
-      { id: 't_mwork', time: '07:00', icon: '💪', title: 'Утренняя тренировка + бег', percent: 0.007,
-        desc: 'Бег 10 минут и 5 упражнений для женственного силуэта.',
-        workout: 'morning' },
-      { id: 't_breakfast', time: '07:45', icon: '🍳', title: 'Завтрак', percent: 0.003,
-        desc: 'Правильное начало дня.',
-        details: ['Стакан воды за 15 мин до еды.', 'Белок + сложные углеводы + жиры (яйца, творог, овсянка с орехами).', 'Ешь медленно, маленькими кусочками.', 'Красиво сервируй — даже для себя.', 'Без телефона и экрана.'] },
-      { id: 't_clean', time: '08:30', icon: '🧺', title: 'Уборка и уют', percent: 0.003,
-        desc: '20 минут женственного домашнего ритуала.',
-        details: ['Заправь постель — это первый успех дня.', 'Помой посуду, протри пыль.', 'Разложи вещи по местам.', 'Включи приятную музыку.', 'Двигайся плавно и аккуратно — даже уборка может быть медитацией.'] },
-      ...(sl >= 2 ? [{ id: 't_beauty', time: '09:30', icon: '💄', title: 'Бьюти-час', percent: 0.003,
-        desc: 'Маска, ногти или волосы — по графику трекеров.',
-        details: ['Проверь трекеры — что подошло по сроку?', 'Маска / ногти / волосы — сделай то, что пора.', 'Или разбери гардероб, составь образы на неделю.'] }] : []),
-      { id: 't_hobby', time: sl >= 2 ? '10:30' : '09:30', icon: '🎨', title: 'Хобби и саморазвитие', percent: 0.003,
-        desc: '1 час на развитие: учёба, творчество, женские хобби.',
-        details: ['Курсы, учёба, творчество.', 'Или женские хобби: готовка, вышивка, рисование.', 'Без соцсетей и прокрастинации.', 'Запиши 1 инсайт — что нового узнала.'] },
-      { id: 't_walk', time: '11:30', icon: '🚶‍♀️', title: 'Прогулка', percent: 0.004,
-        desc: '30-60 минут: практика походки на улице.',
-        details: ['Спина прямая, взгляд на горизонт (не в телефон).', 'Мелкие плавные шаги, движение от бедра.', 'Дыши носом, ритмично.', 'Наслаждайся видом — это медитация в движении.'] },
-      { id: 't_lunch', time: '13:00', icon: '🥗', title: 'Обед осознанно', percent: 0.003,
-        desc: 'Правило тарелки.',
-        details: ['Половина тарелки — овощи.', 'Четверть — белок.', 'Четверть — сложные углеводы.', 'Жуй медленно, встань с лёгким чувством голода.'] },
-      { id: 't_rest', time: '14:00', icon: '😴', title: 'Час отдыха', percent: 0.002,
-        desc: '20-30 минут сна или тишины без телефона.',
-        details: ['Лёгкий сон 20-30 минут ИЛИ просто полежи с закрытыми глазами.', 'Без телефона.', 'Красота вечера начинается с отдыха днём.'] },
-      ...(sl >= 3 ? [{ id: 't_psych', time: '15:00', icon: '📖', title: 'Женская психология', percent: 0.005,
-        desc: '30 минут чтения женской литературы.',
-        details: ['Книги о принятии себя, женственности, эмоциональном интеллекте.', 'Записывай инсайты в блокнот.', 'Примени одну мысль в течение дня.'] }] : []),
-      { id: 't_snack', time: '16:00', icon: '🍎', title: 'Перекус', percent: 0.002,
-        desc: 'Фрукт, горсть орехов или йогурт. Без сахара.',
-        details: ['Выбери: фрукт, горсть орехов, йогурт, овощные палочки.', 'Запей водой или травяным чаем.', 'Избегай сахара и выпечки — они дают отёки и высыпания.'] },
-      { id: 't_ework', time: '17:00', icon: '🏋️‍♀️', title: 'Вечерняя тренировка', percent: 0.007,
-        desc: '4 упражнения: ягодицы, талия, гибкость.',
-        workout: 'evening' },
-      { id: 't_dinner', time: '18:30', icon: '🍽️', title: 'Лёгкий ужин', percent: 0.003,
-        desc: 'Белок + овощи, за 3 часа до сна.',
-        details: ['Белок + овощи (рыба, курица, тофу, салат).', 'Маленькая порция.', 'За 3 часа до сна.', 'Красивая тарелка и спокойная обстановка.'] },
-      { id: 't_wear', time: '19:30', icon: '👙', title: 'Бельё и такинг', percent: 0.004,
-        desc: p >= 50 ? 'Колготки + бельё 1-2 часа, практика такинга.' : 'Женское бельё 1-2 часа дома.',
-        details: p >= 50 ? ['Надень колготки и бельё.', 'Практика такинга 1-2 часа.', 'Домашние дела в этом образе.'] : ['Надень женское бельё.', 'Носи 1-2 часа.', 'Прислушайся к ощущениям.'] },
-      { id: 't_careE', time: '20:15', icon: '🌙', title: 'Вечерний уход', percent: 0.005,
-        desc: 'Ритуал красоты перед сном.',
-        care: 'evening' },
-      ...(sl >= 3 ? [{ id: 't_voice', time: '20:45', icon: '🎙️', title: 'Практика голоса', percent: 0.005,
-        desc: '15-20 минут тренировки.',
-        voice: true }] : []),
-      { id: 't_mirror', time: '21:15', icon: '🪞', title: 'Зеркальная практика', percent: 0.002,
-        desc: '2 минуты комплиментов себе.',
-        timed: true, timeSec: 120,
-        how: 'Встань перед зеркалом. Посмотри себе в глаза, улыбнись. Скажи вслух 5 комплиментов себе.',
-        tips: 'Первые разы непривычно — это нормально.',
-        gives: 'Принятие себя, сияющий взгляд.' },
-      { id: 't_report', time: '22:00', icon: '📝', title: 'Вечерний отчёт', percent: 0.002,
-        desc: 'Подведи итоги дня.',
-        report: true }
+        desc: 'Вода, аффирмации, свежий воздух.', details: ['Вода', 'Аффирмации', 'Окно на 5 мин'] },
+      { id: 't_careM', time: '06:15', icon: '🪥', title: 'Утренний уход', percent: 0.005, desc: 'С таймерами.', care: 'morning' },
+      { id: 't_mwork', time: '07:00', icon: '💪', title: 'Тренировка + бег', percent: 0.007, desc: 'Бег 10 мин + 5 упражнений.', workout: 'morning' },
+      { id: 't_breakfast', time: '07:45', icon: '🍳', title: 'Завтрак', percent: 0.003, desc: 'Красиво сервируй.', details: ['Белок+углеводы+жиры'] },
+      { id: 't_clean', time: '08:30', icon: '🧺', title: 'Уборка и уют', percent: 0.003, desc: '20 мин ритуала.', details: ['Постель, посуда', 'Музыка'] },
+      ...(sl >= 2 ? [{ id: 't_beauty', time: '09:30', icon: '💄', title: 'Бьюти-час', percent: 0.003, desc: 'Макияж, ногти.', details: ['Макияж', 'Маска/ногти'] }] : []),
+      { id: 't_hobby', time: sl >= 2 ? '10:30' : '09:30', icon: '🎨', title: 'Хобби', percent: 0.003, desc: '1 час творчества.', details: ['Без соцсетей'] },
+      { id: 't_walk', time: '11:30', icon: '🚶‍♀️', title: 'Прогулка', percent: 0.004, desc: '30-60 мин походки.', details: ['Осанка', 'Не в телефон'] },
+      { id: 't_lunch', time: '13:00', icon: '🥗', title: 'Обед', percent: 0.003, desc: 'Правило тарелки.', details: ['½ овощи'] },
+      { id: 't_rest', time: '14:00', icon: '😴', title: 'Отдых', percent: 0.002, desc: '20-30 мин тишины.', details: ['Без телефона'] },
+      ...(sl >= 3 ? [{ id: 't_psych', time: '15:00', icon: '', title: 'Психология', percent: 0.005, desc: '30 мин чтения.', details: ['Принятие себя'] }] : []),
+      { id: 't_snack', time: '16:00', icon: '🍎', title: 'Перекус', percent: 0.002, desc: 'Фрукт, орехи.', details: ['Без сахара'] },
+      { id: 't_ework', time: '17:00', icon: '🏋️‍♀️', title: 'Вечерняя тренировка', percent: 0.007, desc: '4 упражнения.', workout: 'evening' },
+      { id: 't_dinner', time: '18:30', icon: '🍽️', title: 'Ужин', percent: 0.003, desc: 'Белок+овощи.', details: ['За 3 часа до сна'] },
+      { id: 't_wear', time: '19:30', icon: '👙', title: 'Бельё', percent: 0.004, desc: '1-2 часа.', details: ['Носить 1-2 часа'] },
+      { id: 't_careE', time: '20:15', icon: '🌙', title: 'Вечерний уход', percent: 0.005, desc: 'С таймерами.', care: 'evening' },
+      ...(sl >= 3 ? [{ id: 't_voice', time: '20:45', icon: '🎙️', title: 'Голос', percent: 0.005, desc: '15-20 мин.', voice: true }] : []),
+      { id: 't_mirror', time: '21:15', icon: '🪞', title: 'Зеркало', percent: 0.002, desc: '2 мин комплиментов.', timed: true, timeSec: 120,
+        how: '5 комплиментов вслух.', tips: 'Эффект накопительный.', gives: 'Принятие себя.' },
+      { id: 't_report', time: '22:00', icon: '📝', title: 'Отчёт', percent: 0.002, desc: 'Блокнот.', report: true }
     ];
   }
 
-  // Добавляем трекеры, которые пора делать
-  const trackerTasks = [];
+  // Трекеры, которые пора делать
   Object.entries(data.trackers).forEach(([key, t]) => {
     if (strictLevel() < { soft: 1, normal: 2, strict: 3 }[t.requires]) return;
     if (isTrackerDue(key)) {
-      trackerTasks.push({
-        id: `tracker_${key}`,
-        time: '20:30',
-        icon: t.name.split(' ')[0],
-        title: `${t.name} — пора!`,
-        percent: 0.003,
-        desc: t.shortDesc,
-        tracker: key,
-        details: [`Частота: ${t.freqText}`, t.how.split('\n')[0]]
+      tasks.push({
+        id: `tracker_${key}`, time: '20:30', icon: t.name.split(' ')[0],
+        title: `${t.name} — пора!`, percent: 0.003, desc: t.shortDesc,
+        tracker: key, details: [`Частота: ${t.freqText}`, t.how.split('\n')[0]]
       });
     }
   });
 
-  tasks = tasks.concat(trackerTasks);
+  // Лекарства на сегодня
+  const today = dateKey();
+  data.meds.forEach(med => {
+    tasks.push({
+      id: `med_${med.id}`, time: med.time, icon: '💊',
+      title: `${med.name}`, percent: 0.001,
+      desc: 'Приём лекарства/БАДа',
+      med: med.id, details: ['Принять согласно назначению']
+    });
+  });
+
   tasks.sort((a, b) => toMin(a.time) - toMin(b.time));
   return tasks;
 }
@@ -1230,19 +1378,19 @@ function renderTasks() {
     if (t.workout) {
       const pr = listProgress(t.workout, EX_DB);
       done = pr.done === pr.total;
-      metaRight = done ? '<span class="ts">✓ Выполнено</span>' : `<span style="color:var(--p);font-weight:600">${pr.done}/${pr.total}</span>`;
+      metaRight = done ? '<span class="ts">✓</span>' : `<span style="color:var(--p);font-weight:600">${pr.done}/${pr.total}</span>`;
     } else if (t.care) {
       const pr = listProgress(t.care, CARE_DB);
       done = pr.done === pr.total;
-      metaRight = done ? '<span class="ts">✓ Выполнено</span>' : `<span style="color:var(--p);font-weight:600">${pr.done}/${pr.total}</span>`;
+      metaRight = done ? '<span class="ts">✓</span>' : `<span style="color:var(--p);font-weight:600">${pr.done}/${pr.total}</span>`;
     } else {
-      metaRight = done ? '<span class="ts">✓ Выполнено</span>' : '<span style="color:var(--p);font-size:12px">Нажми →</span>';
+      metaRight = done ? '<span class="ts">✓</span>' : '<span style="color:var(--p);font-size:12px">→</span>';
     }
 
     let nowBadge = '';
     if (!done && !nowMarked && toMin(t.time) <= nowMin) {
       nowMarked = true;
-      nowBadge = '<span class="nb">⏰ сейчас</span>';
+      nowBadge = '<span class="nb"></span>';
     }
 
     return `
@@ -1279,11 +1427,12 @@ function openTask(id) {
   if (t.report) { openReport(t); return; }
   if (t.timed) { openTimedTask(t); return; }
   if (t.tracker) { openTrackerTask(t); return; }
+  if (t.med) { openMedTask(t); return; }
 
   const done = data.completedToday.includes(t.id);
   document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
   document.getElementById('modalText').innerHTML = `
-    <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
+    <div style="background:var(--input-bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
       <strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.percent.toFixed(3)}%</strong>
     </div>
     <p>${t.desc}</p>
@@ -1296,12 +1445,35 @@ function openTask(id) {
   document.getElementById('modal').classList.add('active');
 }
 
+function openMedTask(t) {
+  const med = data.meds.find(m => m.id === t.med);
+  const done = data.completedToday.includes(t.id);
+  const today = dateKey();
+  document.getElementById('modalTitle').textContent = `💊 ${med.name}`;
+  document.getElementById('modalText').innerHTML = `
+    <div style="background:var(--input-bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
+      <strong style="color:var(--p)">${med.time}</strong> · <strong style="color:var(--p)">+${t.percent.toFixed(3)}%</strong>
+    </div>
+    <p>Принять лекарство/БАД согласно назначению.</p>
+    <p style="margin-top:10px"><strong>Важно:</strong> Не пропускай приём — регулярность критична для результата.</p>`;
+  document.getElementById('modalExtra').innerHTML = '';
+  document.getElementById('modalButtons').innerHTML = done
+    ? '<button class="btn bg" onclick="closeModal()">✓ Принято</button>'
+    : `<button class="btn bs" onclick="closeModal()">Выйти</button>
+       <button class="btn bp" onclick="completeMedTask('${t.id}',${t.percent})">✓ Принято</button>`;
+  document.getElementById('modal').classList.add('active');
+}
+
+function completeMedTask(taskId, percent) {
+  completeTask(taskId, percent);
+}
+
 function openTrackerTask(t) {
   const tracker = data.trackers[t.tracker];
   const done = data.completedToday.includes(t.id);
   document.getElementById('modalTitle').textContent = `${tracker.name}`;
   document.getElementById('modalText').innerHTML = `
-    <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
+    <div style="background:var(--input-bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
       <strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.percent.toFixed(3)}%</strong>
     </div>
     <p><strong>📅 Частота:</strong> ${tracker.freqText}</p>
@@ -1325,10 +1497,10 @@ function openWorkout(t) {
   const pr = listProgress(t.workout, EX_DB);
   document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
   document.getElementById('modalText').innerHTML = `
-    <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
+    <div style="background:var(--input-bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
       <strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.percent.toFixed(3)}%</strong> · ${pr.done}/${pr.total}
     </div>
-    <p>Нажми «Подробнее» — там техника, ошибки и что даёт упражнение. Отмечай каждое. Когда все будут отмечены — тренировка засчитается автоматически.</p>`;
+    <p>«Подробнее» — техника, ошибки, что даёт. Все отмечены = засчитано.</p>`;
   document.getElementById('modalExtra').innerHTML = list.map((ex, i) => {
     const done = data.completedToday.includes(`${t.workout}_${i}`);
     return `
@@ -1339,12 +1511,12 @@ function openWorkout(t) {
         </div>
         <div class="ea">
           <button class="btn bs bsm" onclick="openExercise('${t.workout}',${i})">Подробнее</button>
-          ${done ? '<button class="btn bg bsm" disabled>✓ Готово</button>' : `<button class="btn bp bsm" onclick="completeExercise('${t.workout}',${i},'${t.id}',${t.percent})">Отметить</button>`}
+          ${done ? '<button class="btn bg bsm" disabled>✓</button>' : `<button class="btn bp bsm" onclick="completeExercise('${t.workout}',${i},'${t.id}',${t.percent})">Отметить</button>`}
         </div>
       </div>`;
   }).join('');
   document.getElementById('modalButtons').innerHTML = pr.done === pr.total
-    ? '<button class="btn bg" onclick="closeModal()">✓ Тренировка засчитана</button>'
+    ? '<button class="btn bg" onclick="closeModal()">✓ Засчитано</button>'
     : '<button class="btn bs" onclick="closeModal()">Выйти</button>';
   document.getElementById('modal').classList.add('active');
 }
@@ -1356,15 +1528,15 @@ function openExercise(key, i) {
 
   document.getElementById('modalTitle').textContent = `💪 ${ex.name}`;
   document.getElementById('modalText').innerHTML = `
-    <p><strong> Подходы:</strong> ${ex.reps}</p>
+    <p><strong>🔢 Объём:</strong> ${ex.reps}</p>
     <p style="margin-top:10px"><strong>📝 Техника:</strong></p><p>${ex.technique}</p>
-    <p style="margin-top:10px"><strong>⚠️ Частые ошибки:</strong></p><p>${ex.mistakes}</p>
-    <p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${ex.gives}</p>
+    <p style="margin-top:10px"><strong>️ Ошибки:</strong></p><p>${ex.mistakes}</p>
+    <p style="margin-top:10px"><strong> Что даёт:</strong></p><p>${ex.gives}</p>
     <p style="margin-top:10px"><strong>💡 Совет:</strong></p><p>${ex.tips}</p>`;
 
   document.getElementById('modalExtra').innerHTML = ex.time && !done ? `
     <div class="td2" id="timerDisplay">${fmtTime(ex.time)}</div>
-    <button class="btn bp" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать выполнение</button>` : '';
+    <button class="btn bp" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать</button>` : '';
 
   if (ex.time && !done) {
     window.startCurrentTimer = () => startTimerUI(ex.time, () => {
@@ -1386,10 +1558,8 @@ function completeExercise(key, i, taskId, percent) {
   if (pr.done === pr.total && !data.completedToday.includes(taskId)) {
     data.stats.workouts++;
     award(taskId, percent);
-    showToast('🎉 Все упражнения отмечены — тренировка засчитана!');
-  } else {
-    showToast(`✓ ${EX_DB[key][i].name} (${pr.done}/${pr.total})`);
-  }
+    showToast('🎉 Тренировка засчитана!');
+  } else showToast(`✓ ${EX_DB[key][i].name} (${pr.done}/${pr.total})`);
   saveData(); updateUI();
   openWorkout(getDailyTasks().find(x => x.id === taskId));
 }
@@ -1399,10 +1569,10 @@ function openCare(t) {
   const pr = listProgress(t.care, CARE_DB);
   document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
   document.getElementById('modalText').innerHTML = `
-    <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
+    <div style="background:var(--input-bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
       <strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.percent.toFixed(3)}%</strong> · ${pr.done}/${pr.total}
     </div>
-    <p>Провались в каждый шаг: там техника и таймер. Все шаги = уход засчитан.</p>`;
+    <p>Каждый шаг — с техникой и таймером.</p>`;
   document.getElementById('modalExtra').innerHTML = list.map((item, i) => {
     const done = data.completedToday.includes(`${t.care}_${i}`);
     return `
@@ -1413,12 +1583,12 @@ function openCare(t) {
         </div>
         <div class="ea">
           <button class="btn bs bsm" onclick="openCareItem('${t.care}',${i})">Подробнее</button>
-          ${done ? '<button class="btn bg bsm" disabled>✓ Готово</button>' : `<button class="btn bp bsm" onclick="openCareItem('${t.care}',${i})">▶ Начать</button>`}
+          ${done ? '<button class="btn bg bsm" disabled>✓</button>' : `<button class="btn bp bsm" onclick="openCareItem('${t.care}',${i})">▶ Начать</button>`}
         </div>
       </div>`;
   }).join('');
   document.getElementById('modalButtons').innerHTML = pr.done === pr.total
-    ? '<button class="btn bg" onclick="closeModal()">✓ Уход засчитан</button>'
+    ? '<button class="btn bg" onclick="closeModal()">✓ Засчитано</button>'
     : '<button class="btn bs" onclick="closeModal()">Выйти</button>';
   document.getElementById('modal').classList.add('active');
 }
@@ -1431,13 +1601,13 @@ function openCareItem(key, i) {
   document.getElementById('modalTitle').textContent = item.name;
   document.getElementById('modalText').innerHTML = `
     <p><strong>⏱ Время:</strong> ${fmtTime(item.time)}</p>
-    <p style="margin-top:10px"><strong> Как делать:</strong></p><p>${item.how}</p>
+    <p style="margin-top:10px"><strong>📝 Как делать:</strong></p><p>${item.how}</p>
     <p style="margin-top:10px"><strong>💡 Советы:</strong></p><p>${item.tips}</p>
     <p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${item.gives}</p>`;
 
   document.getElementById('modalExtra').innerHTML = !done ? `
     <div class="td2" id="timerDisplay">${fmtTime(item.time)}</div>
-    <button class="btn bp" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать выполнение</button>` : '';
+    <button class="btn bp" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать</button>` : '';
 
   if (!done) {
     window.startCurrentTimer = () => startTimerUI(item.time, () => {
@@ -1456,10 +1626,8 @@ function completeCareItem(key, i, taskId, percent) {
   const pr = listProgress(key, CARE_DB);
   if (pr.done === pr.total && !data.completedToday.includes(taskId)) {
     award(taskId, percent);
-    showToast('✨ Весь уход выполнен — засчитано!');
-  } else {
-    showToast(`✓ ${CARE_DB[key][i].name} (${pr.done}/${pr.total})`);
-  }
+    showToast('✨ Уход выполнен!');
+  } else showToast(`✓ ${CARE_DB[key][i].name} (${pr.done}/${pr.total})`);
   saveData(); updateUI();
   openCare(getDailyTasks().find(x => x.id === taskId));
 }
@@ -1468,22 +1636,22 @@ function openTimedTask(t) {
   const done = data.completedToday.includes(t.id);
   document.getElementById('modalTitle').textContent = `${t.icon} ${t.title}`;
   document.getElementById('modalText').innerHTML = `
-    <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
+    <div style="background:var(--input-bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
       <strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.percent.toFixed(3)}%</strong>
     </div>
-    <p><strong>📝 Как делать:</strong></p><p>${t.how}</p>
+    <p><strong> Как делать:</strong></p><p>${t.how}</p>
     <p style="margin-top:10px"><strong>💡 Советы:</strong></p><p>${t.tips}</p>
     <p style="margin-top:10px"><strong>🌸 Что даёт:</strong></p><p>${t.gives}</p>`;
   document.getElementById('modalExtra').innerHTML = !done ? `
     <div class="td2" id="timerDisplay">${fmtTime(t.timeSec)}</div>
-    <button class="btn bp" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать выполнение</button>` : '';
+    <button class="btn bp" id="timerStartBtn" onclick="startCurrentTimer()">▶ Начать</button>` : '';
   if (!done) {
     window.startCurrentTimer = () => startTimerUI(t.timeSec, () => {
       completeTask(t.id, t.percent);
     });
   }
   document.getElementById('modalButtons').innerHTML = done
-    ? '<button class="btn bg" onclick="closeModal()">✓ Уже выполнено</button>'
+    ? '<button class="btn bg" onclick="closeModal()">✓ Выполнено</button>'
     : '<button class="btn bs" onclick="closeModal()">Выйти</button>';
   document.getElementById('modal').classList.add('active');
 }
@@ -1492,22 +1660,19 @@ function openVoice(t) {
   const done = data.completedToday.includes(t.id);
   document.getElementById('modalTitle').textContent = `🎙️ ${t.title}`;
   document.getElementById('modalText').innerHTML = `
-    <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
-      <strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.percent.toFixed(3)}%</strong>
-    </div>
-    <p><strong>План тренировки (15-20 минут):</strong></p>
+    <p><strong>План (15-20 мин):</strong></p>
     <ul>
-      <li><strong>1. Расслабление (2 мин).</strong> Помассируй шею и плечи, пожевай, позевай. Челюсть и горло должны быть свободны.</li>
-      <li><strong>2. Дыхание (3 мин).</strong> Дыши животом (диафрагмой). Вдох носом, длинный плавный выдох через рот на «фффф».</li>
-      <li><strong>3. Мычание (5 мин).</strong> Мурчи «мммм» на комфортной высокой ноте. Вибрация должна ощущаться в губах и лице, а НЕ в груди.</li>
-      <li><strong>4. Чтение вслух (5-10 мин).</strong> Читай любой текст мягко, с плавными интонациями, чуть выше обычного тона. Представляй, что говоришь ласково и спокойно.</li>
-      <li><strong>5. Запись (2 мин).</strong> Запиши себя на диктофон и послушай. Отмечай, что уже получается мягко.</li>
+      <li><strong>1. Расслабление (2 мин).</strong> Массаж шеи, зевки.</li>
+      <li><strong>2. Дыхание (3 мин).</strong> Диафрагма, выдох на «фффф».</li>
+      <li><strong>3. Мычание (5 мин).</strong> «мммм» высоко, вибрация в губах.</li>
+      <li><strong>4. Чтение (5-10 мин).</strong> Мягко, плавно.</li>
+      <li><strong>5. Запись (2 мин).</strong> Послушай прогресс.</li>
     </ul>
-    <p><strong>⚠️ Частые ошибки:</strong> говорить на связках (если горло болит или голос хрипит — СТОП), зажимать горло, торопиться, давить силой вместо лёгкости.</p>
-    <p><strong>🌸 Что даёт:</strong> мягкий высокий тембр, плавные женственные интонации, уверенность в речи. Голос меняется месяцами регулярной практики — это нормально.</p>`;
+    <p><strong>️</strong> Боль/хрипота = СТОП.</p>
+    <p><strong>🌸 Даёт:</strong> мягкий тембр, женственные интонации.</p>`;
   document.getElementById('modalExtra').innerHTML = '';
   document.getElementById('modalButtons').innerHTML = done
-    ? '<button class="btn bg" onclick="closeModal()">✓ Уже выполнено</button>'
+    ? '<button class="btn bg" onclick="closeModal()">✓ Выполнено</button>'
     : `<button class="btn bs" onclick="closeModal()">Выйти</button>
        <button class="btn bp" onclick="completeTask('${t.id}',${t.percent})">✓ Выполнено</button>`;
   document.getElementById('modal').classList.add('active');
@@ -1515,43 +1680,55 @@ function openVoice(t) {
 
 function openReport(t) {
   const done = data.completedToday.includes(t.id);
-  const key = new Date().toISOString().split('T')[0];
+  const key = dateKey();
   document.getElementById('modalTitle').textContent = `📝 ${t.title}`;
   document.getElementById('modalText').innerHTML = `
-    <div style="background:var(--bg);padding:10px;border-radius:10px;margin-bottom:12px;text-align:center">
-      <strong style="color:var(--p)">${t.time}</strong> · <strong style="color:var(--p)">+${t.percent.toFixed(3)}%</strong>
-    </div>
-    <p><strong>Как ты себя чувствуешь сегодня?</strong></p>
+    <p><strong>Как ты себя чувствуешь?</strong></p>
     <div class="mg">
-      ${['😄','🙂','','😔','😢'].map(m => `<button class="mdb ${data.mood[key]===m?'sel':''}" onclick="setMood('${m}',this)">${m}</button>`).join('')}
+      ${['😄','🙂','😐','😔','😢'].map(m => `<button class="mdb ${data.mood[key]===m?'sel':''}" onclick="setMood('${m}',this)">${m}</button>`).join('')}
     </div>
-    <p>Твой личный блокнот. Запиши, как прошёл день, что получилось, что чувствуешь. Записи сохраняются в приложении.</p>`;
-  document.getElementById('modalExtra').innerHTML = `<textarea id="journalText" placeholder="Сегодня я... Мне понравилось... Завтра я...">${data.journal[key] || ''}</textarea>`;
+    <p><strong>Шаблоны для начала:</strong></p>
+    <div style="margin-top:10px">
+      ${JOURNAL_TEMPLATES.slice(0,4).map(tpl => `<button class="template-btn" onclick="insertTemplate('${tpl.replace(/'/g, "\\'")}')">${tpl}</button>`).join('')}
+    </div>
+    <p style="margin-top:15px">Твой личный блокнот:</p>`;
+  document.getElementById('modalExtra').innerHTML = `<textarea id="journalText" placeholder="Сегодня я...">${data.journal[key] || ''}</textarea>`;
   document.getElementById('modalButtons').innerHTML = `
     <button class="btn bs" onclick="saveJournal()">💾 Сохранить</button>
     ${done ? '<button class="btn bg" disabled>✓ Готово</button>' : `<button class="btn bp" onclick="finishReport('${t.id}',${t.percent})">✓ Завершить день</button>`}`;
   document.getElementById('modal').classList.add('active');
 }
 
+function insertTemplate(tpl) {
+  const ta = document.getElementById('journalText');
+  const current = ta.value;
+  ta.value = current ? current + '\n' + tpl + ' ' : tpl + ' ';
+  ta.focus();
+}
+
 function setMood(emoji, el) {
-  const key = new Date().toISOString().split('T')[0];
-  data.mood[key] = emoji; saveData();
+  const key = dateKey();
+  data.mood[key] = emoji;
+  // Сохраняем в лог для графика
+  if (!data.moodLog[key]) data.moodLog[key] = [];
+  data.moodLog[key].push({ emoji, time: new Date().toISOString() });
+  saveData();
   document.querySelectorAll('.mdb').forEach(b => b.classList.remove('sel'));
   el.classList.add('sel');
 }
 
 function saveJournal() {
-  const key = new Date().toISOString().split('T')[0];
+  const key = dateKey();
   data.journal[key] = document.getElementById('journalText').value;
   saveData();
-  showToast('💾 Запись сохранена');
+  showToast('💾 Сохранено');
 }
 
 function finishReport(id, percent) {
   saveJournal();
   if (!data.completedToday.includes(id)) award(id, percent);
   saveData(); updateUI(); closeModal();
-  showToast('🌙 День завершён. Сладких снов!');
+  showToast('🌙 День завершён!');
 }
 
 function award(taskId, percent) {
@@ -1573,7 +1750,7 @@ function award(taskId, percent) {
   for (const [days, bonus] of Object.entries(bonuses)) {
     if (data.streak === parseInt(days)) {
       data.percent = Math.min(100, data.percent + bonus);
-      setTimeout(() => showToast(`🔥 Бонус за серию ${days} дней: +${bonus}%!`), 1200);
+      setTimeout(() => showToast(`🔥 Серия ${days} дней: +${bonus}%!`), 1200);
     }
   }
   showToast(`✨ +${final.toFixed(3)}% к прогрессу!`);
@@ -1597,7 +1774,7 @@ function renderCalculator() {
 
 function openCalcParams() {
   const p = data.profile;
-  document.getElementById('modalTitle').textContent = '👤 Мои параметры';
+  document.getElementById('modalTitle').textContent = ' Мои параметры';
   document.getElementById('modalText').innerHTML = `
     <div class="calc-grid">
       <div><label style="font-size:12px;color:var(--s)">Возраст</label><input type="number" id="cp_age" value="${p.age}" style="width:100%"></div>
@@ -1606,9 +1783,9 @@ function openCalcParams() {
       <div><label style="font-size:12px;color:var(--s)">Активность</label>
         <select id="cp_activity" style="width:100%">
           <option value="1.2" ${data.calc.activity==='1.2'?'selected':''}>Минимальная</option>
-          <option value="1.375" ${data.calc.activity==='1.375'?'selected':''}>Лёгкая (1-3 трен/нед)</option>
-          <option value="1.55" ${data.calc.activity==='1.55'?'selected':''}>Средняя (3-5 трен/нед)</option>
-          <option value="1.725" ${data.calc.activity==='1.725'?'selected':''}>Высокая (6-7 трен/нед)</option>
+          <option value="1.375" ${data.calc.activity==='1.375'?'selected':''}>Лёгкая</option>
+          <option value="1.55" ${data.calc.activity==='1.55'?'selected':''}>Средняя</option>
+          <option value="1.725" ${data.calc.activity==='1.725'?'selected':''}>Высокая</option>
         </select>
       </div>
     </div>`;
@@ -1636,8 +1813,8 @@ function openCalcGoals() {
     <p>Выбери цель — калькулятор автоматически подстроит норму:</p>
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:15px">
       <button class="btn ${data.calc.goal==='-0.15'?'bg':'bs'}" onclick="setGoal('-0.15')">📉 Похудеть (−15%)</button>
-      <button class="btn ${data.calc.goal==='0'?'bg':'bs'}" onclick="setGoal('0')">️ Поддерживать вес</button>
-      <button class="btn ${data.calc.goal==='0.1'?'bg':'bs'}" onclick="setGoal('0.1')"> Набрать (+10%)</button>
+      <button class="btn ${data.calc.goal==='0'?'bg':'bs'}" onclick="setGoal('0')">⚖️ Поддерживать вес</button>
+      <button class="btn ${data.calc.goal==='0.1'?'bg':'bs'}" onclick="setGoal('0.1')">📈 Набрать (+10%)</button>
     </div>`;
   document.getElementById('modalExtra').innerHTML = '';
   document.getElementById('modalButtons').innerHTML = '<button class="btn bs" onclick="closeModal()">Закрыть</button>';
@@ -1649,9 +1826,7 @@ function setGoal(goal) {
   saveData();
   closeModal();
   showToast('✓ Цель установлена');
-  if (document.getElementById('calcResults').style.display !== 'none') {
-    calculateCalories();
-  }
+  if (document.getElementById('calcResults').style.display !== 'none') calculateCalories();
 }
 
 function calculateCalories() {
@@ -1667,36 +1842,25 @@ function calculateCalories() {
     return;
   }
 
-  // Формула Миффлина-Сан Жеора для женщин
   const bmr = 10 * w + 6.25 * h - 5 * age - 161;
   const tdee = bmr * act;
   const target = Math.round(tdee * (1 + goal));
 
-  // Определение цели
   let goalText, goalClass, bmiText;
   const bmi = w / ((h/100) ** 2);
-  if (goal < 0) {
-    goalText = '📉 Похудение';
-    goalClass = 'goal-lose';
-  } else if (goal > 0) {
-    goalText = '📈 Набор массы';
-    goalClass = 'goal-gain';
-  } else {
-    goalText = '⚖️ Поддержание';
-    goalClass = 'goal-maintain';
-  }
+  if (goal < 0) { goalText = ' Похудение'; goalClass = 'goal-lose'; }
+  else if (goal > 0) { goalText = '📈 Набор массы'; goalClass = 'goal-gain'; }
+  else { goalText = '⚖️ Поддержание'; goalClass = 'goal-maintain'; }
 
   if (bmi < 18.5) bmiText = `ИМТ: ${bmi.toFixed(1)} — дефицит массы. Рекомендуется набор.`;
   else if (bmi < 25) bmiText = `ИМТ: ${bmi.toFixed(1)} — норма. Отличный вес!`;
   else if (bmi < 30) bmiText = `ИМТ: ${bmi.toFixed(1)} — избыток. Рекомендуется похудение.`;
   else bmiText = `ИМТ: ${bmi.toFixed(1)} — ожирение. Рекомендуется похудение.`;
 
-  // Макросы
   const protein = Math.round(w * 1.6);
   const fat = Math.round((target * 0.3) / 9);
   const carbs = Math.round((target - protein * 4 - fat * 9) / 4);
 
-  // Отображение
   document.getElementById('calcKcal').textContent = `${target} ккал/день`;
   const badge = document.getElementById('calcGoalBadge');
   badge.textContent = goalText;
@@ -1706,9 +1870,7 @@ function calculateCalories() {
   document.getElementById('calcFat').textContent = `${fat}г`;
   document.getElementById('calcCarbs').textContent = `${carbs}г`;
 
-  // План питания
   generateMealPlan(target, protein, fat, carbs);
-
   document.getElementById('calcResults').style.display = 'block';
   data.calc.result = 'calculated';
   saveData();
@@ -1716,167 +1878,488 @@ function calculateCalories() {
 }
 
 function generateMealPlan(kcal, protein, fat, carbs) {
-  const breakfastKcal = Math.round(kcal * 0.30);
-  const lunchKcal = Math.round(kcal * 0.40);
-  const dinnerKcal = Math.round(kcal * 0.30);
+  const bKcal = Math.round(kcal * 0.30);
+  const lKcal = Math.round(kcal * 0.40);
+  const dKcal = Math.round(kcal * 0.30);
+  const bP = Math.round(protein * 0.30);
+  const lP = Math.round(protein * 0.40);
+  const dP = Math.round(protein * 0.30);
 
-  const breakfastProtein = Math.round(protein * 0.30);
-  const lunchProtein = Math.round(protein * 0.40);
-  const dinnerProtein = Math.round(protein * 0.30);
-
-  const mealPlan = document.getElementById('mealPlan');
-  mealPlan.innerHTML = `
+  document.getElementById('mealPlan').innerHTML = `
     <div class="meal-card">
-      <div class="meal-time"> Завтрак · 30% нормы</div>
-      <div class="meal-name">~${breakfastKcal} ккал · Б:${breakfastProtein}г</div>
+      <div class="meal-time">🌅 Завтрак · 30% нормы</div>
+      <div class="meal-name">~${bKcal} ккал · Б:${bP}г</div>
       <div class="meal-foods">
-        <b>Вариант 1:</b> 2-3 яйца (варёные/пашот) + 1-2 тоста из цельнозернового хлеба + овощи (огурец, помидор)<br>
-        <b>Вариант 2:</b> Овсянка 40-50г на воде/молоке + банан/ягоды + горсть орехов (15-20г)<br>
-        <b>Вариант 3:</b> Творог 150-200г + фрукты + мёд/варенье
+        <b>Вариант 1:</b> 2-3 яйца + 1-2 тоста + овощи<br>
+        <b>Вариант 2:</b> Овсянка 40-50г + банан/ягоды + орехи<br>
+        <b>Вариант 3:</b> Творог 150-200г + фрукты + мёд
       </div>
     </div>
     <div class="meal-card">
       <div class="meal-time">☀️ Обед · 40% нормы</div>
-      <div class="meal-name">~${lunchKcal} ккал · Б:${lunchProtein}г</div>
+      <div class="meal-name">~${lKcal} ккал · Б:${lP}г</div>
       <div class="meal-foods">
-        <b>Вариант 1:</b> Куриная грудка/рыба 150-200г + гречка/рис/киноа 50-70г (в сухом виде) + овощи свежие/тушёные<br>
-        <b>Вариант 2:</b> Суп куриный/овощной + хлеб цельнозерновой + салат<br>
-        <b>Вариант 3:</b> Макароны из твёрдых сортов 70-80г + курица/тофу + овощи
+        <b>Вариант 1:</b> Курица/рыба 150-200г + гречка/рис 50-70г + овощи<br>
+        <b>Вариант 2:</b> Суп + хлеб + салат<br>
+        <b>Вариант 3:</b> Макароны 70-80г + курица/тофу + овощи
       </div>
     </div>
     <div class="meal-card">
-      <div class="meal-time">🌙 Ужин · 30% нормы</div>
-      <div class="meal-name">~${dinnerKcal} ккал · Б:${dinnerProtein}г</div>
+      <div class="meal-time"> Ужин · 30% нормы</div>
+      <div class="meal-name">~${dKcal} ккал · Б:${dP}г</div>
       <div class="meal-foods">
-        <b>Вариант 1:</b> Рыба/курица 150г + овощи (салат/тушёные) + немного крупы (30-40г)<br>
+        <b>Вариант 1:</b> Рыба/курица 150г + овощи + немного крупы<br>
         <b>Вариант 2:</b> Омлет из 2-3 яиц с овощами + хлеб<br>
         <b>Вариант 3:</b> Творог 150г + кефир + фрукты
       </div>
     </div>
-    <div class="cx" style="margin-top:15px;padding:12px;background:var(--bg);border-radius:10px">
-      <strong> Советы:</strong><br>
+    <div class="cx" style="margin-top:15px;padding:12px;background:var(--input-bg);border-radius:10px">
+      <strong>💡 Советы:</strong><br>
       · Пей 1.5-2 литра воды в день<br>
       · Ешь медленно, без телефона<br>
       · Последний приём пищи за 3 часа до сна<br>
-      · Если голод между приёмами — фрукты, орехи, йогурт
+      · Перекусы: фрукты, орехи, йогурт
     </div>`;
+}
+
+// ===== ЗАМЕРЫ =====
+function renderMeasurements() {
+  const list = document.getElementById('measurementsList');
+  const sorted = [...data.measurements].sort((a,b) => new Date(b.date) - new Date(a.date));
+  
+  if (sorted.length === 0) {
+    list.innerHTML = '<div class="cx">Пока нет замеров. Добавь первый!</div>';
+  } else {
+    list.innerHTML = sorted.map(m => `
+      <div class="measurement-item">
+        <div>
+          <div style="font-size:12px;color:var(--s)">${formatDate(m.date)}</div>
+          <div style="font-size:13px;margin-top:4px">
+            Т:${m.waist||'?'} · Б:${m.hips||'?'} · Г:${m.chest||'?'} · В:${m.weight||'?'}
+          </div>
+        </div>
+        <button class="btn bs bsm" style="width:auto;margin:0" onclick="deleteMeasurement('${m.date}')">️</button>
+      </div>
+    `).join('');
+  }
+
+  renderMeasurementsChart();
+}
+
+function addMeasurement() {
+  const waist = document.getElementById('m_waist').value;
+  const hips = document.getElementById('m_hips').value;
+  const chest = document.getElementById('m_chest').value;
+  const weight = document.getElementById('m_weight').value;
+  
+  if (!waist && !hips && !chest && !weight) {
+    showToast('Заполни хотя бы один параметр');
+    return;
+  }
+
+  data.measurements.push({
+    date: new Date().toISOString(),
+    waist: waist ? parseFloat(waist) : null,
+    hips: hips ? parseFloat(hips) : null,
+    chest: chest ? parseFloat(chest) : null,
+    weight: weight ? parseFloat(weight) : null
+  });
+
+  saveData();
+  document.getElementById('m_waist').value = '';
+  document.getElementById('m_hips').value = '';
+  document.getElementById('m_chest').value = '';
+  document.getElementById('m_weight').value = '';
+  renderMeasurements();
+  showToast('✓ Замер сохранён');
+}
+
+function deleteMeasurement(date) {
+  data.measurements = data.measurements.filter(m => m.date !== date);
+  saveData();
+  renderMeasurements();
+  showToast('✓ Замер удалён');
+}
+
+function renderMeasurementsChart() {
+  const ctx = document.getElementById('measurementsChart').getContext('2d');
+  if (measurementsChart) measurementsChart.destroy();
+
+  const sorted = [...data.measurements].sort((a,b) => new Date(a.date) - new Date(b.date)).slice(-10);
+  const labels = sorted.map(m => formatDate(m.date));
+  
+  const datasets = [];
+  if (sorted.some(m => m.waist)) datasets.push({ label: 'Талия', data: sorted.map(m => m.waist), borderColor: '#ff6b9d', backgroundColor: 'rgba(255,107,157,0.1)', tension: 0.3 });
+  if (sorted.some(m => m.hips)) datasets.push({ label: 'Бёдра', data: sorted.map(m => m.hips), borderColor: '#ffa8c5', backgroundColor: 'rgba(255,168,197,0.1)', tension: 0.3 });
+  if (sorted.some(m => m.chest)) datasets.push({ label: 'Грудь', data: sorted.map(m => m.chest), borderColor: '#2196f3', backgroundColor: 'rgba(33,150,243,0.1)', tension: 0.3 });
+  if (sorted.some(m => m.weight)) datasets.push({ label: 'Вес', data: sorted.map(m => m.weight), borderColor: '#4caf50', backgroundColor: 'rgba(76,175,80,0.1)', tension: 0.3 });
+
+  if (datasets.length === 0) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    return;
+  }
+
+  measurementsChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom' } },
+      scales: { y: { beginAtZero: false } }
+    }
+  });
+}
+
+// ===== ЛЕКАРСТВА =====
+function renderMeds() {
+  const list = document.getElementById('medsList');
+  const today = dateKey();
+  if (!data.medsToday[today]) data.medsToday[today] = {};
+
+  if (data.meds.length === 0) {
+    list.innerHTML = '<div class="cx">Пока нет лекарств. Добавь первое!</div>';
+    return;
+  }
+
+  list.innerHTML = data.meds.map(med => {
+    const done = data.medsToday[today][med.id] || false;
+    return `
+      <div class="med-item">
+        <div style="flex:1">
+          <div style="font-weight:600">${med.name}</div>
+          <div style="font-size:12px;color:var(--s)">${med.time}</div>
+        </div>
+        <div class="med-check ${done ? 'done' : ''}" onclick="toggleMed('${med.id}')">
+          ${done ? '✓' : ''}
+        </div>
+        <button class="btn bs bsm" style="width:auto;margin-left:8px" onclick="deleteMed('${med.id}')">🗑️</button>
+      </div>`;
+  }).join('');
+}
+
+function addMed() {
+  const name = document.getElementById('med_name').value.trim();
+  const time = document.getElementById('med_time').value;
+  if (!name) { showToast('Введи название'); return; }
+  data.meds.push({ id: 'med_' + Date.now(), name, time });
+  saveData();
+  document.getElementById('med_name').value = '';
+  renderMeds();
+  showToast('✓ Лекарство добавлено');
+}
+
+function toggleMed(id) {
+  const today = dateKey();
+  if (!data.medsToday[today]) data.medsToday[today] = {};
+  data.medsToday[today][id] = !data.medsToday[today][id];
+  saveData();
+  renderMeds();
+}
+
+function deleteMed(id) {
+  data.meds = data.meds.filter(m => m.id !== id);
+  saveData();
+  renderMeds();
+  showToast('✓ Удалено');
+}
+
+// ===== ЦЕЛИ =====
+function renderGoals() {
+  const list = document.getElementById('goalsList');
+  if (data.goals.length === 0) {
+    list.innerHTML = '<div class="cx">Пока нет целей. Добавь первую!</div>';
+    return;
+  }
+
+  list.innerHTML = data.goals.map((g, i) => {
+    const pct = g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0;
+    const done = g.current >= g.target;
+    return `
+      <div class="goal-item">
+        <div class="goal-title">${done ? '✅' : '🎯'} ${g.title}</div>
+        <div style="font-size:12px;color:var(--s);margin-bottom:6px">${g.current} / ${g.target}</div>
+        <div class="goal-progress"><div class="goal-progress-fill" style="width:${pct}%"></div></div>
+        <div class="goal-actions">
+          <button class="btn bp bsm" style="flex:1" onclick="incrementGoal(${i})">+1</button>
+          <button class="btn bs bsm" style="flex:1" onclick="decrementGoal(${i})">-1</button>
+          <button class="btn bd bsm" style="width:auto" onclick="deleteGoal(${i})">🗑️</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function addGoal() {
+  const title = document.getElementById('goal_title').value.trim();
+  const target = parseInt(document.getElementById('goal_target').value);
+  if (!title || !target) { showToast('Заполни название и количество'); return; }
+  data.goals.push({ title, target, current: 0 });
+  saveData();
+  document.getElementById('goal_title').value = '';
+  document.getElementById('goal_target').value = '';
+  renderGoals();
+  showToast('✓ Цель добавлена');
+}
+
+function incrementGoal(i) {
+  data.goals[i].current = Math.min(data.goals[i].target, data.goals[i].current + 1);
+  saveData();
+  renderGoals();
+  if (data.goals[i].current === data.goals[i].target) showToast('🎉 Цель достигнута!');
+}
+
+function decrementGoal(i) {
+  data.goals[i].current = Math.max(0, data.goals[i].current - 1);
+  saveData();
+  renderGoals();
+}
+
+function deleteGoal(i) {
+  data.goals.splice(i, 1);
+  saveData();
+  renderGoals();
+  showToast('✓ Цель удалена');
+}
+
+// ===== НАСТРОЕНИЕ =====
+function renderMood() {
+  renderMoodChart();
+  renderMoodHistory();
+}
+
+function logMood(emoji) {
+  const key = dateKey();
+  if (!data.moodLog[key]) data.moodLog[key] = [];
+  data.moodLog[key].push({ emoji, time: new Date().toISOString() });
+  data.mood[key] = emoji;
+  saveData();
+  renderMood();
+  showToast(`Настроение ${emoji} сохранено`);
+}
+
+function renderMoodChart() {
+  const ctx = document.getElementById('moodChart').getContext('2d');
+  if (moodChart) moodChart.destroy();
+
+  const moodMap = { '😄': 5, '🙂': 4, '😐': 3, '😔': 2, '': 1 };
+  const days = [];
+  const values = [];
+  const labels = [];
+
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().split('T')[0];
+    const entry = data.moodLog[key];
+    if (entry && entry.length > 0) {
+      const last = entry[entry.length - 1];
+      days.push(moodMap[last.emoji] || 3);
+      labels.push(d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' }));
+    }
+  }
+
+  if (days.length === 0) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    return;
+  }
+
+  moodChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Настроение',
+        data: days,
+        borderColor: '#ff6b9d',
+        backgroundColor: 'rgba(255,107,157,0.2)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 1, max: 5, ticks: { callback: v => ['','😢','','😐','🙂','😄'][v] } }
+      }
+    }
+  });
+}
+
+function renderMoodHistory() {
+  const list = document.getElementById('moodHistory');
+  const entries = Object.entries(data.moodLog).sort((a,b) => b[0].localeCompare(a[0])).slice(0, 14);
+  
+  if (entries.length === 0) {
+    list.innerHTML = '<div class="cx">Пока нет записей. Отметь настроение выше!</div>';
+    return;
+  }
+
+  list.innerHTML = entries.map(([date, logs]) => `
+    <div class="ar">
+      <div class="ard">${formatDate(date)}</div>
+      <div class="art">${logs.map(l => l.emoji).join(' ')} · ${logs.length} отметок</div>
+    </div>
+  `).join('');
+}
+
+// ===== ПОКУПКИ =====
+function renderShopping() {
+  const list = document.getElementById('shoppingList');
+  if (data.shopping.length === 0) {
+    list.innerHTML = '<div class="cx">Список пуст. Добавь первый товар!</div>';
+    return;
+  }
+
+  list.innerHTML = data.shopping.map((item, i) => `
+    <div class="shopping-item">
+      <div class="shopping-check ${item.done ? 'done' : ''}" onclick="toggleShopping(${i})">
+        ${item.done ? '✓' : ''}
+      </div>
+      <div style="flex:1;margin-left:12px;${item.done ? 'text-decoration:line-through;opacity:0.6' : ''}">${item.name}</div>
+      <button class="btn bd bsm" style="width:auto" onclick="deleteShopping(${i})">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function addShoppingItem() {
+  const name = document.getElementById('shop_item').value.trim();
+  if (!name) { showToast('Введи название'); return; }
+  data.shopping.push({ name, done: false });
+  saveData();
+  document.getElementById('shop_item').value = '';
+  renderShopping();
+  showToast('✓ Товар добавлен');
+}
+
+function toggleShopping(i) {
+  data.shopping[i].done = !data.shopping[i].done;
+  saveData();
+  renderShopping();
+}
+
+function deleteShopping(i) {
+  data.shopping.splice(i, 1);
+  saveData();
+  renderShopping();
+  showToast('✓ Удалено');
 }
 
 // ===== ГАРДЕРОБ =====
 const WARD = {
   hygiene: { name: '🪥 Гигиена', items: [
-    { id: 'toothbrush', icon: '🪥', name: 'Зубная щётка (мягкая)', how: 'Пользуйся 2 раза в день по 2 минуты: утром и вечером. Щётка под 45° к дёснам, выметающие движения. Меняй каждые 3 месяца.', usage: 'Здоровые зубы и свежее дыхание — база ухоженности.' },
-    { id: 'toothpaste', icon: '', name: 'Зубная паста с фтором', how: 'Горошина на щётку, 2 раза в день вместе с чисткой.', usage: 'Защита от кариеса.' },
-    { id: 'floss', icon: '🧵', name: 'Зубная нить', how: '1 раз в день (вечером) ДО щётки: между всеми зубами, движение вверх-вниз.', usage: 'Чистые промежутки, здоровые дёсны.' },
-    { id: 'tongue', icon: '👅', name: 'Скребок для языка', how: 'Утром после чистки: 3-5 движений от корня к кончику.', usage: 'Свежее дыхание на весь день.' },
-    { id: 'mouthwash', icon: '💧', name: 'Ополаскиватель для рта', how: 'Полоскать 30 секунд после чистки, не глотать.', usage: 'Дополнительная защита и свежесть.' },
-    { id: 'intimgel', icon: '🧴', name: 'Гель для интимной гигиены', how: 'Ежедневно в душе, pH 4-5, без обычного мыла.', usage: 'Здоровая микрофлора, свежесть.' },
-    { id: 'deodorant', icon: '🌸', name: 'Дезодорант', how: 'Утром на чистую сухую кожу подмышек.', usage: 'Уверенность весь день.' },
-    { id: 'wipes', icon: '🧻', name: 'Влажные салфетки', how: 'Носи с собой, используй по необходимости.', usage: 'Свежесть в дороге.' },
-    { id: 'shave', icon: '🪒', name: 'Бритва женская', how: 'Бритьё раз в 2 дня: распарить кожу, гель, по росту волос, после — пантенол.', usage: 'Гладкая кожа.' },
-    { id: 'shavegel', icon: '', name: 'Гель для бритья', how: 'Наноси на кожу перед бритвой, никогда не брей насухо.', usage: 'Без раздражения и порезов.' },
-    { id: 'panthenol', icon: '🧴', name: 'Пантенол после бритья', how: 'После бритья на сухую кожу тонким слоем.', usage: 'Снимает раздражение.' },
-    { id: 'scrub', icon: '🧴', name: 'Скраб для тела', how: 'Раз в 3 дня в душе, массаж снизу вверх 3-5 минут.', usage: 'Гладкость, профилактика вросших волос.' },
-    { id: 'bodylotion', icon: '💧', name: 'Лосьон для тела', how: 'Ежедневно на влажную кожу после душа.', usage: 'Мягкая шелковистая кожа.' }
+    { id: 'toothbrush', icon: '🪥', name: 'Зубная щётка', how: '2 раза в день по 2 минуты. Щётка под 45°, выметающие движения. Меняй каждые 3 месяца.', usage: 'Здоровые зубы.' },
+    { id: 'toothpaste', icon: '🦷', name: 'Зубная паста', how: 'Горошина, 2 раза в день.', usage: 'Защита от кариеса.' },
+    { id: 'floss', icon: '🧵', name: 'Зубная нить', how: '1 раз в день ДО щётки.', usage: 'Чистые промежутки.' },
+    { id: 'tongue', icon: '👅', name: 'Скребок для языка', how: 'Утром 3-5 движений.', usage: 'Свежее дыхание.' },
+    { id: 'mouthwash', icon: '💧', name: 'Ополаскиватель', how: '30 секунд после чистки.', usage: 'Дополнительная защита.' },
+    { id: 'intimgel', icon: '🧴', name: 'Интим-гель', how: 'Ежедневно, pH 4-5.', usage: 'Здоровая микрофлора.' },
+    { id: 'deodorant', icon: '', name: 'Дезодорант', how: 'Утром на сухую кожу.', usage: 'Уверенность.' },
+    { id: 'wipes', icon: '', name: 'Салфетки', how: 'Носи с собой.', usage: 'Свежесть.' },
+    { id: 'shave', icon: '🪒', name: 'Бритва', how: 'Раз в 2 дня: распарить, гель, по росту, пантенол.', usage: 'Гладкая кожа.' },
+    { id: 'shavegel', icon: '🫧', name: 'Гель для бритья', how: 'Перед бритвой, не насухо.', usage: 'Без раздражения.' },
+    { id: 'panthenol', icon: '🧴', name: 'Пантенол', how: 'После бритья.', usage: 'Снимает раздражение.' },
+    { id: 'scrub', icon: '🧴', name: 'Скраб', how: 'Раз в 3 дня, массаж снизу вверх.', usage: 'Гладкость.' },
+    { id: 'bodylotion', icon: '💧', name: 'Лосьон', how: 'Ежедневно на влажную кожу.', usage: 'Мягкость.' }
   ]},
   lingerie: { name: '🩲 Бельё', items: [
-    { id: 'slips', icon: '🩲', name: 'Бесшовные трусики-слипы', how: 'Носи каждый день под любую одежду. Стирка ежедневно, деликатный режим.', usage: 'Незаметны, не натирают — база на каждый день.' },
-    { id: 'brazil', icon: '🍑', name: 'Трусики-бразилиана', how: 'Под облегающую одежду и для настроения. Стирка деликатная.', usage: 'Подчёркивают ягодицы, женственное ощущение.' },
-    { id: 'string', icon: '✨', name: 'Кружевные стринги', how: 'Под облегающие платья, не каждый день. Мягкое кружево без жёстких резинок.', usage: 'Незаметны под одеждой, особое настроение.' },
-    { id: 'highwaist', icon: '🌸', name: 'Высокие трусики', how: 'Под платья ретро-силуэта. Визуально сужают талию.', usage: 'Плоский живот, женственный силуэт.' },
-    { id: 'shorts', icon: '🩲', name: 'Трусики-шортики', how: 'На активные дни, спорт, под джинсы.', usage: 'Комфорт без врезания.' },
-    { id: 'bra_nude', icon: '👙', name: 'Бюстгальтер нюд (бесшовный)', how: 'Под светлую одежду. Пуш-ап для объёма.', usage: 'Незаметен, формирует силуэт.' },
-    { id: 'bra_black', icon: '🖤', name: 'Бюстгальтер чёрный', how: 'База под тёмную одежду.', usage: 'Классика на каждый день.' },
-    { id: 'bralette', icon: '🌷', name: 'Бралетт мягкий', how: 'Для дома и комфорта, без косточек.', usage: 'Нежное женственное ощущение.' },
-    { id: 'set', icon: '🎀', name: 'Комплект для особых случаев', how: 'Кружевной комплект: надевай под одежду для настроения или на особые случаи.', usage: 'Уверенность и женственность изнутри.' },
-    { id: 'corset', icon: '', name: 'Корсет / боди', how: 'Под платья, не более 4-6 часов в день. Формирует талию.', usage: 'Идеальный силуэт, осанка.' },
-    { id: 'pajamas', icon: '🌙', name: 'Пижамный комплект', how: 'Для сна: шёлк или мягкий хлопок, шортики + топ.', usage: 'Женственно даже во сне.' }
+    { id: 'slips', icon: '🩲', name: 'Слипы', how: 'Каждый день.', usage: 'База.' },
+    { id: 'brazil', icon: '', name: 'Бразилиана', how: 'Под облегающее.', usage: 'Ягодицы.' },
+    { id: 'string', icon: '✨', name: 'Стринги', how: 'Не каждый день.', usage: 'Особое настроение.' },
+    { id: 'highwaist', icon: '🌸', name: 'Высокие', how: 'Под ретро-платья.', usage: 'Плоский живот.' },
+    { id: 'shorts', icon: '🩲', name: 'Шортики', how: 'На активные дни.', usage: 'Комфорт.' },
+    { id: 'bra_nude', icon: '👙', name: 'Бюстгальтер нюд', how: 'Под светлое.', usage: 'Незаметен.' },
+    { id: 'bra_black', icon: '🖤', name: 'Бюстгальтер чёрный', how: 'База.', usage: 'Классика.' },
+    { id: 'bralette', icon: '🌷', name: 'Бралетт', how: 'Для дома.', usage: 'Комфорт.' },
+    { id: 'set', icon: '🎀', name: 'Комплект', how: 'Для особых случаев.', usage: 'Уверенность.' },
+    { id: 'corset', icon: '', name: 'Корсет', how: 'Не более 4-6 часов.', usage: 'Силуэт.' },
+    { id: 'pajamas', icon: '🌙', name: 'Пижама', how: 'Для сна.', usage: 'Женственно.' }
   ]},
-  tights: { name: '🩳 Колготки', items: [
-    { id: 'black40', icon: '🖤', name: 'Чёрные матовые 40 ден', how: 'База на каждый день: под юбки, платья, в офис.', usage: 'Универсальные, скрывают неровности кожи.' },
-    { id: 'nude20', icon: '🤎', name: 'Телесные 20 ден', how: 'Под светлую одежду и летом. Подбирай точно под тон кожи.', usage: 'Эффект ухоженных ног.' },
-    { id: 'gray40', icon: '🩶', name: 'Серые 40 ден', how: 'Осенью с платьями, интереснее чёрного.', usage: 'Сочетаются с большинством цветов.' },
-    { id: 'black100', icon: '🖤', name: 'Плотные чёрные 100 ден', how: 'Зимой под юбки и платья.', usage: 'Тепло + силуэт.' },
-    { id: 'shine', icon: '✨', name: 'С лёгким блеском', how: 'На вечерние выходы.', usage: 'Сияние, ноги визуально длиннее.' },
-    { id: 'fishnet', icon: '️', name: 'В сетку', how: 'Для смелых образов и свиданий.', usage: 'Дерзкий женственный акцент.' },
-    { id: 'pattern', icon: '🌸', name: 'С рисунком (горошек)', how: 'Игривый акцент под однотонную одежду.', usage: 'Настроение и кокетство.' }
+  tights: { name: ' Колготки', items: [
+    { id: 'black40', icon: '', name: 'Чёрные 40 ден', how: 'База.', usage: 'Универсальные.' },
+    { id: 'nude20', icon: '🤎', name: 'Телесные 20 ден', how: 'Под светлое.', usage: 'Ухоженные ноги.' },
+    { id: 'gray40', icon: '🩶', name: 'Серые 40 ден', how: 'Осенью.', usage: 'Сочетаются.' },
+    { id: 'black100', icon: '🖤', name: 'Плотные 100 ден', how: 'Зимой.', usage: 'Тепло.' },
+    { id: 'shine', icon: '✨', name: 'С блеском', how: 'На выходы.', usage: 'Сияние.' },
+    { id: 'fishnet', icon: '️', name: 'В сетку', how: 'Для смелых образов.', usage: 'Дерзкий акцент.' },
+    { id: 'pattern', icon: '🌸', name: 'С рисунком', how: 'Игривый акцент.', usage: 'Настроение.' }
   ]},
   clothes: { name: '👕 Одежда', items: [
-    { id: 'blouse', icon: '👚', name: 'Белая блузка', how: 'База: с юбками, брюками, джинсами. V-вырез визуально смягчает черты.', usage: 'Подходит ко всему.' },
-    { id: 'dress_black', icon: '', name: 'Маленькое чёрное платье', how: 'На выходы и свидания. Длина до колена.', usage: 'Элегантная классика.' },
-    { id: 'jeans', icon: '👖', name: 'Джинсы с высокой талией', how: 'На каждый день: подчёркивают талию, удлиняют ноги.', usage: 'Комфорт + силуэт.' },
-    { id: 'trench', icon: '🧥', name: 'Тренч / пальто', how: 'Весна-осень, пояс на талии обязателен.', usage: 'Элегантный силуэт.' },
-    { id: 'cardigan', icon: '', name: 'Кардиган оверсайз', how: 'Многослойность и уют, пастельные тона.', usage: 'Мягкий женственный образ.' },
-    { id: 'skirt', icon: '', name: 'Юбка-миди', how: 'В офис и на встречи: плиссе или карандаш.', usage: 'Самая элегантная длина.' },
-    { id: 'boots', icon: '👢', name: 'Сапоги / ботильоны', how: 'Осень-зима, каблук 3-5 см для походки.', usage: 'Красивая осанка и шаг.' },
-    { id: 'bag', icon: '👜', name: 'Сумка-сэтчел', how: 'На каждый день, нейтральный цвет.', usage: 'Завершает образ.' }
+    { id: 'blouse', icon: '', name: 'Белая блузка', how: 'База.', usage: 'Ко всему.' },
+    { id: 'dress_black', icon: '👗', name: 'Чёрное платье', how: 'На выходы.', usage: 'Классика.' },
+    { id: 'jeans', icon: '👖', name: 'Джинсы с высокой талией', how: 'На каждый день.', usage: 'Силуэт.' },
+    { id: 'trench', icon: '🧥', name: 'Тренч', how: 'Весна-осень.', usage: 'Элегантность.' },
+    { id: 'cardigan', icon: '', name: 'Кардиган', how: 'Многослойность.', usage: 'Уют.' },
+    { id: 'skirt', icon: '👗', name: 'Юбка-миди', how: 'В офис.', usage: 'Элегантная длина.' },
+    { id: 'boots', icon: '', name: 'Сапоги', how: 'Осень-зима.', usage: 'Осанка.' },
+    { id: 'bag', icon: '👜', name: 'Сумка', how: 'На каждый день.', usage: 'Завершает образ.' }
   ]},
   cosmetics: { name: '💄 Косметика', items: [
-    { id: 'cleanser', icon: '', name: 'Средство для умывания', how: 'Утром и вечером, по типу кожи.', usage: 'Первый шаг ухода.' },
-    { id: 'toner', icon: '💧', name: 'Тоник без спирта', how: 'После умывания, по массажным линиям.', usage: 'Восстанавливает pH.' },
-    { id: 'serum', icon: '💉', name: 'Сыворотка', how: 'Под крем: гиалуроновая утром, ретинол на ночь.', usage: 'Увлажнение и сияние.' },
-    { id: 'cream_day', icon: '', name: 'Крем дневной + ночной', how: 'Утром дневной, вечером ночной, вбивающими движениями.', usage: 'Питание кожи.' },
-    { id: 'spf', icon: '☀️', name: 'SPF 30-50', how: 'Каждый день, даже зимой и дома у окна.', usage: 'Главная профилактика старения.' },
-    { id: 'balm', icon: '', name: 'Бальзам для губ', how: 'Всегда с собой, наноси по необходимости.', usage: 'Мягкие ухоженные губы.' },
-    { id: 'bbcream', icon: '🎨', name: 'BB-крем', how: 'Тонким слоем спонжем или пальцами, растушуй к шее.', usage: 'Ровный тон, лёгкий женственный вид.' },
-    { id: 'mascara', icon: '👁️', name: 'Тушь для ресниц', how: '1-2 слоя от корня зигзагом вверх.', usage: 'Открывает взгляд.' },
-    { id: 'lipstick', icon: '💄', name: 'Помада / тинт', how: 'Нюд или ягодный: от центра к уголкам.', usage: 'Завершающий штрих.' },
-    { id: 'blush', icon: '🌸', name: 'Румяна', how: 'На яблочки щёк, лёгкая улыбка при нанесении.', usage: 'Свежий отдохнувший вид.' },
-    { id: 'highlight', icon: '✨', name: 'Хайлайтер', how: 'Скулы, кончик носа, под бровью — тонкой кистью.', usage: 'Сияние женственных черт.' },
-    { id: 'polish_clear', icon: '💅', name: 'Прозрачный лак', how: 'На ухоженные ногти, 1-2 слоя.', usage: 'Руки выглядят ухоженно всегда.' },
-    { id: 'remover', icon: '🧴', name: 'Средство для снятия макияжа', how: 'Вечером до умывания: мицеллярная вода или масло.', usage: 'Чистая кожа без воспалений.' },
-    { id: 'perfume', icon: '🌺', name: 'Парфюм', how: '1-2 распыления на запястья, шею, за ушами. Не растирай!', usage: 'Невидимый штрих женственности.' }
+    { id: 'cleanser', icon: '🧼', name: 'Умывание', how: 'Утром и вечером.', usage: 'Первый шаг.' },
+    { id: 'toner', icon: '💧', name: 'Тоник', how: 'После умывания.', usage: 'pH баланс.' },
+    { id: 'serum', icon: '', name: 'Сыворотка', how: 'Под крем.', usage: 'Увлажнение.' },
+    { id: 'cream_day', icon: '🧴', name: 'Крем', how: 'Утром дневной, вечером ночной.', usage: 'Питание.' },
+    { id: 'spf', icon: '☀️', name: 'SPF', how: 'Каждый день.', usage: 'Профилактика старения.' },
+    { id: 'balm', icon: '💋', name: 'Бальзам', how: 'Всегда с собой.', usage: 'Мягкие губы.' },
+    { id: 'bbcream', icon: '🎨', name: 'BB-крем', how: 'Тонким слоем.', usage: 'Ровный тон.' },
+    { id: 'mascara', icon: '👁️', name: 'Тушь', how: '1-2 слоя.', usage: 'Взгляд.' },
+    { id: 'lipstick', icon: '💄', name: 'Помада', how: 'Нюд или ягодный.', usage: 'Штрих.' },
+    { id: 'blush', icon: '', name: 'Румяна', how: 'На яблочки щёк.', usage: 'Свежесть.' },
+    { id: 'highlight', icon: '✨', name: 'Хайлайтер', how: 'Скулы, нос.', usage: 'Сияние.' },
+    { id: 'polish_clear', icon: '💅', name: 'Прозрачный лак', how: '1-2 слоя.', usage: 'Ухоженность.' },
+    { id: 'remover', icon: '🧴', name: 'Снятие макияжа', how: 'Вечером.', usage: 'Чистая кожа.' },
+    { id: 'perfume', icon: '🌺', name: 'Парфюм', how: '1-2 распыления.', usage: 'Женственность.' }
   ]},
   intim: { name: '💋 Интим', items: [
-    { id: 'lubricant', icon: '', name: 'Лубрикант на водной основе', how: 'Наноси на кожу и игрушки. Без глицерина и парабенов.', usage: 'Комфорт и безопасность.' },
-    { id: 'vib_small', icon: '💎', name: 'Небольшой вибратор', how: 'Начни с малых интенсивностей, всегда с лубрикантом. Мой после использования.', usage: 'Исследование своего тела и удовольствие.' },
-    { id: 'vib_ext', icon: '🌷', name: 'Вибратор наружной стимуляции', how: 'Компактный, мягкий силикон, начинай с минимального режима.', usage: 'Мягкое знакомство с собой.' },
-    { id: 'dildo_small', icon: '', name: 'Дилдо малого размера', how: 'Силикон медицинского класса, широкое основание. Начинай с самого маленького, постепенно. Всегда с лубрикантом.', usage: 'Постепенное привыкание.' },
-    { id: 'chastity', icon: '', name: 'Клетка верности', how: 'Подбирай по рекомендации в профиле: без пояса ~80% длины эрекции, с поясом ~70%. Гигиена ежедневно, носи комфортно, без боли. Вечером — душ и просушка.', usage: 'Контроль и дисциплина в трансформации.' },
-    { id: 'belt', icon: '🗝️', name: 'Пояс верности', how: 'Носи с клеткой для надёжной фиксации. Следи за кожей, делай перерывы на гигиену.', usage: 'Полный контроль.' },
-    { id: 'oil', icon: '🧴', name: 'Массажное масло', how: 'Для самомассажа и расслабляющих ритуалов.', usage: 'Забота о теле.' },
-    { id: 'bombs', icon: '', name: 'Бомбочки для ванны', how: '1-2 раза в неделю: тёплая ванна 15-20 минут.', usage: 'Расслабление и ритуал красоты.' },
-    { id: 'sexbook', icon: '📖', name: 'Книга по женской сексуальности', how: 'Читай по 20 минут в день («Come as You Are» и подобные).', usage: 'Понимание и принятие своего тела.' }
+    { id: 'lubricant', icon: '🧴', name: 'Лубрикант', how: 'На водной основе.', usage: 'Комфорт.' },
+    { id: 'vib_small', icon: '💎', name: 'Вибратор', how: 'С малых интенсивностей.', usage: 'Исследование.' },
+    { id: 'vib_ext', icon: '🌷', name: 'Наружный вибратор', how: 'Мягкий силикон.', usage: 'Знакомство.' },
+    { id: 'dildo_small', icon: '🌙', name: 'Дилдо', how: 'Малый размер, с лубрикантом.', usage: 'Привыкание.' },
+    { id: 'chastity', icon: '', name: 'Клетка', how: 'По рекомендации. Гигиена ежедневно.', usage: 'Контроль.' },
+    { id: 'belt', icon: '🗝️', name: 'Пояс', how: 'С клеткой.', usage: 'Полный контроль.' },
+    { id: 'oil', icon: '🧴', name: 'Масло', how: 'Для массажа.', usage: 'Забота.' },
+    { id: 'bombs', icon: '', name: 'Бомбочки', how: '1-2 раза в неделю.', usage: 'Расслабление.' },
+    { id: 'sexbook', icon: '📖', name: 'Книга', how: '20 мин в день.', usage: 'Принятие.' }
   ]},
   optional: { name: '✨ Необязательно', items: [
-    { id: 'styler', icon: '💨', name: 'Фен-стайлер / выпрямитель', how: 'С термозащитой, укладки 2-3 раза в неделю.', usage: 'Женственные укладки по желанию.' },
-    { id: 'curling', icon: '🌀', name: 'Плойка для локонов', how: 'Мягкие волны на праздники.', usage: 'Романтичный образ.' },
-    { id: 'jewelry', icon: '💍', name: 'Минималистичные украшения', how: 'Тонкие цепочки, маленькие серьги, колечки.', usage: 'Детали женственности.' },
-    { id: 'scarf', icon: '🧣', name: 'Шёлковый платок', how: 'На шею, в волосы, на сумку.', usage: 'Элегантный акцент.' },
-    { id: 'sleepmask', icon: '😴', name: 'Шёлковая маска для сна', how: 'На ночь, защищает кожу и ресницы.', usage: 'Красота во сне.' },
-    { id: 'homewear', icon: '', name: 'Красивая домашняя одежда', how: 'Халатик, домашнее платье вместо старых футболок.', usage: 'Женственность даже дома.' },
-    { id: 'candle', icon: '🕯️', name: 'Ароматические свечи', how: 'Для вечерних ритуалов и ванны.', usage: 'Атмосфера заботы о себе.' },
-    { id: 'photoshoot', icon: '', name: 'Фотосессия', how: 'Раз в несколько месяцев: фиксируй прогресс красиво.', usage: 'Уверенность и память о пути.' },
-    { id: 'dance', icon: '💃', name: 'Курсы танцев', how: 'Тверк, стрип-пластика, бачата — по желанию.', usage: 'Пластика, походка, уверенность.' },
-    { id: 'wig', icon: '💇‍♀️', name: 'Парик / накладные пряди', how: 'Для экспериментов с длиной и цветом без риска.', usage: 'Быстрая смена образа.' },
-    { id: 'epilator', icon: '⚡', name: 'Эпилятор', how: 'Для гладкости до 4 недель, используй после скраба.', usage: 'Альтернатива бритве.' },
-    { id: 'spaset', icon: '‍♀️', name: 'Домашний SPA-набор', how: 'Маски, соли, масла — вечер SPA раз в неделю.', usage: 'Салон красоты дома.' }
+    { id: 'styler', icon: '💨', name: 'Фен', how: 'С термозащитой.', usage: 'Укладки.' },
+    { id: 'curling', icon: '🌀', name: 'Плойка', how: 'Мягкие волны.', usage: 'Романтика.' },
+    { id: 'jewelry', icon: '💍', name: 'Украшения', how: 'Минималистичные.', usage: 'Детали.' },
+    { id: 'scarf', icon: '', name: 'Платок', how: 'На шею/волосы.', usage: 'Акцент.' },
+    { id: 'sleepmask', icon: '😴', name: 'Маска для сна', how: 'На ночь.', usage: 'Красота.' },
+    { id: 'homewear', icon: '🏠', name: 'Домашняя одежда', how: 'Халатик.', usage: 'Женственность дома.' },
+    { id: 'candle', icon: '🕯️', name: 'Свечи', how: 'Для ритуалов.', usage: 'Атмосфера.' },
+    { id: 'photoshoot', icon: '📸', name: 'Фотосессия', how: 'Раз в несколько месяцев.', usage: 'Память.' },
+    { id: 'dance', icon: '💃', name: 'Танцы', how: 'Тверк, бачата.', usage: 'Пластика.' },
+    { id: 'wig', icon: '💇‍♀️', name: 'Парик', how: 'Для экспериментов.', usage: 'Смена образа.' },
+    { id: 'epilator', icon: '⚡', name: 'Эпилятор', how: 'До 4 недель.', usage: 'Альтернатива.' },
+    { id: 'spaset', icon: '🧖‍♀️', name: 'SPA-набор', how: 'Раз в неделю.', usage: 'Салон дома.' }
   ]},
-  outfits: { name: ' Образы', items: [] }
+  outfits: { name: '🌸 Образы', items: [] }
 };
 
 const WARD_TASKS = [
-  { ids: ['bbcream','mascara','lipstick'], needs: 2, task: { id: 'w_makeup', time: '07:20', icon: '💄', title: 'Лёгкий макияж', percent: 0.003, desc: 'BB-крем + тушь + тинт. Аккуратно и естественно.', details: ['Ровный тон', 'Тушь в 1-2 слоя', 'Тинт на губы'] } },
-  { ids: ['perfume'], task: { id: 'w_perfume', time: '07:50', icon: '🌺', title: 'Нанести парфюм', percent: 0.002, desc: '1-2 распыления на запястья и шею.', details: ['Не растирать'] } },
-  { ids: ['black40','nude20','gray40','black100','shine','fishnet','pattern'], task: { id: 'w_tights', time: '19:30', icon: '🩳', title: 'Надеть колготки', percent: 0.003, desc: 'Носи колготки 2-3 часа или весь день.', details: ['Натягивай медленно, без затяжек', 'Расправь складки'] } },
-  { ids: ['chastity'], task: { id: 'w_chastity', time: '07:00', icon: '🔒', title: 'Надеть клетку верности', percent: 0.004, desc: 'Носи устройство в течение дня. Гигиена и безопасность — прежде всего.', details: ['Душ и насухо перед надеванием', 'Проверь посадку — без боли и онемения', 'Вечером сними, промой, дай коже отдохнуть'] } },
-  { ids: ['vib_small','vib_ext','dildo_small'], task: { id: 'w_explore', time: '21:00', icon: '💋', title: 'Исследование тела', percent: 0.003, desc: '15 минут наедине с собой: игрушки + лубрикант.', details: ['Всегда с лубрикантом', 'Мой игрушки до и после', 'Прислушивайся к телу, без спешки'] } },
-  { ids: ['polish_clear'], task: { id: 'w_nails', time: '20:30', icon: '', title: 'Уход за ногтями', percent: 0.002, desc: 'Форма, кутикула, прозрачное покрытие.', details: ['Пилочка в одну сторону', 'Масло на кутикулу'] } },
-  { ids: ['pajamas'], task: { id: 'w_pajamas', time: '21:50', icon: '🌙', title: 'Женская пижама', percent: 0.002, desc: 'Спи в женственном комплекте.', details: [] } },
-  { ids: ['sexbook'], task: { id: 'w_read', time: '21:30', icon: '📚', title: 'Чтение', percent: 0.003, desc: '20 минут чтения вместо телефона.', details: ['Запиши 1 инсайт'] } }
+  { ids: ['bbcream','mascara','lipstick'], needs: 2, task: { id: 'w_makeup', time: '07:20', icon: '💄', title: 'Макияж', percent: 0.003, desc: 'BB+тушь+тинт.', details: ['Тон','Тушь','Тинт'] } },
+  { ids: ['perfume'], task: { id: 'w_perfume', time: '07:50', icon: '🌺', title: 'Парфюм', percent: 0.002, desc: '1-2 распыления.', details: ['Не растирать'] } },
+  { ids: ['black40','nude20','gray40','black100','shine','fishnet','pattern'], task: { id: 'w_tights', time: '19:30', icon: '🩳', title: 'Колготки', percent: 0.003, desc: '2-3 часа.', details: ['Медленно натягивай'] } },
+  { ids: ['chastity'], task: { id: 'w_chastity', time: '07:00', icon: '', title: 'Клетка', percent: 0.004, desc: 'В течение дня.', details: ['Душ перед','Без боли','Вечером сними'] } },
+  { ids: ['vib_small','vib_ext','dildo_small'], task: { id: 'w_explore', time: '21:00', icon: '💋', title: 'Исследование', percent: 0.003, desc: '15 минут.', details: ['С лубрикантом','Мой игрушки'] } },
+  { ids: ['polish_clear'], task: { id: 'w_nails', time: '20:30', icon: '', title: 'Ногти', percent: 0.002, desc: 'Форма, кутикула.', details: ['Пилочка в одну сторону'] } },
+  { ids: ['pajamas'], task: { id: 'w_pajamas', time: '21:50', icon: '🌙', title: 'Пижама', percent: 0.002, desc: 'Спи в женственном.', details: [] } },
+  { ids: ['sexbook'], task: { id: 'w_read', time: '21:30', icon: '📚', title: 'Чтение', percent: 0.003, desc: '20 минут.', details: ['1 инсайт'] } }
 ];
 
 const OUTFITS = [
-  { name: '🌸 Весенний романтичный', season: 'spring', seasonText: 'Весна', items: ['Платье-миди в цветочек', 'Балетки / белые кеды', 'Телесные колготки 20 ден', 'Кардиган пастельный', 'Сумка через плечо', 'Минималистичные серьги'] },
-  { name: '🌸 Весенний офисный', season: 'spring', seasonText: 'Весна', items: ['Белая блузка с бантом', 'Юбка-карандаш', 'Чёрные колготки 40 ден', 'Лодочки 5 см', 'Пиджак прямого кроя', 'Сумка-сэтчел'] },
-  { name: '☀️ Летний пляжный', season: 'summer', seasonText: 'Лето', items: ['Льняное платье-рубашка', 'Сандалии', 'Соломенная сумка', 'Очки-авиаторы', 'Шляпа', 'SPF'] },
-  { name: '☀️ Летний городской', season: 'summer', seasonText: 'Лето', items: ['Топ + джинсы с высокой талией', 'Белые кеды', 'Кросс-боди сумка', 'Минималистичные украшения'] },
-  { name: '☀️ Летний вечерний', season: 'summer', seasonText: 'Лето', items: ['Шёлковое платье на бретелях', 'Босоножки на каблуке', 'Клатч', 'Длинные серьги', 'Лёгкий парфюм'] },
-  { name: '🍂 Осенний casual', season: 'autumn', seasonText: 'Осень', items: ['Свитер оверсайз молочный', 'Джинсы mom-fit', 'Ботинки челси', 'Бежевый тренч', 'Шарф-снуд'] },
-  { name: '🍂 Осенний элегантный', season: 'autumn', seasonText: 'Осень', items: ['Водолазка бордового цвета', 'Юбка-миди плиссе', 'Сапоги-ботфорты', 'Серые колготки 40 ден', 'Пальто-кокон', 'Берет', 'Сумка-тоут'] },
-  { name: '❄️ Зимний уютный', season: 'winter', seasonText: 'Зима', items: ['Кашемировый свитер пастельный', 'Шерстяные брюки палаццо', 'Высокие сапоги', 'Тёплые колготки 100 ден', 'Пуховик прямого кроя', 'Шапка-бини + перчатки', 'Термобельё'] },
-  { name: '❄️ Зимний праздничный', season: 'winter', seasonText: 'Зима', items: ['Бархатное платье', 'Туфли на каблуке', 'Чёрные колготки с лёгким блеском', 'Бельевой комплект с кружевом', 'Пальто + меховой воротник', 'Клатч', 'Яркие серьги'] },
-  { name: '✨ Особый случай (свидание)', season: 'spring', seasonText: 'Универсально', items: ['Шёлковое бельё с кружевом', 'Платье с запахом или V-образным вырезом', 'Колготки с лёгким блеском', 'Туфли-лодочки', 'Маленькая сумочка', 'Духи с нотами ванили/жасмина', 'Минималистичные украшения'] }
+  { name: '🌸 Весенний романтичный', season: 'spring', seasonText: 'Весна', items: ['Платье-миди','Балетки','Телесные колготки','Кардиган','Сумка','Серьги'] },
+  { name: '🌸 Весенний офисный', season: 'spring', seasonText: 'Весна', items: ['Блузка','Юбка-карандаш','Чёрные колготки','Лодочки','Пиджак','Сумка'] },
+  { name: '☀️ Летний пляжный', season: 'summer', seasonText: 'Лето', items: ['Льняное платье','Сандалии','Соломенная сумка','Очки','Шляпа','SPF'] },
+  { name: '☀️ Летний городской', season: 'summer', seasonText: 'Лето', items: ['Топ+джинсы','Кеды','Кросс-боди','Украшения'] },
+  { name: '☀️ Летний вечерний', season: 'summer', seasonText: 'Лето', items: ['Шёлковое платье','Босоножки','Клатч','Серьги','Парфюм'] },
+  { name: '🍂 Осенний casual', season: 'autumn', seasonText: 'Осень', items: ['Свитер','Джинсы','Ботинки','Тренч','Шарф'] },
+  { name: '🍂 Осенний элегантный', season: 'autumn', seasonText: 'Осень', items: ['Водолазка','Юбка-плиссе','Ботфорты','Серые колготки','Берет','Сумка'] },
+  { name: '❄️ Зимний уютный', season: 'winter', seasonText: 'Зима', items: ['Кашемировый свитер','Брюки','Сапоги','Колготки 100 ден','Пуховик','Шапка'] },
+  { name: '❄️ Зимний праздничный', season: 'winter', seasonText: 'Зима', items: ['Бархатное платье','Колготки с блеском','Лодочки','Клатч','Серьги','Пальто'] },
+  { name: '✨ Свидание', season: 'spring', seasonText: 'Универсально', items: ['Шёлковое бельё','Платье с запахом','Колготки с блеском','Лодочки','Сумочка','Парфюм'] }
 ];
 
 function switchWard(key) { wardTab = key; wardItem = null; renderWardrobe(); }
@@ -1889,8 +2372,8 @@ function toggleOwned(id) {
   saveData();
   if (!was) {
     const wt = WARD_TASKS.find(w => w.ids.includes(id));
-    if (wt && (!wt.needs || wt.needs <= strictLevel())) showToast(' Куплено! В плане появилось новое задание');
-    else showToast('🛒 Отмечено как купленное');
+    if (wt && (!wt.needs || wt.needs <= strictLevel())) showToast('🛒 Куплено! Новое задание в плане');
+    else showToast('✓ Отмечено');
   } else showToast('Отметка снята');
   updateUI();
 }
@@ -1903,7 +2386,7 @@ function renderWardrobe() {
   const c = document.getElementById('wardContent');
 
   if (wardTab === 'outfits') {
-    c.innerHTML = `<div class="cx" style="margin-bottom:15px">10 готовых образов под разные стили и сезоны. Копируй целиком или адаптируй под себя.</div>` +
+    c.innerHTML = `<div class="cx" style="margin-bottom:15px">10 готовых образов.</div>` +
       OUTFITS.map(o => `
         <div class="ofc">
           <span class="ofs s-${o.season}">${o.seasonText}</span>
@@ -1921,15 +2404,15 @@ function renderWardrobe() {
     let extra = '';
     if (item.id === 'chastity' && data.profile.erect) {
       const r = chastityRec(parseFloat(data.profile.erect));
-      extra = `<div class="wu"><strong>📏 Твоя рекомендация:</strong> размер ${r.size} · без пояса ~${r.noBelt} мм · с поясом ~${r.withBelt} мм</div>`;
+      extra = `<div class="wu"><strong> Твоя рекомендация:</strong> размер ${r.size} · без пояса ~${r.noBelt} мм · с поясом ~${r.withBelt} мм</div>`;
     }
     c.innerHTML = `
       <div class="wd2">
         <div class="wdt">${item.icon} ${item.name} ${owned ? '<span class="wo">✓ куплено</span>' : ''}</div>
-        <div class="wu"><strong>📝 Как пользоваться:</strong> ${item.how}</div>
-        <div class="wu"><strong>🌸 Зачем:</strong> ${item.usage}</div>
+        <div class="wu"><strong> Как пользоваться:</strong> ${item.how}</div>
+        <div class="wu"><strong> Зачем:</strong> ${item.usage}</div>
         ${extra}
-        <button class="btn ${owned ? 'bg' : 'bp'}" onclick="toggleOwned('${item.id}')">${owned ? '✓ Куплено — снять отметку' : '🛒 Отметить купленным'}</button>
+        <button class="btn ${owned ? 'bg' : 'bp'}" onclick="toggleOwned('${item.id}')">${owned ? '✓ Куплено — снять' : '🛒 Отметить купленным'}</button>
         <button class="btn bs" style="margin-bottom:0" onclick="backWard()">← Назад</button>
       </div>`;
     return;
@@ -1942,7 +2425,7 @@ function renderWardrobe() {
         <div class="wic">${i.icon}</div>
         <div class="wif">
           <div class="win">${i.name}</div>
-          <div class="wis">${data.owned[i.id] ? 'В твоём гардеробе' : 'Подробнее →'}</div>
+          <div class="wis">${data.owned[i.id] ? 'В гардеробе' : 'Подробнее →'}</div>
         </div>
         ${data.owned[i.id] ? '<span class="wo">✓</span>' : ''}
       </div>`).join('');
@@ -1993,7 +2476,7 @@ function saveSavings(id) {
   op.saved += amount;
   if (op.status === 'not_started') op.status = 'saving';
   saveData(); updateUI(); closeModal();
-  showToast(`✓ Добавлено ${amount.toLocaleString('ru-RU')} ₽`);
+  showToast(`✓ +${amount.toLocaleString('ru-RU')} ₽`);
 }
 
 function changeStatus(id) {
@@ -2013,12 +2496,12 @@ function renderProfile() {
 
   document.getElementById('secPersonalDesc').textContent = `${data.profile.name || 'Не указано'} · ${data.profile.age ? data.profile.age + ' лет' : ''} · ${data.profile.job || 'Не указано'}`;
   document.getElementById('secBodyDesc').textContent = `${data.profile.height || '?'} см · ${data.profile.weight || '?'} кг · Т:${data.profile.waist || '?'} Г:${data.profile.chest || '?'} Б:${data.profile.hips || '?'}`;
-  document.getElementById('secIntensityDesc').textContent = data.settings.strictness === 'soft' ? '🌱 Мягкий' : data.settings.strictness === 'normal' ? '🌸 Обычный' : '🔥 Строгий';
+  document.getElementById('secIntensityDesc').textContent = data.settings.strictness === 'soft' ? '🌱 Мягкий' : data.settings.strictness === 'normal' ? '🌸 Обычный' : ' Строгий';
   document.getElementById('secAddressDesc').textContent = data.settings.genderAddress === 'female' ? 'Женский род' : 'Нейтральный род';
 
   document.getElementById('cloudInfo').innerHTML = currentUser
-    ? '️ Подключено к облаку · ID: ' + currentUser.uid.substring(0,8) + '...'
-    : '📱 Локально';
+    ? '☁️ Подключено к облаку · ID: ' + currentUser.uid.substring(0,8) + '...'
+    : ' Локально';
   if (isAdmin) document.getElementById('adminCard').style.display = 'block';
 }
 
@@ -2036,7 +2519,7 @@ function openSection(section) {
       <button class="btn bs" onclick="closeModal()">Отмена</button>
       <button class="btn bp" onclick="savePersonal()">Сохранить</button>`;
   } else if (section === 'body') {
-    document.getElementById('modalTitle').textContent = '📏 Параметры тела';
+    document.getElementById('modalTitle').textContent = ' Параметры тела';
     document.getElementById('modalText').innerHTML = `
       <div class="calc-grid">
         <div><label style="font-size:12px;color:var(--s)">Рост, см</label><input type="number" id="sec_height" value="${data.profile.height}" style="width:100%"></div>
@@ -2076,9 +2559,9 @@ function openSection(section) {
     document.getElementById('modalText').innerHTML = `
       <p>Выбери уровень трансформации:</p>
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:15px">
-        <button class="btn ${data.settings.strictness==='soft'?'bg':'bs'}" onclick="setIntensity('soft')">🌱 Мягкий — базовые практики</button>
-        <button class="btn ${data.settings.strictness==='normal'?'bg':'bs'}" onclick="setIntensity('normal')">🌸 Обычный — + женская рутина</button>
-        <button class="btn ${data.settings.strictness==='strict'?'bg':'bs'}" onclick="setIntensity('strict')">🔥 Строгий — + психология, голос, книги</button>
+        <button class="btn ${data.settings.strictness==='soft'?'bg':'bs'}" onclick="setIntensity('soft')"> Мягкий</button>
+        <button class="btn ${data.settings.strictness==='normal'?'bg':'bs'}" onclick="setIntensity('normal')">🌸 Обычный</button>
+        <button class="btn ${data.settings.strictness==='strict'?'bg':'bs'}" onclick="setIntensity('strict')">🔥 Строгий</button>
       </div>`;
     document.getElementById('modalExtra').innerHTML = '';
     document.getElementById('modalButtons').innerHTML = '<button class="btn bs" onclick="closeModal()">Закрыть</button>';
@@ -2087,7 +2570,7 @@ function openSection(section) {
     document.getElementById('modalText').innerHTML = `
       <p>В каком роде к тебе обращаться:</p>
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:15px">
-        <button class="btn ${data.settings.genderAddress==='female'?'bg':'bs'}" onclick="setAddress('female')">👩 Женский род (она, её, ей)</button>
+        <button class="btn ${data.settings.genderAddress==='female'?'bg':'bs'}" onclick="setAddress('female')"> Женский род</button>
         <button class="btn ${data.settings.genderAddress==='neutral'?'bg':'bs'}" onclick="setAddress('neutral')">⚧ Нейтральный род</button>
       </div>`;
     document.getElementById('modalExtra').innerHTML = '';
@@ -2156,7 +2639,7 @@ function checkAchievements() {
   const unlock = (key) => {
     if (!a[key].unlocked) {
       a[key].unlocked = true;
-      setTimeout(() => showToast(`🏆 Достижение: ${a[key].name}!`), 800);
+      setTimeout(() => showToast(`🏆 ${a[key].name}!`), 800);
     }
   };
   if (data.tasksDone >= 1) unlock('first_task');
@@ -2192,7 +2675,7 @@ function showArchive() {
   document.getElementById('modalTitle').textContent = '📖 Архив блокнота';
   const entries = Object.entries(data.journal).sort((a, b) => b[0].localeCompare(a[0]));
   document.getElementById('modalText').innerHTML = entries.length === 0
-    ? '<p>Записей пока нет. Начни вести дневник в вечернем отчёте!</p>'
+    ? '<p>Записей пока нет.</p>'
     : entries.map(([date, text]) => `<div class="ar"><div class="ard">${formatDate(date)} ${data.mood[date] || ''}</div><div class="art">${text}</div></div>`).join('');
   document.getElementById('modalExtra').innerHTML = '';
   document.getElementById('modalButtons').innerHTML = '<button class="btn bp" onclick="closeModal()">Закрыть</button>';
@@ -2214,7 +2697,7 @@ function showAdmin() {
       const p = d.data?.percent || 0;
       const s = d.data?.streak || 0;
       html += `<div class="au">
-        <div class="au-n">${d.tn || 'Аноним'} · ${p.toFixed(2)}% · ${s}</div>
+        <div class="au-n">${d.tn || 'Аноним'} · ${p.toFixed(2)}% · 🔥${s}</div>
         <div class="au-m">Последняя активность: ${d.ua ? formatDate(d.ua) : '—'}</div>
       </div>`;
     });
@@ -2229,27 +2712,14 @@ function showPrivacy() {
   document.getElementById('modalTitle').textContent = '🔒 Политика конфиденциальности';
   document.getElementById('modalText').innerHTML = `
     <div class="pt">
-      <h3>1. Какие данные мы собираем</h3>
-      <p>Femi Bloom собирает только данные, которые ты вводишь самостоятельно:</p>
-      <ul><li>Профиль (имя, возраст, рост, вес, работа)</li><li>Прогресс заданий и процент феминизации</li><li>Настройки расписания и интенсивности</li><li>Фотографии прогресса (2 снимка)</li><li>Записи блокнота и настроение</li><li>Данные о накоплениях, процедурах, воде, параметрах тела</li></ul>
-      <h3>2. Как хранятся данные</h3>
-      <p>Все данные хранятся <strong>локально на твоём устройстве</strong> и в облаке Firebase. Мы не передаём и не загружаем их на внешние серверы без твоего явного согласия.</p>
-      <p>Фотографии сжимаются и сохраняются в зашифрованном виде.</p>
-      <h3>3. Использование данных</h3>
-      <p>Данные используются исключительно для:</p>
-      <ul><li>Отслеживания твоего личного прогресса</li><li>Персонализации заданий под твой график</li><li>Напоминаний о процедурах и тренировках</li></ul>
-      <h3>4. Твои права</h3>
-      <p>Ты в любой момент можешь:</p>
-      <ul><li>Экспортировать все свои данные (Профиль → Экспорт)</li><li>Полностью удалить все данные (Профиль → Сброс прогресса)</li><li>Изменить любые параметры в Профиле</li></ul>
-      <h3>5. Конфиденциальность фотографий</h3>
-      <p>Фотографии прогресса предназначены только для твоего личного использования. Приложение не имеет функции автоматической отправки или публикации фото. Делись ими только по собственному желанию.</p>
-      <h3>6. Безопасность</h3>
-      <p>Поскольку данные хранятся локально и в твоём аккаунте Firebase, они доступны только на твоём устройстве. Рекомендуем использовать блокировку экрана на телефоне для дополнительной защиты.</p>
-      <h3>7. Сообщество</h3>
-      <p>Telegram-канал <a href="https://t.me/femibloom" style="color:var(--p)">t.me/femibloom</a> — анонсы обновлений. Подписка добровольна.</p>
-      <h3>8. Изменения политики</h3>
-      <p>Мы можем обновлять эту политику. Актуальная версия всегда доступна в разделе Профиль.</p>
-      <p style="margin-top:15px;font-style:italic;color:var(--p)">Последнее обновление: ${new Date().toLocaleDateString('ru-RU')}</p>
+      <h3>1. Данные</h3>
+      <p>Femi Bloom собирает только то, что ты вводишь: профиль, прогресс, фото, записи, покупки, замеры, лекарства.</p>
+      <h3>2. Хранение</h3>
+      <p>Всё хранится локально и в облаке Firebase. Никому не передаётся.</p>
+      <h3>3. Права</h3>
+      <ul><li>Экспорт данных</li><li>Полный сброс</li><li>Изменение любых параметров</li></ul>
+      <h3>4. Сообщество</h3>
+      <p>t.me/femibloom — анонсы обновлений.</p>
     </div>`;
   document.getElementById('modalExtra').innerHTML = '';
   document.getElementById('modalButtons').innerHTML = '<button class="btn bp" onclick="closeModal()">Понятно</button>';
@@ -2263,24 +2733,27 @@ function exportData() {
   a.href = URL.createObjectURL(blob);
   a.download = `femibloom_${new Date().toISOString().split('T')[0]}.json`;
   a.click();
-  showToast('✓ Данные экспортированы');
+  showToast('✓ Экспортировано');
 }
 
 function resetProgress() {
-  document.getElementById('modalTitle').textContent = '⚠️ Сброс прогресса';
-  document.getElementById('modalText').innerHTML = '<p>Ты действительно хочешь сбросить весь прогресс?</p><p style="color: #c62828; margin-top: 10px;">Это действие нельзя отменить!</p>';
+  document.getElementById('modalTitle').textContent = '⚠️ Сброс';
+  document.getElementById('modalText').innerHTML = '<p>Сбросить ВЕСЬ прогресс?</p><p style="color:#c62828">Необратимо!</p>';
   document.getElementById('modalExtra').innerHTML = '';
   document.getElementById('modalButtons').innerHTML = `
-    <button class="btn btn-sec" onclick="closeModal()">Отмена</button>
-    <button class="btn btn-danger" onclick="confirmReset()">Сбросить</button>`;
+    <button class="btn bs" onclick="closeModal()">Отмена</button>
+    <button class="btn bd" onclick="confirmReset()">Сбросить</button>`;
   document.getElementById('modal').classList.add('active');
 }
 
 function confirmReset() {
-  localStorage.removeItem('femibloom_data');
-  data = { ...DEFAULT_DATA };
+  localStorage.removeItem('fb_data');
+  if (currentUser && data._docId) {
+    db.collection('users').doc(data._docId).delete().catch(() => {});
+  }
+  data = JSON.parse(JSON.stringify(DEFAULT_DATA));
   saveData(); updateUI(); closeModal();
-  showToast('✓ Прогресс сброшен');
+  showToast('✓ Сброшено');
 }
 
 // ===== ФОТО =====
@@ -2299,18 +2772,18 @@ function renderPhotos() {
 
   if (!data.photoBeforeUrl) {
     photoMode = 'before';
-    status.innerHTML = '<div class="pw">📸 Сделай первое фото «ДО» — оно останется навсегда как точка отсчёта.</div>';
+    status.innerHTML = '<div class="pw">📸 Сделай первое фото «ДО».</div>';
     btn.textContent = '📷 Сделать фото «ДО»'; btn.style.display = 'block';
   } else {
     const base = data.photoWeekDate || data.photoBeforeDate;
     const days = Math.floor((Date.now() - new Date(base)) / 86400000);
     if (days >= 7) {
       photoMode = 'week';
-      status.innerHTML = `<div class="pw">⚠️ Прошло ${days} дней. Сделай новое фото, чтобы продолжить полноценное использование приложения.</div>`;
+      status.innerHTML = `<div class="pw">⚠️ Прошло ${days} дней. Обнови недельное фото!</div>`;
       btn.textContent = '📷 Обновить недельное фото'; btn.style.display = 'block';
     } else {
       photoMode = null;
-      status.innerHTML = `<div class="cx" style="margin-top:10px;color:var(--g)">✓ Следующее фото через ${7 - days} дн.</div>`;
+      status.innerHTML = `<div class="cx" style="margin-top:10px;color:var(--g)">✓ Следующее фото через ${7-days} дн.</div>`;
       btn.style.display = 'none';
     }
   }
@@ -2350,7 +2823,7 @@ function addPhoto(event) {
 function viewPhoto(mode) {
   const url = mode === 'before' ? data.photoBeforeUrl : data.photoWeekUrl;
   const dt = mode === 'before' ? data.photoBeforeDate : data.photoWeekDate;
-  if (!url) { showToast('Фото ещё не сделано'); return; }
+  if (!url) { showToast('Фото не сделано'); return; }
   document.getElementById('modalTitle').textContent = mode === 'before' ? '📸 Фото «ДО»' : '📸 Недельное фото';
   document.getElementById('modalText').innerHTML = `<img src="${url}" style="width:100%;border-radius:12px"><p style="margin-top:10px">Сделано: ${formatDate(dt)}</p>`;
   document.getElementById('modalExtra').innerHTML = '';
@@ -2360,7 +2833,7 @@ function viewPhoto(mode) {
 
 // ===== ВОДА =====
 function renderWater() {
-  const today = new Date().toISOString().split('T')[0];
+  const today = dateKey();
   if (data.water.date !== today) data.water = { date: today, count: 0 };
   const c = data.water.count;
   document.getElementById('waterCard').innerHTML = `
@@ -2379,7 +2852,7 @@ function renderWater() {
 function addWater() {
   if (data.water.count < 8) {
     data.water.count++; saveData(); renderWater();
-    if (data.water.count === 8) showToast('💧 Норма воды выполнена!');
+    if (data.water.count === 8) showToast('💧 Норма выполнена!');
   } else showToast('💧 Норма уже выполнена!');
 }
 
@@ -2391,24 +2864,24 @@ function updateUI() {
   document.getElementById('percentText').textContent = pct + '%';
   document.getElementById('progressFill').style.width = Math.min(data.percent, 100) + '%';
 
-  let level = 'Новичок';
-  if (data.percent >= 91) level = 'Финальная трансформация';
-  else if (data.percent >= 76) level = 'Глубокая феминизация';
-  else if (data.percent >= 51) level = 'Развитие';
-  else if (data.percent >= 26) level = 'Привыкание';
-  document.getElementById('levelBadge').textContent = level;
+  let lv = 'Новичок';
+  if (data.percent >= 91) lv = 'Финальная';
+  else if (data.percent >= 76) lv = 'Глубокая';
+  else if (data.percent >= 51) lv = 'Развитие';
+  else if (data.percent >= 26) lv = 'Привыкание';
+  document.getElementById('levelBadge').textContent = lv;
 
   document.getElementById('streakValue').textContent = data.streak;
   document.getElementById('tasksDone').textContent = data.tasksDone;
 
   const tips = [
-    'Маленькие шаги каждый день ведут к большим переменам.',
-    'Регулярность важнее интенсивности. Лучше мало, но каждый день.',
-    'Твоё тело меняется. Дай ему время и заботу.',
-    'Женственность — это не только внешность, но и внутреннее состояние.',
-    'Каждый день ты становишься ближе к себе настоящей.',
-    'Не сравнивай себя с другими. Твой путь уникален.',
-    'Забота о себе — это не эгоизм, а необходимость.'
+    'Маленькие шаги каждый день.',
+    'Регулярность важнее интенсивности.',
+    'Твоё тело меняется. Дай ему время.',
+    'Женственность — это внутреннее.',
+    'Каждый день ты ближе к себе.',
+    'Не сравнивай себя с другими.',
+    'Забота о себе — не эгоизм.'
   ];
   document.getElementById('dailyTip').textContent = tips[new Date().getDate() % tips.length];
 
