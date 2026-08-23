@@ -2798,6 +2798,85 @@ document.getElementById('modal').addEventListener('click', (e) => {
   if (e.target.id === 'modal') closeModal();
 });
 
+  function showPaywall() {
+  document.getElementById('modalTitle').textContent = '⭐ Оформление подписки';
+  document.getElementById('modalText').innerHTML = `
+    <p style="margin-bottom:15px">Выбери тариф:</p>
+    <div class="pay-plans">
+      <div class="pay-plan" onclick="selectPayPlan(1, 200, this)">
+        <div class="pay-plan-name">1 месяц</div>
+        <div class="pay-plan-price">200 ⭐</div>
+      </div>
+      <div class="pay-plan" onclick="selectPayPlan(3, 450, this)">
+        <div class="pay-plan-name">3 месяца</div>
+        <div class="pay-plan-price">450 ⭐</div>
+      </div>
+      <div class="pay-plan" onclick="selectPayPlan(6, 700, this)">
+        <div class="pay-plan-name">6 месяцев</div>
+        <div class="pay-plan-price">700 ⭐</div>
+      </div>
+      <div class="pay-plan" onclick="selectPayPlan(12, 1200, this)">
+        <div class="pay-plan-name">12 месяцев</div>
+        <div class="pay-plan-price">1200 ⭐</div>
+      </div>
+    </div>
+    <div style="background:var(--bg);padding:15px;border-radius:12px;margin-top:15px">
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px"> Как оплатить:</div>
+      <ol style="font-size:13px;color:var(--s);padding-left:20px;line-height:1.6">
+        <li>Выбери тариф выше</li>
+        <li>Нажми "Оплатить"</li>
+        <li>Отправь звёзды боту @FemiBloom_Bot</li>
+        <li>Напиши мне "Оплатил(а)" — я активирую подписку 💕</li>
+      </ol>
+    </div>
+  `;
+  document.getElementById('modalButtons').innerHTML = `
+    <button class="btn btn-sec" onclick="closeModal()">Закрыть</button>
+    <button class="btn btn-gold" id="payBtn" disabled onclick="buySubscription()">Оплатить</button>
+  `;
+  document.getElementById('modal').classList.add('active');
+}
+
+let selectedPayPlan = null;
+
+function selectPayPlan(months, stars, element) {
+  selectedPayPlan = { months, stars };
+  document.querySelectorAll('.pay-plan').forEach(el => el.classList.remove('selected'));
+  element.classList.add('selected');
+  document.getElementById('payBtn').disabled = false;
+}
+
+function buySubscription() {
+  if (!selectedPayPlan) return;
+  
+  const tg = window.Telegram.WebApp;
+  const payload = JSON.stringify({ plan: selectedPayPlan.months });
+  
+  // Создаём инвойс
+  fetch(`https://api.telegram.org/botYOUR_BOT_TOKEN/createInvoiceLink`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: `Femi Bloom Premium (${selectedPayPlan.months} мес.)`,
+      description: `Доступ на ${selectedPayPlan.months} месяцев`,
+      payload: payload,
+      currency: 'XTR',
+      prices: [{ label: 'Подписка', amount: selectedPayPlan.stars }]
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      tg.openInvoice(data.result, (status) => {
+        if (status === 'paid') {
+          showToast('🎉 Оплата прошла! Я активирую подписку вручную 💕');
+        }
+        closeModal();
+      });
+    }
+  });
+}
+  
 initApp();
 </script>
 </body>
